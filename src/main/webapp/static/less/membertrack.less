@@ -1,0 +1,50 @@
+@import "lesshat.less";
+
+@full-width: 768px;
+@sidebar-width: 300px;
+
+* {
+    .box-sizing(border-box);
+}
+
+fieldset {
+    border: none;
+}
+
+.l-page {
+    .display(flex);
+
+    .l-main-area {
+        .flex-grow(1);
+        
+        margin-top: 2em;
+
+        .l-content {
+            width: @full-width - @sidebar-width;
+            margin: 0px auto;
+        }
+    }
+
+    .l-sidebar {
+        .flex-grow(0);
+        width: @sidebar-width;
+    }
+
+    @media screen and (max-width: @full-width) {
+        .flex-direction(column-reverse);
+
+        .l-main-area .l-content, .l-sidebar {
+            width: 100%;
+        }
+    }
+}
+
+.message-box {
+    border: 1px solid #fdd;
+    background-color: #fee;
+    .border-radius(6px);
+    padding: 1em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+

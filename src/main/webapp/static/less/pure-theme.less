@@ -1,0 +1,30 @@
+@import "lesshat.less";
+
+.pure-theme-membertrack {
+
+    .pure-button {
+        .border-radius(6px);
+        
+        .background-image(
+            linear-gradient(
+                to bottom,
+                #eee 0%,
+                #ddd 100%));
+
+        &:hover, &:focus {
+            .background-image(
+                linear-gradient(
+                    to bottom,
+                    #fff 0%,
+                    #eee 100%));
+        }
+    }
+
+    .pure-control-group.for-buttons {
+        .display(flex);
+        margin-top: 1.5em;
+        margin-right: 2.5em;
+        .justify-content(flex-end);
+    }
+    
+}
