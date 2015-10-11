@@ -16,27 +16,39 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import com.pi4j.wiringpi.Gpio;
-import com.pi4j.wiringpi.SoftPwm;
-
 public class Main {
+
+    private static final int LOCK_SERVO_PIN = 1;
+    private static final String MODEM_SERIAL_PORT = "/dev/ttyUSB0";
+    private static final long LOCK_TIMEOUT = 5_000;
+    private static final Object lock = new Object();
 
     private Main() {
         // not meant to be instantiated
     }
 
+    @SuppressWarnings("SleepWhileHoldingLock")
     public static void main(String... args) {
-        LockControl lockControl = new LockControl(1);
+        MemberLookup memberLookup = new MemberLookup();
+        LockController lockController = new LockController(LOCK_SERVO_PIN);
+        ModemController modemController = new ModemController(MODEM_SERIAL_PORT);
 
-        lockControl.init();
-        
-        lockControl.setLockOpen(true);
+        lockController.setLockOpen(false);
 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-        }
+        modemController.addPhoneCallListener((number) -> {
+            synchronized (lock) {
+                if (!memberLookup.isAuthorizedMember(number)) {
+                    return;
+                }
 
-        lockControl.setLockOpen(false);
+                try {
+                    lockController.setLockOpen(true);
+                    Thread.sleep(LOCK_TIMEOUT);
+                } catch (InterruptedException ex) {
+                } finally {
+                    lockController.setLockOpen(false);
+                }
+            }
+        });
     }
 }

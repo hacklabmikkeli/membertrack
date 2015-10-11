@@ -19,23 +19,25 @@ package fi.ilmoeuro.membertrack.elock;
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.SoftPwm;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class LockControl {
+public class LockController {
 
     private static final int OPEN_PWM_VALUE = 8;
     private static final int CLOSED_PWM_VALUE = 0;
     private static final int MIN_PWM_VALUE = 0;
     private static final int MAX_PWM_VALUE = 10;
-    private static final int PWM_DIVISOR = 19; // 19.2e6 / 19 / 100 = 1kHz;
 
     @Getter
     private boolean lockOpen = false;
     private boolean initialized = false;
     private final int softPwmPinNumber;
 
-    public void init() {
+    public LockController(int softPwmPinNumber) {
+        this.softPwmPinNumber = softPwmPinNumber;
+        init();
+    }
+
+    private void init() {
         int errno = Gpio.wiringPiSetup();
         if (errno > 0) {
             // TODO exception
@@ -43,8 +45,6 @@ public class LockControl {
                     String.format("Error during wiringPi setup: %d", errno)
             );
         }
-        Gpio.pwmSetMode(Gpio.PWM_MODE_MS);
-        Gpio.pwmSetClock(PWM_DIVISOR);
         errno = SoftPwm.softPwmCreate(
                 softPwmPinNumber,
                 MIN_PWM_VALUE,

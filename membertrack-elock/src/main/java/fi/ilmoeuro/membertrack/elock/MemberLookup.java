@@ -16,6 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public class ModemListener {
-    
+import java.util.HashSet;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class MemberLookup {
+    private Set<String> whitelist = new HashSet<>();
+
+    public boolean isAuthorizedMember(String phoneNumber) {
+        return whitelist.contains(phoneNumber);
+    }
 }
