@@ -21,24 +21,23 @@ import com.pi4j.wiringpi.SoftPwm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-
-/**
- *
- * @author Ilmo Euro
- */
 @RequiredArgsConstructor
-public class ServoControl {
+public class LockControl {
 
     private static final int OPEN_PWM_VALUE = 75;
     private static final int CLOSED_PWM_VALUE = 75;
     private static final int MIN_PWM_VALUE = 75;
     private static final int MAX_PWM_VALUE = 75;
+    private static final int PWM_DIVISOR = 190; // 19.2e6 / 190 / 100 = 1kHz;
+
     @Getter
     private boolean lockOpen = false;
     private final int softPwmPinNumber;
 
     public void init() {
         Gpio.wiringPiSetup();
+        Gpio.pwmSetMode(Gpio.PWM_MODE_MS);
+        Gpio.pwmSetClock(PWM_DIVISOR);
         SoftPwm.softPwmCreate(
                 softPwmPinNumber,
                 MIN_PWM_VALUE,
