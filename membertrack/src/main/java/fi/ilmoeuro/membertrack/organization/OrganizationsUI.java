@@ -24,6 +24,7 @@ import fi.ilmoeuro.membertrack.ui.Paths;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import lombok.Value;
 import org.glassfish.jersey.server.mvc.Template;
