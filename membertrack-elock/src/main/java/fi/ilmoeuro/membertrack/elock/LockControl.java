@@ -24,27 +24,45 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LockControl {
 
-    private static final int OPEN_PWM_VALUE = 75;
-    private static final int CLOSED_PWM_VALUE = 75;
-    private static final int MIN_PWM_VALUE = 75;
-    private static final int MAX_PWM_VALUE = 75;
-    private static final int PWM_DIVISOR = 190; // 19.2e6 / 190 / 100 = 1kHz;
+    private static final int OPEN_PWM_VALUE = 8;
+    private static final int CLOSED_PWM_VALUE = 0;
+    private static final int MIN_PWM_VALUE = 0;
+    private static final int MAX_PWM_VALUE = 10;
+    private static final int PWM_DIVISOR = 19; // 19.2e6 / 19 / 100 = 1kHz;
 
     @Getter
     private boolean lockOpen = false;
+    private boolean initialized = false;
     private final int softPwmPinNumber;
 
     public void init() {
-        Gpio.wiringPiSetup();
+        int errno = Gpio.wiringPiSetup();
+        if (errno > 0) {
+            // TODO exception
+            throw new RuntimeException(
+                    String.format("Error during wiringPi setup: %d", errno)
+            );
+        }
         Gpio.pwmSetMode(Gpio.PWM_MODE_MS);
         Gpio.pwmSetClock(PWM_DIVISOR);
-        SoftPwm.softPwmCreate(
+        errno = SoftPwm.softPwmCreate(
                 softPwmPinNumber,
                 MIN_PWM_VALUE,
                 MAX_PWM_VALUE);
+        if (errno > 0) {
+            // TODO exception
+            throw new RuntimeException(
+                    String.format("Error during soft pwm create: %d", errno)
+            );
+        }
+        initialized = true;
     }
 
     public void setLockOpen(boolean lockOpen) {
+        if (!initialized) {
+            throw new IllegalStateException("Uninitialized lock control");
+        }
+        
         if (lockOpen == this.lockOpen) {
             return;
         }

@@ -16,27 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import com.pi4j.wiringpi.Gpio;
-import com.pi4j.wiringpi.SoftPwm;
-
-public class Main {
-
-    private Main() {
-        // not meant to be instantiated
-    }
-
-    public static void main(String... args) {
-        LockControl lockControl = new LockControl(1);
-
-        lockControl.init();
-        
-        lockControl.setLockOpen(true);
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-        }
-
-        lockControl.setLockOpen(false);
-    }
+public class ModemListener {
+    
 }
