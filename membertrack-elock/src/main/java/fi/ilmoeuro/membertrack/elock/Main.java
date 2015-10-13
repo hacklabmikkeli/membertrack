@@ -16,12 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public class Main {
+import java.io.File;
 
-    private static final int LOCK_SERVO_PIN = 1;
-    private static final String MODEM_SERIAL_PORT = "/dev/ttyUSB0";
-    private static final long LOCK_TIMEOUT = 5_000;
-    private static final Object lock = new Object();
+public class Main {
 
     private Main() {
         // not meant to be instantiated
@@ -29,26 +26,5 @@ public class Main {
 
     @SuppressWarnings("SleepWhileHoldingLock")
     public static void main(String... args) {
-        MemberLookup memberLookup = new MemberLookup();
-        LockController lockController = new LockController(LOCK_SERVO_PIN);
-        ModemController modemController = new ModemController(MODEM_SERIAL_PORT);
-
-        lockController.setLockOpen(false);
-
-        modemController.addPhoneCallListener((number) -> {
-            synchronized (lock) {
-                if (!memberLookup.isAuthorizedMember(number)) {
-                    return;
-                }
-
-                try {
-                    lockController.setLockOpen(true);
-                    Thread.sleep(LOCK_TIMEOUT);
-                } catch (InterruptedException ex) {
-                } finally {
-                    lockController.setLockOpen(false);
-                }
-            }
-        });
     }
 }

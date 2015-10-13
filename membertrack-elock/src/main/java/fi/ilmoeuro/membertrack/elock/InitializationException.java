@@ -16,7 +16,10 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public interface ModemController {
-    void init() throws InitializationException;
-    void addPhoneCallListener(PhoneCallListener phoneCallListener);
+public class InitializationException extends Exception {
+
+    public InitializationException(String message) {
+        super(message);
+    }
+    
 }

@@ -16,7 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public interface ModemController {
-    void init() throws InitializationException;
-    void addPhoneCallListener(PhoneCallListener phoneCallListener);
+import java.util.Collection;
+import lombok.Value;
+
+public @Value class CollectionBasedMemberLookup implements MemberLookup {
+
+    private final Collection<String> backingCollection;
+
+    @Override
+    public boolean isAuthorizedMember(String phoneNumber) {
+        return backingCollection.contains(phoneNumber);
+    }
 }

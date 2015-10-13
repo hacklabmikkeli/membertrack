@@ -20,28 +20,28 @@ import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.SoftPwm;
 import lombok.Getter;
 
-public class LockController {
+public class LockActuatorImpl implements LockActuator {
 
     private static final int OPEN_PWM_VALUE = 8;
     private static final int CLOSED_PWM_VALUE = 0;
     private static final int MIN_PWM_VALUE = 0;
     private static final int MAX_PWM_VALUE = 10;
 
-    @Getter
+    @Getter(onMethod = @__({@Override}))
     private boolean lockOpen = false;
-    private boolean initialized = false;
     private final int softPwmPinNumber;
+    private boolean initialized = false;
 
-    public LockController(int softPwmPinNumber) {
+    public LockActuatorImpl(int softPwmPinNumber) throws InitializationException {
         this.softPwmPinNumber = softPwmPinNumber;
-        init();
     }
 
-    private void init() {
+    @Override
+    public void init() throws InitializationException {
         int errno = Gpio.wiringPiSetup();
         if (errno > 0) {
             // TODO exception
-            throw new RuntimeException(
+            throw new InitializationException(
                     String.format("Error during wiringPi setup: %d", errno)
             );
         }
@@ -51,16 +51,17 @@ public class LockController {
                 MAX_PWM_VALUE);
         if (errno > 0) {
             // TODO exception
-            throw new RuntimeException(
+            throw new InitializationException(
                     String.format("Error during soft pwm create: %d", errno)
             );
         }
         initialized = true;
     }
 
+    @Override
     public void setLockOpen(boolean lockOpen) {
         if (!initialized) {
-            throw new IllegalStateException("Uninitialized lock control");
+            throw new IllegalStateException("Not initialized");
         }
         
         if (lockOpen == this.lockOpen) {

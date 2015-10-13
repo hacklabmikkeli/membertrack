@@ -16,15 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import java.util.HashSet;
-import java.util.Set;
-import lombok.RequiredArgsConstructor;
+public interface MemberLookup {
 
-@RequiredArgsConstructor
-public class MemberLookup {
-    private Set<String> whitelist = new HashSet<>();
-
-    public boolean isAuthorizedMember(String phoneNumber) {
-        return whitelist.contains(phoneNumber);
-    }
+    boolean isAuthorizedMember(String phoneNumber);
+    
 }

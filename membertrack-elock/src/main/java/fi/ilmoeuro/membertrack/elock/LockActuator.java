@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public interface ModemController {
+public interface LockActuator {
     void init() throws InitializationException;
-    void addPhoneCallListener(PhoneCallListener phoneCallListener);
+    boolean isLockOpen();
+    void setLockOpen(boolean lockOpen);
 }
