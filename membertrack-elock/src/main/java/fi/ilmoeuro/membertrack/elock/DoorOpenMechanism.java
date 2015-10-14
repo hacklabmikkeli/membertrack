@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +27,9 @@ import lombok.extern.java.Log;
 @Log
 public class DoorOpenMechanism {
 
+    @SuppressFBWarnings(
+        value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
+        justification = "Auto-generated checks")
     private static final @Value class PhoneCallEvent {
         private final String phoneNumber;
     }
@@ -72,6 +76,8 @@ public class DoorOpenMechanism {
     }
 
     @SuppressWarnings("SleepWhileInLoop")
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+                        justification = "Used as a method reference")
     private void run() {
         running.set(true);
         log.info("Lock mechanism started");
@@ -98,5 +104,10 @@ public class DoorOpenMechanism {
         log.info("Lock mechanism stopping");
         running.set(false);
         thread.interrupt();
+        try {
+            thread.join();
+        } catch (InterruptedException ex) {
+            log.severe("Stopping lock mechanism interrupted");
+        }
     }
 }

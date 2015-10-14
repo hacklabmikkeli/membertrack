@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,21 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.elock;
+package fi.ilmoeuro.membertrack.elock.plumbing;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Collection;
-import lombok.Value;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
-public @Value class CollectionBasedMemberLookup implements MemberLookup {
+import javax.annotation.Nonnull;
+import javax.annotation.meta.TypeQualifierDefault;
 
-    private final Collection<String> backingCollection;
-
-    @Override
-    public boolean isAuthorizedMember(String phoneNumber) {
-        return backingCollection.contains(phoneNumber);
-    }
+/**
+ * Applies the {@link Nonnull} annotation to every class method unless overridden.
+ */
+@Documented
+@Nonnull
+@TypeQualifierDefault(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MethodsAreNonnullByDefault
+{
+    // nothing to add
 }
+

@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,21 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+@ParametersAreNonnullByDefault
+@MethodsAreNonnullByDefault
+@FieldsAreNonnullByDefault
 package fi.ilmoeuro.membertrack.elock;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Collection;
-import lombok.Value;
-
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
-public @Value class CollectionBasedMemberLookup implements MemberLookup {
-
-    private final Collection<String> backingCollection;
-
-    @Override
-    public boolean isAuthorizedMember(String phoneNumber) {
-        return backingCollection.contains(phoneNumber);
-    }
-}
+import fi.ilmoeuro.membertrack.elock.plumbing.MethodsAreNonnullByDefault;
+import fi.ilmoeuro.membertrack.elock.plumbing.FieldsAreNonnullByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;
