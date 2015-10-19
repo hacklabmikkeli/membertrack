@@ -48,7 +48,7 @@ public class DoorOpenMechanism {
             LockActuator lockActuator,
             PhoneCallSensor modemController,
             CollectionBasedMemberLookup memberLookup
-    ) {
+    ) throws InitializationException {
         this.lockOpenTime = lockOpenTime;
         this.lockActuator = lockActuator;
         this.modemController = modemController;
@@ -56,11 +56,11 @@ public class DoorOpenMechanism {
         this.thread = new Thread(this::run);
         this.running = new AtomicBoolean(false);
         this.eventQueue = new ArrayBlockingQueue<>(MAX_CALLS_IN_QUEUE);
+
+        init();
     }
 
-    public void init() throws InitializationException {
-        lockActuator.init();
-        modemController.init();
+    private void init() throws InitializationException {
         modemController.addPhoneCallListener((phoneNumber) -> {
             if (!eventQueue.offer(new PhoneCallEvent(phoneNumber))) {
                 log.log(Level.SEVERE,

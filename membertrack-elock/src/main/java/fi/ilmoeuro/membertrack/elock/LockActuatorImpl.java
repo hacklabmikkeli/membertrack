@@ -20,7 +20,7 @@ import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.SoftPwm;
 import lombok.Getter;
 
-public class LockActuatorImpl implements LockActuator {
+public class LockActuatorImpl implements LockActuator, AutoCloseable {
 
     private static final int OPEN_PWM_VALUE = 8;
     private static final int CLOSED_PWM_VALUE = 0;
@@ -30,14 +30,13 @@ public class LockActuatorImpl implements LockActuator {
     @Getter(onMethod = @__({@Override}))
     private boolean lockOpen = false;
     private final int softPwmPinNumber;
-    private boolean initialized = false;
 
     public LockActuatorImpl(int softPwmPinNumber) throws InitializationException {
         this.softPwmPinNumber = softPwmPinNumber;
+        init();
     }
 
-    @Override
-    public void init() throws InitializationException {
+    private void init() throws InitializationException {
         int errno = Gpio.wiringPiSetup();
         if (errno > 0) {
             // TODO exception
@@ -55,15 +54,10 @@ public class LockActuatorImpl implements LockActuator {
                     String.format("Error during soft pwm create: %d", errno)
             );
         }
-        initialized = true;
     }
 
     @Override
     public void setLockOpen(boolean lockOpen) {
-        if (!initialized) {
-            throw new IllegalStateException("Not initialized");
-        }
-        
         if (lockOpen == this.lockOpen) {
             return;
         }
@@ -75,5 +69,10 @@ public class LockActuatorImpl implements LockActuator {
         }
 
         this.lockOpen = lockOpen;
+    }
+
+    @Override
+    public void close() throws Exception {
+        // nothing yet
     }
 }

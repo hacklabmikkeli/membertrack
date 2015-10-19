@@ -26,7 +26,7 @@ import jssc.SerialPortException;
 import lombok.extern.java.Log;
 
 @Log
-public class PhoneCallSensorImpl implements PhoneCallSensor {
+public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
 
     private static final int BAUD_RATE = SerialPort.BAUDRATE_115200;
     private static final int DATA_BITS = SerialPort.DATABITS_8;
@@ -41,14 +41,11 @@ public class PhoneCallSensorImpl implements PhoneCallSensor {
     public PhoneCallSensorImpl(String serialPortName) throws InitializationException {
         this.serialPort = new SerialPort(serialPortName);
         this.listeners = new ArrayList<>();
+        init();
     }
 
-    @Override
-    public void init() throws InitializationException {
+    private void init() throws InitializationException {
         try {
-            listeners.clear();
-            serialPort.removeEventListener();
-
             serialPort.openPort();
             serialPort.setParams(
                     BAUD_RATE,
@@ -86,5 +83,12 @@ public class PhoneCallSensorImpl implements PhoneCallSensor {
     @Override
     public void addPhoneCallListener(PhoneCallListener phoneCallListener) {
         listeners.add(phoneCallListener);
+    }
+
+    @Override
+    public void close() throws Exception {
+        listeners.clear();
+        serialPort.removeEventListener();
+        serialPort.closePort();
     }
 }

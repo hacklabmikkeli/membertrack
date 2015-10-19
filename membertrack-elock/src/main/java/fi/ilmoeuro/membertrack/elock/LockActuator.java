@@ -17,7 +17,6 @@
 package fi.ilmoeuro.membertrack.elock;
 
 public interface LockActuator {
-    void init() throws InitializationException;
     boolean isLockOpen();
     void setLockOpen(boolean lockOpen);
 }

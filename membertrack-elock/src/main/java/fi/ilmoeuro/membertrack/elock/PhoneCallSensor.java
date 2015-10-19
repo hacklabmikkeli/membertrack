@@ -17,6 +17,5 @@
 package fi.ilmoeuro.membertrack.elock;
 
 public interface PhoneCallSensor {
-    void init() throws InitializationException;
     void addPhoneCallListener(PhoneCallListener phoneCallListener);
 }

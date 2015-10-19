@@ -16,8 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import java.io.File;
-
 public class Main {
 
     private Main() {
