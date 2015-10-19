@@ -26,10 +26,10 @@ import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         super();
-        register(MvcFeature.class);
-        register(JspMvcFeature.class);
-        register(DeclarativeLinkingFeature.class);
-        property(JspMvcFeature.TEMPLATE_BASE_PATH, "/WEB-INF/templates");
-        packages("fi.ilmoeuro.membertrack");
+        super.register(MvcFeature.class);
+        super.register(JspMvcFeature.class);
+        super.register(DeclarativeLinkingFeature.class);
+        super.property(JspMvcFeature.TEMPLATE_BASE_PATH, "/WEB-INF/templates");
+        super.packages("fi.ilmoeuro.membertrack");
     }
 }

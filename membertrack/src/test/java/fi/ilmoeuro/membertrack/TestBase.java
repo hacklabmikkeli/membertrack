@@ -21,7 +21,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -29,6 +29,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class TestBase {
+    private static final String SCHEMA_FILE = "schema.sql";
 
     private @Nullable Connection conn;
     private @Nullable DSLContext jooq;
@@ -36,7 +37,10 @@ public abstract class TestBase {
     @BeforeMethod
     public void jooqSetUp() throws ClassNotFoundException, SQLException {
         StringBuilder connString = new StringBuilder();
-        URL schemaUrl = TestBase.class.getResource("schema.sql");
+        URL schemaUrl = TestBase.class.getResource(SCHEMA_FILE);
+        if (schemaUrl == null) {
+            throw new IllegalStateException(SCHEMA_FILE + " not found");
+        }
         connString.append("jdbc:h2:mem:;");
         connString.append("CREATE=TRUE;");
         connString.append("INIT=runscript from '");
@@ -49,10 +53,15 @@ public abstract class TestBase {
     
     @AfterMethod
     public void jooqTearDown() throws SQLException {
-        conn.close();
+        if (conn != null) {
+            conn.close();
+        }
     }
     
     protected DSLContext jooq() {
+        if (jooq == null) {
+            throw new IllegalStateException("`jooq' not initialized");
+        }
         return jooq;
     }
 }

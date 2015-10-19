@@ -15,7 +15,6 @@ Any value defined here will override the pom.xml file value but is only applicab
 -->
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.7-web</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>gfv3ee6</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
-        <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
         <org-netbeans-spi-editor-hints-projects.perProjectHintSettingsEnabled>true</org-netbeans-spi-editor-hints-projects.perProjectHintSettingsEnabled>
         <org-netbeans-spi-editor-hints-projects.text.x-java.error-in-javadoc.enabled>false</org-netbeans-spi-editor-hints-projects.text.x-java.error-in-javadoc.enabled>
         <org-netbeans-spi-editor-hints-projects.text.x-java.create-javadoc.enabled>false</org-netbeans-spi-editor-hints-projects.text.x-java.create-javadoc.enabled>

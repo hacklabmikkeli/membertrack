@@ -20,9 +20,10 @@ import fi.ilmoeuro.membertrack.ResourceRoot;
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -40,30 +41,38 @@ import org.jooq.exception.DataAccessException;
 public class DatabaseInitializer {
 
     public static @Data class Config {
-        @Nullable private List<String> setupFiles;
-        @Nullable private List<String> clearFiles;
-        @Nullable private boolean enabled;
+        private List<String> setupFiles = Arrays.asList();
+        private List<String> clearFiles = Arrays.asList();
+        private boolean enabled;
     }
 
-    @Inject
-    @Nullable
-    @SuppressWarnings("null")
     private DSLContext jooq;
+    private Config config;
 
     @Inject
-    @Nullable
-    @SuppressWarnings("null")
-    private ConfigProvider configProvider;
+    public DatabaseInitializer(
+        DSLContext jooq,
+        ConfigProvider configProvider
+    ) {
+        this.jooq = jooq;
+        this.config = configProvider.getConfig(
+            "databaseInitializer",
+            Config.class);
+    }
 
-    @Nullable
-    @SuppressWarnings("null")
-    private Config config;
+    public DatabaseInitializer() {
+        throw new IllegalStateException("Please call the other constructor");
+    }
 
     private void runSqlFiles(List<String> fileNames) {
         try {
             for (String fileName : fileNames) {
                 InputStream sqlStream
                         = ResourceRoot.class.getResourceAsStream(fileName);
+                if (sqlStream == null) {
+                    // TODO proper exception
+                    throw new RuntimeException("SQL file not found");
+                }
                 String sql = IOUtils.toString(sqlStream, Charsets.US_ASCII);
                 log.log(Level.INFO, "Executing: {0}", sql);
                 for (String part : sql.split(";")) {
@@ -77,8 +86,6 @@ public class DatabaseInitializer {
 
     @PostConstruct
     public void init() {
-        config = configProvider.getConfig("databaseInitializer", Config.class);
-        
         if (config.isEnabled()) {
             try {
                 runSqlFiles(config.getClearFiles());

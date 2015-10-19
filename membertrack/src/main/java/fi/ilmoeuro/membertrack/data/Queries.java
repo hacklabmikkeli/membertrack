@@ -16,11 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.data;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.Table;
 
 public final class Queries {
@@ -28,39 +32,48 @@ public final class Queries {
         // Not meant to be instantiated
     }
 
-    public static <T> Optional<Entity<T>> findOne(
+    public static <T extends @NonNull Object> @Nullable Entity<T> findOne(
         DSLContext jooq,
         Table<?> table,
         Class<T> targetClass,
         Field<Integer> idField,
         Condition... conditions
     ) {
-        return Optional.ofNullable(jooq
+        Record record = jooq
             .select(table.fields())
             .from(table)
             .where(conditions)
-            .fetchAny())
-            .map((result) ->
-                result.map((record) -> new Entity<T>(
+            .fetchAny();
+        if (record == null) {
+            return null;
+        } else {
+            return new Entity<>(
                     record.into(targetClass),
-                    record.getValue(idField))));
+                    record.getValue(idField));
+        }
     }
 
-    public static <T> List<Entity<T>> findAll(
+    public static <T extends @NonNull Object> List<Entity<T>> findAll(
         DSLContext jooq,
         Table<?> table,
         Class<T> targetClass,
         Field<Integer> idField,
         Condition... conditions
     ) {
-        return jooq
+        // TODO streaming
+        final ArrayList<Entity<T>> result = new ArrayList<>();
+        Result<Record> dataSet = jooq
             .select(table.fields())
             .from(table)
             .where(conditions)
-            .fetch()
-            .map((result) ->
-                result.map((record) -> new Entity<T>(
+            .fetch();
+        for (Record record : dataSet) {
+            result.add(
+                new Entity<>(
                     record.into(targetClass),
-                    record.getValue(idField))));
+                    record.getValue(idField)
+                ));
+        }
+        return result;
     }
 }

@@ -17,7 +17,7 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.organization.OrganizationsUI;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.glassfish.jersey.linking.InjectLink;

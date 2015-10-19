@@ -17,7 +17,7 @@
 package fi.ilmoeuro.membertrack.plumbing;
 
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -33,9 +33,8 @@ import lombok.Data;
 @RequiredArgsConstructor
 public class JooqContextProvider {
 
-    @Data public static class Config {
-        @Nullable
-        private String sqlDialect;
+    public static @Data class Config {
+        private String sqlDialect = "";
     }
     
     @Resource(lookup = "jdbc/membertrack")
@@ -51,6 +50,9 @@ public class JooqContextProvider {
 
     @Produces
     public DSLContext getDSLContext() {
+        // Set by container
+        assert dataSource != null : "@AssumeAssertion(nullness)";
+
         return DSL.using(dataSource,
                          SQLDialect.valueOf(config.getSqlDialect()));
     }

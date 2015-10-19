@@ -16,12 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.organization;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Value;
 
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
 public @Value class Organization {
     private final String name;
 }

@@ -16,13 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.data;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.function.Function;
 import lombok.Value;
 
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
 @Value
 public class Entity<T> {
     private final T value;
