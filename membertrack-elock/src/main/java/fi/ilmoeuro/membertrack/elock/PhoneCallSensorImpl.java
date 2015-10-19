@@ -24,6 +24,7 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import lombok.extern.java.Log;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Log
 public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
@@ -39,12 +40,9 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
     private final ArrayList<PhoneCallListener> listeners;
 
     public PhoneCallSensorImpl(String serialPortName) throws InitializationException {
-        this.serialPort = new SerialPort(serialPortName);
-        this.listeners = new ArrayList<>();
-        init();
-    }
+        serialPort = new SerialPort(serialPortName);
+        listeners = new ArrayList<>();
 
-    private void init() throws InitializationException {
         try {
             serialPort.openPort();
             serialPort.setParams(
@@ -54,9 +52,30 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
                     PARITY);
             serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
             serialPort.writeString("AT+CLIP=1");
-            serialPort.addEventListener(this::serialEventListener);
         } catch (SerialPortException ex) {
             throw new InitializationException("Unable to initialize modem", ex);
+        }
+    }
+    
+    @Override
+    public void start() throws PhoneCallSensorException {
+        try {
+            serialPort.addEventListener(this::serialEventListener);
+        } catch (SerialPortException ex) {
+            throw new PhoneCallSensorException(
+                    "Phone call sensor start failed",
+                    ex);
+        }
+    }
+
+    @Override
+    public void stop() throws PhoneCallSensorException {
+        try {
+            serialPort.removeEventListener();
+        } catch (SerialPortException ex) {
+            throw new PhoneCallSensorException(
+                    "Phone call sensor stop failed",
+                    ex);
         }
     }
 
@@ -66,9 +85,13 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
                 String input = serialPort.readString(event.getEventValue());
                 Matcher matcher = CALL_PATTERN.matcher(input);
                 if (matcher.matches()) {
-                    listeners.stream().forEach((listener) -> {
-                        listener.onCall(matcher.group(1));
-                    });
+                    @Nullable String group = matcher.group(1);
+                    if (group == null) {
+                        return;
+                    }
+                    for (PhoneCallListener listener : listeners) {
+                        listener.onCall(group);
+                    }
                 }
             }
         } catch (SerialPortException ex) {

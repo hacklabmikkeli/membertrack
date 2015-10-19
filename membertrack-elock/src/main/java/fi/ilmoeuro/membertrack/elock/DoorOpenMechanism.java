@@ -27,9 +27,6 @@ import lombok.extern.java.Log;
 @Log
 public class DoorOpenMechanism {
 
-    @SuppressFBWarnings(
-        value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-        justification = "Auto-generated checks")
     private static final @Value class PhoneCallEvent {
         private final String phoneNumber;
     }
@@ -37,31 +34,28 @@ public class DoorOpenMechanism {
     private final static int MAX_CALLS_IN_QUEUE = 10_000;
     private final long lockOpenTime;
     private final LockActuator lockActuator;
-    private final PhoneCallSensor modemController;
+    private final PhoneCallSensor phoneCallSensor;
     private final CollectionBasedMemberLookup memberLookup;
-    private final Thread thread;
     private final AtomicBoolean running;
     private final BlockingQueue<PhoneCallEvent> eventQueue;
+    private final Thread thread;
 
+    @SuppressWarnings("methodref.receiver.bound.invalid")
     public DoorOpenMechanism(
             long lockOpenTime,
             LockActuator lockActuator,
-            PhoneCallSensor modemController,
+            PhoneCallSensor phoneCallSensor,
             CollectionBasedMemberLookup memberLookup
     ) throws InitializationException {
         this.lockOpenTime = lockOpenTime;
         this.lockActuator = lockActuator;
-        this.modemController = modemController;
+        this.phoneCallSensor = phoneCallSensor;
         this.memberLookup = memberLookup;
-        this.thread = new Thread(this::run);
         this.running = new AtomicBoolean(false);
         this.eventQueue = new ArrayBlockingQueue<>(MAX_CALLS_IN_QUEUE);
+        this.thread = new Thread(this::run);
 
-        init();
-    }
-
-    private void init() throws InitializationException {
-        modemController.addPhoneCallListener((phoneNumber) -> {
+        phoneCallSensor.addPhoneCallListener((phoneNumber) -> {
             if (!eventQueue.offer(new PhoneCallEvent(phoneNumber))) {
                 log.log(Level.SEVERE,
                         "Phone call from {0} rejected due full queue",
@@ -73,6 +67,14 @@ public class DoorOpenMechanism {
     public void start() {
         log.info("Lock mechanism starting");
         thread.start();
+        try {
+            phoneCallSensor.start();
+        } catch (PhoneCallSensorException ex) {
+            log.log(
+                    Level.SEVERE,
+                    "Couldn't start phone call sensor",
+                    ex);
+        }
     }
 
     @SuppressWarnings("SleepWhileInLoop")
@@ -102,6 +104,14 @@ public class DoorOpenMechanism {
 
     public synchronized void stop() {
         log.info("Lock mechanism stopping");
+        try {
+            phoneCallSensor.stop();
+        } catch (PhoneCallSensorException ex) {
+            log.log(
+                    Level.SEVERE,
+                    "Couldn't stop phone call sensor",
+                    ex);
+        }
         running.set(false);
         thread.interrupt();
         try {

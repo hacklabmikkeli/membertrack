@@ -27,16 +27,13 @@ public class LockActuatorImpl implements LockActuator, AutoCloseable {
     private static final int MIN_PWM_VALUE = 0;
     private static final int MAX_PWM_VALUE = 10;
 
-    @Getter(onMethod = @__({@Override}))
+    @Getter
     private boolean lockOpen = false;
     private final int softPwmPinNumber;
 
     public LockActuatorImpl(int softPwmPinNumber) throws InitializationException {
         this.softPwmPinNumber = softPwmPinNumber;
-        init();
-    }
 
-    private void init() throws InitializationException {
         int errno = Gpio.wiringPiSetup();
         if (errno > 0) {
             // TODO exception
