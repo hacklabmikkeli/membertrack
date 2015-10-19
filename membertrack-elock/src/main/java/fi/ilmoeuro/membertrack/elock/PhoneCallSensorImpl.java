@@ -16,28 +16,39 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import jssc.SerialPort;
+import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import lombok.extern.java.Log;
 
 @Log
-public class ModemControllerImpl implements ModemController {
+public class PhoneCallSensorImpl implements PhoneCallSensor {
 
     private static final int BAUD_RATE = SerialPort.BAUDRATE_115200;
     private static final int DATA_BITS = SerialPort.DATABITS_8;
     private static final int STOP_BITS = SerialPort.STOPBITS_1;
     private static final int PARITY = SerialPort.PARITY_NONE;
+    private static final Pattern CALL_PATTERN =
+            Pattern.compile("^+CLIP: \"+(\\d+)\"");
 
     private final SerialPort serialPort;
-    private boolean initialized = false;
+    private final ArrayList<PhoneCallListener> listeners;
 
-    public ModemControllerImpl(String serialPortName) throws InitializationException {
+    public PhoneCallSensorImpl(String serialPortName) throws InitializationException {
         this.serialPort = new SerialPort(serialPortName);
+        this.listeners = new ArrayList<>();
     }
 
     @Override
     public void init() throws InitializationException {
         try {
+            listeners.clear();
+            serialPort.removeEventListener();
+
             serialPort.openPort();
             serialPort.setParams(
                     BAUD_RATE,
@@ -45,27 +56,35 @@ public class ModemControllerImpl implements ModemController {
                     STOP_BITS,
                     PARITY);
             serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
-            serialPort.removeEventListener();
-            initialized = true;
+            serialPort.writeString("AT+CLIP=1");
+            serialPort.addEventListener(this::serialEventListener);
         } catch (SerialPortException ex) {
-            throw new InitializationException(
-                    String.format("Unable to initialize modem: %s", ex.getMessage()));
+            throw new InitializationException("Unable to initialize modem", ex);
+        }
+    }
+
+    private void serialEventListener(SerialPortEvent event) {
+        try {
+            if (event.getEventType() == SerialPortEvent.RXCHAR) {
+                String input = serialPort.readString(event.getEventValue());
+                Matcher matcher = CALL_PATTERN.matcher(input);
+                if (matcher.matches()) {
+                    listeners.stream().forEach((listener) -> {
+                        listener.onCall(matcher.group(1));
+                    });
+                }
+            }
+        } catch (SerialPortException ex) {
+            log.log(
+                Level.SEVERE,
+                "Listening to serial port event failed",
+                ex
+            );
         }
     }
 
     @Override
     public void addPhoneCallListener(PhoneCallListener phoneCallListener) {
-        if (!initialized) {
-            throw new IllegalStateException("Not initialized");
-        }
-
-        try {
-            serialPort.addEventListener((event) -> {
-                // TODO modem data format
-            });
-        } catch (SerialPortException ex) {
-            log.severe(
-                    String.format("Error adding phone call listener: %s", ex));
-        }
+        listeners.add(phoneCallListener);
     }
 }

@@ -37,7 +37,7 @@ public class DoorOpenMechanism {
     private final static int MAX_CALLS_IN_QUEUE = 10_000;
     private final long lockOpenTime;
     private final LockActuator lockActuator;
-    private final ModemController modemController;
+    private final PhoneCallSensor modemController;
     private final CollectionBasedMemberLookup memberLookup;
     private final Thread thread;
     private final AtomicBoolean running;
@@ -46,7 +46,7 @@ public class DoorOpenMechanism {
     public DoorOpenMechanism(
             long lockOpenTime,
             LockActuator lockActuator,
-            ModemController modemController,
+            PhoneCallSensor modemController,
             CollectionBasedMemberLookup memberLookup
     ) {
         this.lockOpenTime = lockOpenTime;

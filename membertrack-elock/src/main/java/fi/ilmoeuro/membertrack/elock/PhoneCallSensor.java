@@ -16,7 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public interface ModemController {
+public interface PhoneCallSensor {
     void init() throws InitializationException;
     void addPhoneCallListener(PhoneCallListener phoneCallListener);
 }
