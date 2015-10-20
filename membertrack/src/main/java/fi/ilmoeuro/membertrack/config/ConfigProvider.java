@@ -41,7 +41,7 @@ public class ConfigProvider {
             throw new IllegalStateException(CONF_FILE + " not found");
         }
         final @Nullable String configFileLocation
-            = System.getProperty("membertrack.config");
+            = System.getProperty(CONF_PROPERTY);
         final @Nullable File configFile
             = configFileLocation == null ? null : new File(configFileLocation);
         final Config userConfig;

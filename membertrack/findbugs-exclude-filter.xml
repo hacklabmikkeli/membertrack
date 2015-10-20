@@ -2,8 +2,8 @@
 
 <FindBugsFilter>
     <Match>
-        <!-- NP because of Checker Framework -->
+        <!-- RCN,NP because of Checker Framework -->
         <!-- Eq,IC for generated code -->
-        <Bug code="Eq,IC,NP" />
+        <Bug code="RCN,Eq,IC,NP" />
     </Match>
 </FindBugsFilter>

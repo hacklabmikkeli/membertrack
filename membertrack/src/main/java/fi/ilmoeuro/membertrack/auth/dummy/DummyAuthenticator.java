@@ -19,7 +19,7 @@ package fi.ilmoeuro.membertrack.auth.dummy;
 import fi.ilmoeuro.membertrack.auth.Account;
 import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.auth.InvalidAuthenticationException;
-import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
 @Dependent
@@ -31,8 +31,8 @@ public class DummyAuthenticator implements Authenticator {
     }
 
     @Override
-    public Optional<Account> getActiveAccount() {
-        return Optional.empty();
+    public @Nullable Account getActiveAccount() {
+        return null;
     }
 
     @Override

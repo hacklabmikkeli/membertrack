@@ -17,13 +17,14 @@
 package fi.ilmoeuro.membertrack.auth;
 
 import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface Authenticator {
 
     void startSession(String email, String password)
         throws InvalidAuthenticationException;
 
-    Optional<Account> getActiveAccount();
+    @Nullable Account getActiveAccount();
 
     void endSession();
     
