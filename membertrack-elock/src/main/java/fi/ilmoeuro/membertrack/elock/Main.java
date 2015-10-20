@@ -16,8 +16,10 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import java.util.logging.Level;
+import java.util.Arrays;
 import lombok.extern.java.Log;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 @Log
 public class Main {
@@ -27,19 +29,31 @@ public class Main {
     }
 
     public static void main(String... args) {
-        try (PhoneCallSensorImpl sensor = 
-                new PhoneCallSensorImpl("/dev/ttyUSB0")
-        ) {
-            log.info("Booting up...");
-            sensor.addPhoneCallListener(System.out::println);
-            while (true) {
-                Thread.sleep(100);
-            }
+        CommandLineOptions options = new CommandLineOptions();
+        CmdLineParser argParser = new CmdLineParser(options);
+        try {
+            argParser.parseArgument(args);
+        } catch (CmdLineException ex) {
+            System.err.println(ex.getMessage());
+            System.err.println("membertrack-elock [options]");
+            argParser.printUsage(System.err);
+            System.err.println();
+            return;
+        }
+
+        try (LockActuatorImpl lockActuator = 
+                new LockActuatorImpl(options.getPinName());
+             PhoneCallSensorImpl phoneCallSensor =
+                new PhoneCallSensorImpl(options.getSerialDevice())) {
+            DoorOpenMechanism doorOpenMechanism =
+                new DoorOpenMechanism(
+                        options.getOpenDelay(),
+                        lockActuator,
+                        phoneCallSensor,
+                        new CollectionBasedMemberLookup(
+                                Arrays.asList(/* phone numbers here */)));
         } catch (Exception ex) {
-            log.log(
-                    Level.SEVERE,
-                    "Failed",
-                    ex);
+            System.err.println("membertrack-elock: " + ex.getMessage());
         }
     }
 }

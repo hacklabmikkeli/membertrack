@@ -16,60 +16,37 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import com.pi4j.wiringpi.Gpio;
-import com.pi4j.wiringpi.SoftPwm;
-import lombok.Getter;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 
 public class LockActuatorImpl implements LockActuator, AutoCloseable {
 
-    private static final int OPEN_PWM_VALUE = 8;
-    private static final int CLOSED_PWM_VALUE = 0;
-    private static final int MIN_PWM_VALUE = 0;
-    private static final int MAX_PWM_VALUE = 10;
+    private final GpioController gpioController;
+    private final GpioPinDigitalOutput outputPin;
 
-    @Getter
-    private boolean lockOpen = false;
-    private final int softPwmPinNumber;
-
-    public LockActuatorImpl(int softPwmPinNumber) throws InitializationException {
-        this.softPwmPinNumber = softPwmPinNumber;
-
-        int errno = Gpio.wiringPiSetup();
-        if (errno > 0) {
-            // TODO exception
-            throw new InitializationException(
-                    String.format("Error during wiringPi setup: %d", errno)
-            );
-        }
-        errno = SoftPwm.softPwmCreate(
-                softPwmPinNumber,
-                MIN_PWM_VALUE,
-                MAX_PWM_VALUE);
-        if (errno > 0) {
-            // TODO exception
-            throw new InitializationException(
-                    String.format("Error during soft pwm create: %d", errno)
-            );
-        }
+    public LockActuatorImpl(String pinName) throws InitializationException {
+        gpioController = GpioFactory.getInstance();
+        outputPin = gpioController.provisionDigitalOutputPin(
+                RaspiPin.getPinByName(pinName)
+        );
+        outputPin.setShutdownOptions(false);
     }
 
     @Override
     public void setLockOpen(boolean lockOpen) {
-        if (lockOpen == this.lockOpen) {
-            return;
-        }
+        outputPin.setState(lockOpen);
+    }
 
-        if (lockOpen) {
-            SoftPwm.softPwmWrite(softPwmPinNumber, OPEN_PWM_VALUE);
-        } else {
-            SoftPwm.softPwmWrite(softPwmPinNumber, CLOSED_PWM_VALUE);
-        }
-
-        this.lockOpen = lockOpen;
+    @Override
+    public boolean isLockOpen() {
+        return outputPin.getState() == PinState.HIGH;
     }
 
     @Override
     public void close() throws Exception {
-        // nothing yet
+        gpioController.shutdown();
     }
 }

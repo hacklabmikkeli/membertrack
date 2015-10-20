@@ -33,8 +33,8 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
     private static final int DATA_BITS = SerialPort.DATABITS_8;
     private static final int STOP_BITS = SerialPort.STOPBITS_1;
     private static final int PARITY = SerialPort.PARITY_NONE;
-    private static final Pattern CALL_PATTERN =
-            Pattern.compile("^\\+CLIP: \"\\+(\\d+)\"");
+    private static final String CALL_PATTERN = "+CLIP: \"";
+    private static final int CALL_PATTERN_LENGTH = CALL_PATTERN.length();
 
     private final SerialPort serialPort;
     private final ArrayList<PhoneCallListener> listeners;
@@ -67,20 +67,12 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
                         .split("\r\n");
                 for (String rawInput : inputs) {
                     final String input = rawInput.trim();
-
-                    if ("".equals(input)) {
-                        continue;
-                    }
-
-                    log.info(input);
-                    final Matcher matcher = CALL_PATTERN.matcher(input);
-                    if (matcher.matches()) {
-                        final @Nullable String group = matcher.group(1);
-                        if (group == null) {
-                            continue;
-                        }
+                    if (input.startsWith(CALL_PATTERN)) {
+                        final String number = input .substring(
+                            CALL_PATTERN_LENGTH,
+                            input.indexOf("\"", CALL_PATTERN_LENGTH));
                         for (PhoneCallListener listener : listeners) {
-                            listener.onCall(group);
+                            listener.onCall(number);
                         }
                     }
                 }
