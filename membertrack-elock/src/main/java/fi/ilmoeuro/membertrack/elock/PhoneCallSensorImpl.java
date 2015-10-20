@@ -34,11 +34,12 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
     private static final int STOP_BITS = SerialPort.STOPBITS_1;
     private static final int PARITY = SerialPort.PARITY_NONE;
     private static final Pattern CALL_PATTERN =
-            Pattern.compile("^+CLIP: \"+(\\d+)\"");
+            Pattern.compile("^\\+CLIP: \"\\+(\\d+)\"");
 
     private final SerialPort serialPort;
     private final ArrayList<PhoneCallListener> listeners;
 
+    @SuppressWarnings("methodref.receiver.bound.invalid")
     public PhoneCallSensorImpl(String serialPortName) throws InitializationException {
         serialPort = new SerialPort(serialPortName);
         listeners = new ArrayList<>();
@@ -51,46 +52,36 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
                     STOP_BITS,
                     PARITY);
             serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
-            serialPort.writeString("AT+CLIP=1");
-        } catch (SerialPortException ex) {
-            throw new InitializationException("Unable to initialize modem", ex);
-        }
-    }
-    
-    @Override
-    public void start() throws PhoneCallSensorException {
-        try {
+            serialPort.writeString("AT+CLIP=1\r\n");
             serialPort.addEventListener(this::serialEventListener);
         } catch (SerialPortException ex) {
-            throw new PhoneCallSensorException(
-                    "Phone call sensor start failed",
-                    ex);
-        }
-    }
-
-    @Override
-    public void stop() throws PhoneCallSensorException {
-        try {
-            serialPort.removeEventListener();
-        } catch (SerialPortException ex) {
-            throw new PhoneCallSensorException(
-                    "Phone call sensor stop failed",
-                    ex);
+            throw new InitializationException("Unable to initialize modem", ex);
         }
     }
 
     private void serialEventListener(SerialPortEvent event) {
         try {
             if (event.getEventType() == SerialPortEvent.RXCHAR) {
-                String input = serialPort.readString(event.getEventValue());
-                Matcher matcher = CALL_PATTERN.matcher(input);
-                if (matcher.matches()) {
-                    @Nullable String group = matcher.group(1);
-                    if (group == null) {
-                        return;
+                String[] inputs = serialPort
+                        .readString(event.getEventValue())
+                        .split("\r\n");
+                for (String rawInput : inputs) {
+                    final String input = rawInput.trim();
+
+                    if ("".equals(input)) {
+                        continue;
                     }
-                    for (PhoneCallListener listener : listeners) {
-                        listener.onCall(group);
+
+                    log.info(input);
+                    final Matcher matcher = CALL_PATTERN.matcher(input);
+                    if (matcher.matches()) {
+                        final @Nullable String group = matcher.group(1);
+                        if (group == null) {
+                            continue;
+                        }
+                        for (PhoneCallListener listener : listeners) {
+                            listener.onCall(group);
+                        }
                     }
                 }
             }

@@ -16,13 +16,30 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
+import java.util.logging.Level;
+import lombok.extern.java.Log;
+
+@Log
 public class Main {
 
     private Main() {
         // not meant to be instantiated
     }
 
-    @SuppressWarnings("SleepWhileHoldingLock")
     public static void main(String... args) {
+        try (PhoneCallSensorImpl sensor = 
+                new PhoneCallSensorImpl("/dev/ttyUSB0")
+        ) {
+            log.info("Booting up...");
+            sensor.addPhoneCallListener(System.out::println);
+            while (true) {
+                Thread.sleep(100);
+            }
+        } catch (Exception ex) {
+            log.log(
+                    Level.SEVERE,
+                    "Failed",
+                    ex);
+        }
     }
 }

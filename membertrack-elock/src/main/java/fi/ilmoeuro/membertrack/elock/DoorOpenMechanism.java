@@ -67,14 +67,6 @@ public class DoorOpenMechanism {
     public void start() {
         log.info("Lock mechanism starting");
         thread.start();
-        try {
-            phoneCallSensor.start();
-        } catch (PhoneCallSensorException ex) {
-            log.log(
-                    Level.SEVERE,
-                    "Couldn't start phone call sensor",
-                    ex);
-        }
     }
 
     @SuppressWarnings("SleepWhileInLoop")
@@ -104,14 +96,6 @@ public class DoorOpenMechanism {
 
     public synchronized void stop() {
         log.info("Lock mechanism stopping");
-        try {
-            phoneCallSensor.stop();
-        } catch (PhoneCallSensorException ex) {
-            log.log(
-                    Level.SEVERE,
-                    "Couldn't stop phone call sensor",
-                    ex);
-        }
         running.set(false);
         thread.interrupt();
         try {
