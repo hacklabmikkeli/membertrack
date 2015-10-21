@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Arrays;
 import lombok.extern.java.Log;
 import org.kohsuke.args4j.CmdLineException;
@@ -28,6 +29,16 @@ public final class Main {
         // not meant to be instantiated
     }
 
+    @SuppressFBWarnings("UW_UNCOND_WAIT")
+    private static void waitForever() throws InterruptedException {
+        final Object lock = new Object();
+        synchronized(lock) {
+            for (;;) {
+                lock.wait();
+            }
+        }
+    }
+
     public static void main(String... args) {
         CommandLineOptions options = new CommandLineOptions();
         CmdLineParser argParser = new CmdLineParser(options);
@@ -35,7 +46,7 @@ public final class Main {
             argParser.parseArgument(args);
         } catch (CmdLineException ex) {
             System.err.println(ex.getMessage());
-            System.err.println("membertrack-elock [options]");
+            System.err.println("Usage: membertrack-elock [options]");
             argParser.printUsage(System.err);
             System.err.println();
             return;
@@ -47,11 +58,20 @@ public final class Main {
                 new PhoneCallSensorImpl(options.getSerialDevice())) {
             DoorOpenMechanism doorOpenMechanism =
                 new DoorOpenMechanism(
-                        options.getOpenDelay(),
+                        options.getOpenTime(),
+                        options.getCloseTime(),
                         lockActuator,
                         phoneCallSensor,
                         new CollectionBasedMemberLookup(
                                 Arrays.asList(/* phone numbers here */)));
+
+            try {
+                doorOpenMechanism.start();
+                waitForever();
+            } catch (InterruptedException ex) {
+            } finally {
+                doorOpenMechanism.stop();
+            }
         } catch (Exception ex) {
             System.err.println("membertrack-elock: " + ex.getMessage());
         }

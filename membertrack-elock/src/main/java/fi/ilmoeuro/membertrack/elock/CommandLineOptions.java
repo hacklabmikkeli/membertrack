@@ -26,13 +26,25 @@ import org.kohsuke.args4j.Option;
 @AllArgsConstructor
 public final class CommandLineOptions {
 
-    @Option(name = "-D", usage = "Modem serial device", metaVar = "DEV")
+    @Option(
+            name = "-D",
+            usage = "Modem serial device",
+            metaVar = "<dev>")
     private String serialDevice = "/dev/ttyUSB0";
 
-    @Option(name = "-P", usage = "Lock pin name (pi4j)", metaVar = "PIN")
+    @Option(name = "-P",
+            usage = "Lock pin name (pi4j)",
+            metaVar = "<pin>")
     private String pinName = "GPIO_01";
 
-    @Option(name = "-t", usage = "Lock open delay (in ms)", metaVar = "MS")
-    private long openDelay = 3_000;
+    @Option(name = "-o",
+            usage = "Lock open time (in ms)",
+            metaVar = "<ms>")
+    private long openTime = 3_000;
+    
+    @Option(name = "-c",
+            usage = "Lock close minimum time (in ms)",
+            metaVar = "<ms>")
+    private long closeTime = 3_000;
     
 }

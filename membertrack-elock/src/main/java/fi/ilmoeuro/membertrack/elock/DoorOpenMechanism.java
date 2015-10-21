@@ -33,6 +33,7 @@ public final class DoorOpenMechanism {
 
     private final static int MAX_CALLS_IN_QUEUE = 10_000;
     private final long lockOpenTime;
+    private final long lockClosedTime;
     private final LockActuator lockActuator;
     private final PhoneCallSensor phoneCallSensor;
     private final CollectionBasedMemberLookup memberLookup;
@@ -43,11 +44,13 @@ public final class DoorOpenMechanism {
     @SuppressWarnings("methodref.receiver.bound.invalid")
     public DoorOpenMechanism(
             long lockOpenTime,
+            long lockClosedTime,
             LockActuator lockActuator,
             PhoneCallSensor phoneCallSensor,
             CollectionBasedMemberLookup memberLookup
     ) throws InitializationException {
         this.lockOpenTime = lockOpenTime;
+        this.lockClosedTime = lockClosedTime;
         this.lockActuator = lockActuator;
         this.phoneCallSensor = phoneCallSensor;
         this.memberLookup = memberLookup;
@@ -81,6 +84,8 @@ public final class DoorOpenMechanism {
                 if (memberLookup.isAuthorizedMember(event.getPhoneNumber())) {
                     lockActuator.setLockOpen(true);
                     Thread.sleep(lockOpenTime);
+                    lockActuator.setLockOpen(false);
+                    Thread.sleep(lockClosedTime);
                 }
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
