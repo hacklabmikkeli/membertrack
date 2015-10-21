@@ -18,13 +18,10 @@ package fi.ilmoeuro.membertrack.elock;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import lombok.extern.java.Log;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Log
 public final class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {

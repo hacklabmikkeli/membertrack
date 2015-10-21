@@ -18,9 +18,10 @@ package fi.ilmoeuro.membertrack.data;
 
 import java.util.function.Function;
 import lombok.Value;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Value
-public final class Entity<T> {
+public final class Entity<T extends @NonNull Object> {
     private final T value;
     private final int id;
 
