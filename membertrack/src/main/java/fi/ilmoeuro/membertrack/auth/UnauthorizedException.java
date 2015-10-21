@@ -16,6 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.auth;
 
-public class UnauthorizedException extends Exception {
+public final class UnauthorizedException extends Exception {
     
 }

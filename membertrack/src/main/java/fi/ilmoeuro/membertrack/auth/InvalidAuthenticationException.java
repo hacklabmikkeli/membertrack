@@ -16,6 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.auth;
 
-public class InvalidAuthenticationException extends Exception {
+public final class InvalidAuthenticationException extends Exception {
     
 }

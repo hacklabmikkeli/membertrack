@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.jooq.DSLContext;
 
 @Dependent
-public class Organizations {
+public final class Organizations {
 
     private final DSLContext jooq;
 

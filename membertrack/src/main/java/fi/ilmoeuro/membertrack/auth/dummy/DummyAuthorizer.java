@@ -22,7 +22,7 @@ import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
 import javax.enterprise.context.Dependent;
 
 @Dependent
-public class DummyAuthorizer implements Authorizer {
+public final class DummyAuthorizer implements Authorizer {
 
     @Override
     public boolean isAuthorized(Permission permission) {

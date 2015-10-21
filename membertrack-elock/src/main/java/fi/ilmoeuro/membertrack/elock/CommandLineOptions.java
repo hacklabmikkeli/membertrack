@@ -24,7 +24,7 @@ import org.kohsuke.args4j.Option;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommandLineOptions {
+public final class CommandLineOptions {
 
     @Option(name = "-D", usage = "Modem serial device", metaVar = "DEV")
     private String serialDevice = "/dev/ttyUSB0";

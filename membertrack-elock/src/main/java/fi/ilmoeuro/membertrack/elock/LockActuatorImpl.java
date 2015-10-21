@@ -22,7 +22,7 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
-public class LockActuatorImpl implements LockActuator, AutoCloseable {
+public final class LockActuatorImpl implements LockActuator, AutoCloseable {
 
     private final GpioController gpioController;
     private final GpioPinDigitalOutput outputPin;

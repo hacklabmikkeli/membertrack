@@ -27,7 +27,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Singleton
-public class ConfigProvider {
+public final class ConfigProvider {
 
     private static final String CONF_FILE = "membertrack.conf";
     private static final String CONF_PROPERTY = "membertrack.config";

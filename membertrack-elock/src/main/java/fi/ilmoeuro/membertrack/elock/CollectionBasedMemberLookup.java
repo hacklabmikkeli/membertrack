@@ -23,7 +23,7 @@ import lombok.Value;
 @SuppressFBWarnings(
     value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
     justification = "Auto-generated checks")
-public @Value class CollectionBasedMemberLookup implements MemberLookup {
+public final @Value class CollectionBasedMemberLookup implements MemberLookup {
 
     private final Collection<String> backingCollection;
 

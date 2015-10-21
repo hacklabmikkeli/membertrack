@@ -18,7 +18,7 @@ package fi.ilmoeuro.membertrack.auth;
 
 import lombok.Value;
 
-public @Value class Account {
+public final @Value class Account {
 
     private final String email;
     

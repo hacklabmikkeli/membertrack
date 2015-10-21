@@ -24,7 +24,7 @@ import org.glassfish.jersey.linking.InjectLink;
 
 @Getter
 @NoArgsConstructor
-public class Paths {
+public final class Paths {
 
     @InjectLink(resource = OrganizationsUI.class)
     private @Nullable String organizations;

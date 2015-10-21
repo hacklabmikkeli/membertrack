@@ -20,7 +20,7 @@ import java.util.function.Function;
 import lombok.Value;
 
 @Value
-public class Entity<T> {
+public final class Entity<T> {
     private final T value;
     private final int id;
 

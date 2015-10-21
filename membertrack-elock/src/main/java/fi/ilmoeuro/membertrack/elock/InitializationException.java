@@ -16,7 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public class InitializationException extends Exception {
+public final class InitializationException extends Exception {
 
     public InitializationException(String message) {
         super(message);

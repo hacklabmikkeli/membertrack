@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import org.jooq.Converter;
 
-public class JooqDateConverter implements Converter<Timestamp, Instant> {
+public final class JooqDateConverter implements Converter<Timestamp, Instant> {
 
     public static final long serialVersionUID = 0l;
 

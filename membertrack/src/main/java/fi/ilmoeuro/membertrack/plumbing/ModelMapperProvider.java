@@ -23,7 +23,7 @@ import org.modelmapper.convention.NameTokenizers;
 import org.modelmapper.jooq.RecordValueReader;
 
 @ApplicationScoped
-public class ModelMapperProvider {
+public final class ModelMapperProvider {
     private final ModelMapper modelMapper;
 
     public ModelMapperProvider() {

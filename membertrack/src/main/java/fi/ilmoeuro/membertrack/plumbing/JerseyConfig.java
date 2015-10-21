@@ -23,7 +23,7 @@ import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 
 @ApplicationPath("/app")
-public class JerseyConfig extends ResourceConfig {
+public final class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         super();
         super.register(MvcFeature.class);

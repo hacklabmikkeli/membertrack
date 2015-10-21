@@ -22,7 +22,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
 @Log
-public class Main {
+public final class Main {
 
     private Main() {
         // not meant to be instantiated

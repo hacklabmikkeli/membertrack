@@ -16,7 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-public class PhoneCallSensorException extends Exception {
+public final class PhoneCallSensorException extends Exception {
     public PhoneCallSensorException(String msg, Throwable cause) {
         super(msg, cause);
     }

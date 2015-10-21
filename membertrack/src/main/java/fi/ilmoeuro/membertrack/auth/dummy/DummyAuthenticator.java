@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
 @Dependent
-public class DummyAuthenticator implements Authenticator {
+public final class DummyAuthenticator implements Authenticator {
 
     @Override
     public void startSession(String email, String password) throws InvalidAuthenticationException {

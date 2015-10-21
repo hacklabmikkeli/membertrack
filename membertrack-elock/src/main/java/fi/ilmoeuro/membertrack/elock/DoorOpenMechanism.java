@@ -25,7 +25,7 @@ import lombok.Value;
 import lombok.extern.java.Log;
 
 @Log
-public class DoorOpenMechanism {
+public final class DoorOpenMechanism {
 
     private static final @Value class PhoneCallEvent {
         private final String phoneNumber;

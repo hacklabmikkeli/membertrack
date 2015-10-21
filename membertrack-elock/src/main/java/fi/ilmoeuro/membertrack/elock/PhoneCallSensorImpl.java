@@ -27,7 +27,7 @@ import lombok.extern.java.Log;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Log
-public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
+public final class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
 
     private static final int BAUD_RATE = SerialPort.BAUDRATE_115200;
     private static final int DATA_BITS = SerialPort.DATABITS_8;
@@ -68,7 +68,7 @@ public class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
                 for (String rawInput : inputs) {
                     final String input = rawInput.trim();
                     if (input.startsWith(CALL_PATTERN)) {
-                        final String number = input .substring(
+                        final String number = input.substring(
                             CALL_PATTERN_LENGTH,
                             input.indexOf("\"", CALL_PATTERN_LENGTH));
                         for (PhoneCallListener listener : listeners) {

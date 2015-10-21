@@ -40,7 +40,7 @@ import org.jooq.exception.DataAccessException;
 @Log
 public class DatabaseInitializer {
 
-    public static @Data class Config {
+    public static final @Data class Config {
         private List<String> setupFiles = Arrays.asList();
         private List<String> clearFiles = Arrays.asList();
         private boolean enabled;

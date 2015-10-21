@@ -18,6 +18,6 @@ package fi.ilmoeuro.membertrack.organization;
 
 import lombok.Value;
 
-public @Value class Organization {
+public final @Value class Organization {
     private final String name;
 }

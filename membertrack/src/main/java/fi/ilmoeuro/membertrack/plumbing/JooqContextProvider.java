@@ -33,7 +33,7 @@ import lombok.Data;
 @RequiredArgsConstructor
 public class JooqContextProvider {
 
-    public static @Data class Config {
+    public static final @Data class Config {
         private String sqlDialect = "";
     }
     
