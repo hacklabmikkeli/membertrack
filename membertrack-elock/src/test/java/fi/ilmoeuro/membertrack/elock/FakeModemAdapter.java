@@ -16,12 +16,11 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class FakeModemAdapter implements ModemAdapter {
-    @Setter(onMethod = @__({@Override))
+    @Setter(onMethod = @__({@Override}))
     private @Nullable ModemMessageListener messageListener;
 
     public void sendMessage(String message) {

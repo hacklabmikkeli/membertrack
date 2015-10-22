@@ -17,12 +17,17 @@
 package fi.ilmoeuro.membertrack.elock;
 
 import java.time.Duration;
+import java.util.logging.Level;
+import lombok.extern.java.Log;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+@Log
 public final class Main {
 
     private static final Duration CLIP_TTL = Duration.ofSeconds(10);
+    private final static long MAX_LOCK_OPEN_TIME = 10_000;
+    private final static long MIN_LOCK_CLOSED_TIME = 2_000;
 
     private Main() {
         // not meant to be instantiated
@@ -52,6 +57,16 @@ public final class Main {
                     temporalFilter
                 )
         ) {
+            if (options.getOpenTime() > MAX_LOCK_OPEN_TIME) {
+                throw new InitializationException(
+                    "Too long lock open time; it may harm the lock"
+                );
+            }
+            if (options.getCloseTime() < MIN_LOCK_CLOSED_TIME) {
+                throw new InitializationException(
+                    "Too short lock closed time; it may harm the lock"
+                );
+            }
             DoorOpenMechanism doorOpenMechanism =
                 new DoorOpenMechanism(
                     options.getOpenTime(),
@@ -65,8 +80,13 @@ public final class Main {
             } finally {
                 doorOpenMechanism.stop();
             }
+        } catch (InitializationException ex) {
+            System.err.printf("membertrack-elock: %s\n", ex.getMessage());
         } catch (Exception ex) {
-            System.err.println("membertrack-elock: " + ex.getMessage());
+            log.log(
+                Level.SEVERE,
+                "membertrack-elock error",
+                ex);
         }
     }
 }

@@ -19,6 +19,7 @@ package fi.ilmoeuro.membertrack.elock;
 import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -32,8 +33,9 @@ public class PhoneCallSensorImplNGTest {
 
     @Test
     public void testCorrectCall()
-        throws InitializationException
+        throws InitializationException, InterruptedException
     {
+        final long timeoutMs = 1000;
         final String phoneNumber = "+123456789";
         final BlockingQueue<String> phoneCalls =
             new ArrayBlockingQueue<>(1);
@@ -47,6 +49,33 @@ public class PhoneCallSensorImplNGTest {
 
         modemAdapter.sendMessage("+CLIP: \"" + phoneNumber + "\"");
 
-        assertEquals(phoneCalls.poll(), phoneNumber);
+        assertEquals(
+            phoneCalls.poll(timeoutMs, TimeUnit.MILLISECONDS),
+            phoneNumber,
+            "decoded phone number"
+        );
+    }
+
+    @Test
+    public void testIncorrectCall()
+        throws InitializationException, InterruptedException
+    {
+        final long waitTimeMs = 50;
+        final String phoneNumber = "+123456789";
+        final BlockingQueue<String> phoneCalls =
+            new ArrayBlockingQueue<>(1);
+        final FakeModemAdapter modemAdapter =
+            new FakeModemAdapter();
+        final TemporalFilter<String> temporalFilter =
+            new TemporalFilter<>(CLIP_TTL);
+        final PhoneCallSensorImpl phoneCallSensor =
+            new PhoneCallSensorImpl(modemAdapter, temporalFilter);
+        phoneCallSensor.addPhoneCallListener(phoneCalls::add);
+
+        modemAdapter.sendMessage("+CIP \"" + phoneNumber + "\"");
+
+        Thread.sleep(waitTimeMs);
+
+        assertTrue(phoneCalls.isEmpty(), "no decoded phone numbers");
     }
 }
