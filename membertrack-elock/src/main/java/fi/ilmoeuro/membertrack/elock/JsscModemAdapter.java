@@ -39,6 +39,7 @@ public class JsscModemAdapter implements ModemAdapter, AutoCloseable {
     ) throws InitializationException {
         this.serialPort = new SerialPort(serialPortName);
         this.listener = null;
+        log.info("Initializing serial port");
 
         try {
             serialPort.openPort();
@@ -50,6 +51,7 @@ public class JsscModemAdapter implements ModemAdapter, AutoCloseable {
             serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
             serialPort.writeString("AT+CLIP=1\r\n");
             serialPort.addEventListener(this::serialEventListener);
+            log.info("Serial port initialized");
         } catch (SerialPortException ex) {
             throw new InitializationException("Unable to initialize modem", ex);
         }

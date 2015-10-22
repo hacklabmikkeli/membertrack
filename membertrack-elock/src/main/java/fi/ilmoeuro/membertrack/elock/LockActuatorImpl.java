@@ -21,18 +21,24 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import lombok.extern.java.Log;
 
+@Log
 public final class LockActuatorImpl implements LockActuator, AutoCloseable {
 
     private final GpioController gpioController;
     private final GpioPinDigitalOutput outputPin;
 
-    public LockActuatorImpl(String pinName) throws InitializationException {
+    public LockActuatorImpl(int pinNumber) throws InitializationException {
+        if (pinNumber < 0 || pinNumber > 29) {
+            throw new InitializationException("Invalid pin number");
+        }
+        log.info("Initializing GPIO");
         gpioController = GpioFactory.getInstance();
         outputPin = gpioController.provisionDigitalOutputPin(
-                RaspiPin.getPinByName(pinName)
+                RaspiPin.getPinByName("GPIO " + pinNumber)
         );
-        outputPin.setShutdownOptions(false);
+        log.info("GPIO initialized");
     }
 
     @Override
@@ -47,6 +53,6 @@ public final class LockActuatorImpl implements LockActuator, AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        gpioController.shutdown();
+        outputPin.setState(false);
     }
 }

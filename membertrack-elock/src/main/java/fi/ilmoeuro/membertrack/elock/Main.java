@@ -16,9 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.time.Duration;
-import java.util.Arrays;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
@@ -28,16 +26,6 @@ public final class Main {
 
     private Main() {
         // not meant to be instantiated
-    }
-
-    @SuppressFBWarnings("UW_UNCOND_WAIT")
-    private static void waitForever() throws InterruptedException {
-        final Object lock = new Object();
-        synchronized(lock) {
-            for (;;) {
-                lock.wait();
-            }
-        }
     }
 
     public static void main(String... args) {
@@ -55,7 +43,7 @@ public final class Main {
 
         TemporalFilter temporalFilter = new TemporalFilter(CLIP_TTL);
         try (LockActuatorImpl lockActuator = 
-                new LockActuatorImpl(options.getPinName());
+                new LockActuatorImpl(options.getPinNumber());
              JsscModemAdapter modemAdapter =
                 new JsscModemAdapter(options.getSerialDevice());
              PhoneCallSensorImpl phoneCallSensor =
@@ -66,17 +54,14 @@ public final class Main {
         ) {
             DoorOpenMechanism doorOpenMechanism =
                 new DoorOpenMechanism(
-                        options.getOpenTime(),
-                        options.getCloseTime(),
-                        lockActuator,
-                        phoneCallSensor,
-                        new CollectionBasedMemberLookup(
-                                Arrays.asList(/* phone numbers here */)));
-
+                    options.getOpenTime(),
+                    options.getCloseTime(),
+                    lockActuator,
+                    phoneCallSensor,
+                    new AllowEveryoneMemberLookup());
             try {
                 doorOpenMechanism.start();
-                waitForever();
-            } catch (InterruptedException ex) {
+                System.in.read();
             } finally {
                 doorOpenMechanism.stop();
             }

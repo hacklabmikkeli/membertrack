@@ -33,9 +33,9 @@ public final class CommandLineOptions {
     private String serialDevice = "/dev/ttyUSB0";
 
     @Option(name = "-P",
-            usage = "Lock pin name (pi4j)",
+            usage = "Lock pin number (0-29)",
             metaVar = "<pin>")
-    private String pinName = "GPIO_01";
+    private int pinNumber = 0;
 
     @Option(name = "-o",
             usage = "Lock open time (in ms)",
