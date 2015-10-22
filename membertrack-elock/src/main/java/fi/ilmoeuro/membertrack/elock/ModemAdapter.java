@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,11 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@ParametersAreNonnullByDefault
-@MethodsAreNonnullByDefault
-@FieldsAreNonnullByDefault
 package fi.ilmoeuro.membertrack.elock;
 
-import fi.ilmoeuro.membertrack.elock.plumbing.MethodsAreNonnullByDefault;
-import fi.ilmoeuro.membertrack.elock.plumbing.FieldsAreNonnullByDefault;
-import javax.annotation.ParametersAreNonnullByDefault;
+public interface ModemAdapter {
+    public void setMessageListener(ModemMessageListener messageListener);
+}

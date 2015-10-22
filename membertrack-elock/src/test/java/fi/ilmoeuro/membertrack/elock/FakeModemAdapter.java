@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,9 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@ParametersAreNonnullByDefault
-@MethodsAreNonnullByDefault
-@FieldsAreNonnullByDefault
-package fi.ilmoeuro.membertrack.elock.plumbing;
+package fi.ilmoeuro.membertrack.elock;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+import lombok.Setter;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+public class FakeModemAdapter implements ModemAdapter {
+    @Setter(onMethod = @__({@Override))
+    private @Nullable ModemMessageListener messageListener;
+
+    public void sendMessage(String message) {
+        if (messageListener != null) {
+            messageListener.onMessage(message);
+        }
+    }
+}

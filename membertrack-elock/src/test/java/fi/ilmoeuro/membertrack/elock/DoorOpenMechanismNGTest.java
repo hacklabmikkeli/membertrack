@@ -27,9 +27,9 @@ public class DoorOpenMechanismNGTest {
         throws InitializationException, InterruptedException 
     {
         final String number = "+123456789";
-        final long openTime = 20;
-        final long closedTime = 20;
-        final long timeMargin = 5;
+        final long openTime = 50;
+        final long closedTime = 50;
+        final long timeMargin = 10;
         final FakeLockActuator lockActuator =
             new FakeLockActuator();
         final FakePhoneCallSensor phoneCallSensor =
@@ -54,6 +54,7 @@ public class DoorOpenMechanismNGTest {
         assertTrue(lockActuator.isLockOpen(), "lock open after call");
         Thread.sleep(openTime + timeMargin);
         assertFalse(lockActuator.isLockOpen(), "lock closed after waiting");
+        mechanism.stop();
     }
 
     @Test
@@ -89,5 +90,6 @@ public class DoorOpenMechanismNGTest {
         assertFalse(lockActuator.isLockOpen(), "lock closed after call");
         Thread.sleep(openTime + timeMargin);
         assertFalse(lockActuator.isLockOpen(), "lock closed after waiting");
+        mechanism.stop();
     }
 }

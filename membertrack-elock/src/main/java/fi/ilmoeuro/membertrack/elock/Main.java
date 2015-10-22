@@ -56,9 +56,13 @@ public final class Main {
         TemporalFilter temporalFilter = new TemporalFilter(CLIP_TTL);
         try (LockActuatorImpl lockActuator = 
                 new LockActuatorImpl(options.getPinName());
+             JsscModemAdapter modemAdapter =
+                new JsscModemAdapter(options.getSerialDevice());
              PhoneCallSensorImpl phoneCallSensor =
-                new PhoneCallSensorImpl(options.getSerialDevice(),
-                    temporalFilter)
+                new PhoneCallSensorImpl(
+                    modemAdapter,
+                    temporalFilter
+                )
         ) {
             DoorOpenMechanism doorOpenMechanism =
                 new DoorOpenMechanism(

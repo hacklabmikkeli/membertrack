@@ -17,76 +17,40 @@
 package fi.ilmoeuro.membertrack.elock;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortException;
 import lombok.extern.java.Log;
 
 @Log
 public final class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable {
 
-    private static final int BAUD_RATE = SerialPort.BAUDRATE_115200;
-    private static final int DATA_BITS = SerialPort.DATABITS_8;
-    private static final int STOP_BITS = SerialPort.STOPBITS_1;
-    private static final int PARITY = SerialPort.PARITY_NONE;
     private static final String CALL_PATTERN = "+CLIP: \"";
     private static final int CALL_PATTERN_LENGTH = CALL_PATTERN.length();
 
-    private final SerialPort serialPort;
     private final ArrayList<PhoneCallListener> listeners;
     private final TemporalFilter<String> temporalFilter;
+    private final ModemAdapter modemAdapter;
 
     @SuppressWarnings("methodref.receiver.bound.invalid")
     public PhoneCallSensorImpl(
-            String serialPortName,
-            TemporalFilter<String> temporalFilter
+        ModemAdapter modemAdapter,
+        TemporalFilter<String> temporalFilter
     ) throws InitializationException {
         this.temporalFilter = temporalFilter;
-        this.serialPort = new SerialPort(serialPortName);
         this.listeners = new ArrayList<>();
-
-        try {
-            serialPort.openPort();
-            serialPort.setParams(
-                    BAUD_RATE,
-                    DATA_BITS,
-                    STOP_BITS,
-                    PARITY);
-            serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
-            serialPort.writeString("AT+CLIP=1\r\n");
-            serialPort.addEventListener(this::serialEventListener);
-        } catch (SerialPortException ex) {
-            throw new InitializationException("Unable to initialize modem", ex);
-        }
+        this.modemAdapter = modemAdapter;
+        modemAdapter.setMessageListener(this::onMessage);
     }
 
-    private void serialEventListener(SerialPortEvent event) {
-        try {
-            if (event.getEventType() == SerialPortEvent.RXCHAR) {
-                String[] inputs = serialPort
-                        .readString(event.getEventValue())
-                        .split("\r\n");
-                for (String rawInput : inputs) {
-                    final String input = rawInput.trim();
-                    if (input.startsWith(CALL_PATTERN)) {
-                        final String number = input.substring(
-                            CALL_PATTERN_LENGTH,
-                            input.indexOf("\"", CALL_PATTERN_LENGTH));
-                        if (!temporalFilter.accessAndCheckIfAlive(number)) {
-                            for (PhoneCallListener listener : listeners) {
-                                listener.onCall(number);
-                            }
-                        }
-                    }
+    private void onMessage(String rawInput) {
+        final String input = rawInput.trim();
+        if (input.startsWith(CALL_PATTERN)) {
+            final String number = input.substring(
+                CALL_PATTERN_LENGTH,
+                input.indexOf("\"", CALL_PATTERN_LENGTH));
+            if (!temporalFilter.accessAndCheckIfAlive(number)) {
+                for (PhoneCallListener listener : listeners) {
+                    listener.onCall(number);
                 }
             }
-        } catch (SerialPortException ex) {
-            log.log(
-                Level.SEVERE,
-                "Listening to serial port event failed",
-                ex
-            );
         }
     }
 
@@ -98,7 +62,6 @@ public final class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable
     @Override
     public void close() throws Exception {
         listeners.clear();
-        serialPort.removeEventListener();
-        serialPort.closePort();
+        modemAdapter.setMessageListener(null);
     }
 }
