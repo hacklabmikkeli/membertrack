@@ -35,11 +35,16 @@ public final class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable
 
     private final SerialPort serialPort;
     private final ArrayList<PhoneCallListener> listeners;
+    private final TemporalFilter<String> temporalFilter;
 
     @SuppressWarnings("methodref.receiver.bound.invalid")
-    public PhoneCallSensorImpl(String serialPortName) throws InitializationException {
-        serialPort = new SerialPort(serialPortName);
-        listeners = new ArrayList<>();
+    public PhoneCallSensorImpl(
+            String serialPortName,
+            TemporalFilter<String> temporalFilter
+    ) throws InitializationException {
+        this.temporalFilter = temporalFilter;
+        this.serialPort = new SerialPort(serialPortName);
+        this.listeners = new ArrayList<>();
 
         try {
             serialPort.openPort();
@@ -68,8 +73,10 @@ public final class PhoneCallSensorImpl implements PhoneCallSensor, AutoCloseable
                         final String number = input.substring(
                             CALL_PATTERN_LENGTH,
                             input.indexOf("\"", CALL_PATTERN_LENGTH));
-                        for (PhoneCallListener listener : listeners) {
-                            listener.onCall(number);
+                        if (!temporalFilter.accessAndCheckIfAlive(number)) {
+                            for (PhoneCallListener listener : listeners) {
+                                listener.onCall(number);
+                            }
                         }
                     }
                 }

@@ -16,22 +16,11 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Collection;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
-@RequiredArgsConstructor
-@EqualsAndHashCode
-public final class CollectionBasedMemberLookup implements MemberLookup {
-
-    private final Collection<String> backingCollection;
-
-    @Override
-    public boolean isAuthorizedMember(String phoneNumber) {
-        return backingCollection.contains(phoneNumber);
-    }
+public class FakeLockActuator implements LockActuator {
+    @Getter(onMethod = @__({@Override}))
+    @Setter(onMethod = @__({@Override}))
+    private boolean lockOpen;
 }

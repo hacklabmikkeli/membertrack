@@ -16,22 +16,20 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Collection;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
-@RequiredArgsConstructor
-@EqualsAndHashCode
-public final class CollectionBasedMemberLookup implements MemberLookup {
-
-    private final Collection<String> backingCollection;
+public class FakePhoneCallSensor implements PhoneCallSensor {
+    private final List<PhoneCallListener> listeners = new ArrayList<>();
 
     @Override
-    public boolean isAuthorizedMember(String phoneNumber) {
-        return backingCollection.contains(phoneNumber);
+    public void addPhoneCallListener(PhoneCallListener phoneCallListener) {
+        listeners.add(phoneCallListener);
+    }
+
+    public void call(String number) {
+        for (PhoneCallListener listener : listeners) {
+            listener.onCall(number);
+        }
     }
 }

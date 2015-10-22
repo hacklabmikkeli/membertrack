@@ -17,13 +17,14 @@
 package fi.ilmoeuro.membertrack.elock;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.time.Duration;
 import java.util.Arrays;
-import lombok.extern.java.Log;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-@Log
 public final class Main {
+
+    private static final Duration CLIP_TTL = Duration.ofSeconds(10);
 
     private Main() {
         // not meant to be instantiated
@@ -52,10 +53,13 @@ public final class Main {
             return;
         }
 
+        TemporalFilter temporalFilter = new TemporalFilter(CLIP_TTL);
         try (LockActuatorImpl lockActuator = 
                 new LockActuatorImpl(options.getPinName());
              PhoneCallSensorImpl phoneCallSensor =
-                new PhoneCallSensorImpl(options.getSerialDevice())) {
+                new PhoneCallSensorImpl(options.getSerialDevice(),
+                    temporalFilter)
+        ) {
             DoorOpenMechanism doorOpenMechanism =
                 new DoorOpenMechanism(
                         options.getOpenTime(),

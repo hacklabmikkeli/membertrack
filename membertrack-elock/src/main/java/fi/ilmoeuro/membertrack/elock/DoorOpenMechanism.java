@@ -36,7 +36,7 @@ public final class DoorOpenMechanism {
     private final long lockClosedTime;
     private final LockActuator lockActuator;
     private final PhoneCallSensor phoneCallSensor;
-    private final CollectionBasedMemberLookup memberLookup;
+    private final MemberLookup memberLookup;
     private final AtomicBoolean running;
     private final BlockingQueue<PhoneCallEvent> eventQueue;
     private final Thread thread;
@@ -47,7 +47,7 @@ public final class DoorOpenMechanism {
             long lockClosedTime,
             LockActuator lockActuator,
             PhoneCallSensor phoneCallSensor,
-            CollectionBasedMemberLookup memberLookup
+            MemberLookup memberLookup
     ) throws InitializationException {
         this.lockOpenTime = lockOpenTime;
         this.lockClosedTime = lockClosedTime;

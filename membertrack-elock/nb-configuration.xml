@@ -16,5 +16,25 @@ Any value defined here will override the pom.xml file value but is only applicab
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <org-netbeans-spi-editor-hints-projects.text.x-java.org_2e_netbeans_2e_modules_2e_java_2e_hints_2e_jdk_2e_mapreduce_2e_ForLoopToFunctionalHint.enabled>false</org-netbeans-spi-editor-hints-projects.text.x-java.org_2e_netbeans_2e_modules_2e_java_2e_hints_2e_jdk_2e_mapreduce_2e_ForLoopToFunctionalHint.enabled>
         <org-netbeans-spi-editor-hints-projects.perProjectHintSettingsEnabled>true</org-netbeans-spi-editor-hints-projects.perProjectHintSettingsEnabled>
+        <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
+        <org-netbeans-modules-editor-indent.text.javascript.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.javascript.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>chars</org-netbeans-modules-editor-indent.CodeStyle.project.text-line-wrap>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>80</org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>
+        <org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.continuationIndentSize>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.continuationIndentSize>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-line-wrap>chars</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-line-wrap>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>80</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.text-limit-width>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.expand-tabs>
+        <org-netbeans-modules-editor-indent.text.html.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.html.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.text.html.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.html.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.text.html.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.html.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.text.html.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.html.CodeStyle.project.expand-tabs>
     </properties>
 </project-shared-configuration>
