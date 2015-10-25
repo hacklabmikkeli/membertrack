@@ -14,6 +14,9 @@
     <properties>
         <args4j.version>2.32</args4j.version>
         <commons.daemon.version>1.0.15</commons.daemon.version>
+        <schema.srcdir>${project.basedir}/src/main/resources/fi/ilmoeuro/membertrack/elock/schema</schema.srcdir>
+        <schema.targetdir>${project.basedir}/target/schema/</schema.targetdir>
+        <schema.targetfile>${project.basedir}/target/schema/schema.sql</schema.targetfile>
     </properties>
 
     <dependencies>
@@ -53,16 +56,24 @@
             <version>${checkerframework.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>${hamcrest.version}</version>
-            <scope>test</scope>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-meta</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
         <dependency>
             <groupId>args4j</groupId>
@@ -74,10 +85,102 @@
             <artifactId>commons-daemon</artifactId>
             <version>${commons.daemon.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>concat-schema</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${schema.targetdir}" />
+                                <concat destfile="${schema.targetfile}">
+                                    <sort>
+                                        <fileset dir="${schema.srcdir}" />
+                                        <name />
+                                    </sort>
+                                </concat>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>3.5.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <jdbc>
+                        <driver>org.h2.Driver</driver>
+                        <url>jdbc:h2:mem:;CREATE=TRUE;INIT=runscript from <!--
+                        --> '${schema.targetfile}';DB_CLOSE_DELAY=-1</url>
+                        <user>sa</user>
+                        <password>sa</password>
+                    </jdbc>
+                    <generator>
+                        <name>org.jooq.util.DefaultGenerator</name>
+                        <database>
+                            <name>org.jooq.util.h2.H2Database</name>
+                            <includes>.*</includes>
+                            <excludes></excludes>
+                            <inputSchema>PUBLIC</inputSchema>
+                            <customTypes>
+                                <customType>
+                                    <name>Instant</name>
+                                    <type>java.time.Instant</type>
+                                    <converter>fi.ilmoeuro.membertrack.elock.plumbing.JooqDateConverter</converter>
+                                </customType>
+                            </customTypes>
+                            <forcedTypes>
+                                <forcedType>
+                                    <name>Instant</name>
+                                    <expression>.*</expression>
+                                    <types>.*TIMESTAMP.*</types>
+                                </forcedType>
+                            </forcedTypes>
+                        </database>
+                        <target>
+                            <packageName>fi.ilmoeuro.membertrack.elock.schema</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>

@@ -24,7 +24,7 @@ public class ElockSystem implements AutoCloseable {
     private final JsscModemAdapter modemAdapter;
     private final PhoneCallSensorImpl phoneCallSensor;
     private final TemporalFilter<String> temporalFilter;
-    private final AllowEveryoneMemberLookup memberLookup;
+    private final DatabaseMemberLookup memberLookup;
     private final DoorOpenMechanism doorOpenMechanism;
 
     public ElockSystem(
@@ -34,14 +34,22 @@ public class ElockSystem implements AutoCloseable {
         lockActuator = new LockActuatorImpl(params.getPinNumber());
         modemAdapter = new JsscModemAdapter(params.getSerialDevice());
         temporalFilter = new TemporalFilter<>(ringDelay);
-        phoneCallSensor = new PhoneCallSensorImpl(modemAdapter, temporalFilter);
-        memberLookup = new AllowEveryoneMemberLookup();
+        phoneCallSensor = new PhoneCallSensorImpl(
+            modemAdapter,
+            temporalFilter
+        );
+        memberLookup = new DatabaseMemberLookup(
+            params.getH2URL(),
+            params.getH2UserName(),
+            params.getH2Password()
+        );
         doorOpenMechanism = new DoorOpenMechanism(
             params.getOpenTime(),
             params.getCloseTime(),
             lockActuator,
             phoneCallSensor,
-            memberLookup);
+            memberLookup
+        );
     }
 
     public void start() {

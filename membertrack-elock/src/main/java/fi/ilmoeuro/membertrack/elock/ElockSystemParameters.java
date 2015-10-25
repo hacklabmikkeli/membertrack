@@ -27,31 +27,45 @@ import org.kohsuke.args4j.Option;
 public final class ElockSystemParameters {
 
     @Option(
-            name = "-D",
+            name = "--device",
             usage = "Modem serial device",
             metaVar = "<dev>")
     private String serialDevice = "/dev/ttyUSB0";
 
-    @Option(name = "-P",
+    @Option(name = "--pin",
             usage = "Lock pin number (0-29)",
             metaVar = "<pin>")
     private int pinNumber = 0;
 
-    @Option(name = "-o",
+    @Option(name = "--open-time",
             usage = "Lock open time (in ms)",
             metaVar = "<ms>")
     private long openTime = 3_000;
     
-    @Option(name = "-c",
+    @Option(name = "--close-time",
             usage = "Lock close minimum time (in ms)",
             metaVar = "<ms>")
     private long closeTime = 3_000;
 
-    @Option(name = "-d",
+    @Option(name = "--ring-delay",
             usage = "Ring delay (in ms)",
             metaVar = "<ms>")
     private long ringDelay = 3_000;
+
+    @Option(name = "--h2-url",
+            usage = "H2 database URL",
+            metaVar = "<url>")
+    private String h2URL = "jdbc:h2:mem:";
     
+    @Option(name = "--h2-username",
+            usage = "H2 database username",
+            metaVar = "<username>")
+    private String h2UserName = "sa";
+    
+    @Option(name = "--h2-password",
+            usage = "H2 database password",
+            metaVar = "<password>")
+    private String h2Password = "sa";
 
     public void validate() throws InvalidArgumentsException {
         if (pinNumber < 0 || pinNumber > 29) {
