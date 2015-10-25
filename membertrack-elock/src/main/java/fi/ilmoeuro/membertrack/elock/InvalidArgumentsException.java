@@ -16,30 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import java.util.logging.Level;
-import lombok.extern.java.Log;
-
-@Log
-public final class Main {
-    private Main() {
-        // not meant to be instantiated
-    }
-
-    public static void main(String... args) {
-        final ElockDaemon daemon = new ElockDaemon();
-        try {
-            daemon.init(args);
-            daemon.start();
-            System.in.read();
-            daemon.stop();
-        } catch (Exception ex) {
-            log.log(
-                Level.SEVERE,
-                "Error while running membertrack-elock",
-                ex
-            );
-        } finally {
-            daemon.destroy();
-        }
+public class InvalidArgumentsException extends Exception {
+    public InvalidArgumentsException(String message) {
+        super(message);
     }
 }

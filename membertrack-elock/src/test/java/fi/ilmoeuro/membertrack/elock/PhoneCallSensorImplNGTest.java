@@ -20,18 +20,16 @@ import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-/**
- *
- * @author Ilmo Euro
- */
 public class PhoneCallSensorImplNGTest {
 
     private static final Duration CLIP_TTL = Duration.ofMillis(20);
 
     @Test
+    @SuppressWarnings("methodref.inference.unimplemented")
     public void testCorrectCall()
         throws InitializationException, InterruptedException
     {
@@ -48,12 +46,18 @@ public class PhoneCallSensorImplNGTest {
         phoneCallSensor.addPhoneCallListener(phoneCalls::add);
 
         modemAdapter.sendMessage("+CLIP: \"" + phoneNumber + "\"");
-
-        assertEquals(
-            phoneCalls.poll(timeoutMs, TimeUnit.MILLISECONDS),
-            phoneNumber,
-            "decoded phone number"
-        );
+        
+        @Nullable String actual =
+            phoneCalls.poll(timeoutMs, TimeUnit.MILLISECONDS);
+        if (actual == null) {
+            fail("couldn't get a phone number in time");
+        } else {
+            assertEquals(
+                actual,
+                phoneNumber,
+                "decoded phone number"
+            );
+        }
     }
 
     @Test

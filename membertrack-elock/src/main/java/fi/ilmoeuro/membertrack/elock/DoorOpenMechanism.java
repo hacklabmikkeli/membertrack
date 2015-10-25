@@ -21,6 +21,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import lombok.Synchronized;
 import lombok.Value;
 import lombok.extern.java.Log;
 
@@ -99,7 +100,8 @@ public final class DoorOpenMechanism {
         log.info("Lock mechanism stopped");
     }
 
-    public synchronized void stop() {
+    @Synchronized
+    public void stop() {
         log.info("Lock mechanism stopping");
         running.set(false);
         thread.interrupt();

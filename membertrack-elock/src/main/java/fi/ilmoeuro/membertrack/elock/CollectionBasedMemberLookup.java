@@ -16,14 +16,10 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
-@SuppressFBWarnings(
-    value = "RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE",
-    justification = "Auto-generated checks")
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public final class CollectionBasedMemberLookup implements MemberLookup {

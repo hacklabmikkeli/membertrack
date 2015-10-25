@@ -16,6 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 public interface ModemAdapter {
-    public void setMessageListener(ModemMessageListener messageListener);
+    public void setMessageListener(@Nullable ModemMessageListener messageListener);
 }

@@ -79,7 +79,7 @@ public class JsscModemAdapter implements ModemAdapter, AutoCloseable {
     }
 
     @Override
-    public void setMessageListener(ModemMessageListener messageListener) {
+    public void setMessageListener(@Nullable ModemMessageListener messageListener) {
         this.listener = messageListener;
     }
 

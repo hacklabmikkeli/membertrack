@@ -24,7 +24,7 @@ import org.kohsuke.args4j.Option;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public final class CommandLineOptions {
+public final class ElockSystemParameters {
 
     @Option(
             name = "-D",
@@ -46,5 +46,30 @@ public final class CommandLineOptions {
             usage = "Lock close minimum time (in ms)",
             metaVar = "<ms>")
     private long closeTime = 3_000;
+
+    @Option(name = "-d",
+            usage = "Ring delay (in ms)",
+            metaVar = "<ms>")
+    private long ringDelay = 3_000;
     
+
+    public void validate() throws InvalidArgumentsException {
+        if (pinNumber < 0 || pinNumber > 29) {
+            throw new InvalidArgumentsException(
+                "Pin number must be 0-29"
+            );
+        }
+
+        if (openTime > 10_000) {
+            throw new InvalidArgumentsException(
+                "Open time must be less than 10 000 to not damage the lock"
+            );
+        }
+
+        if (closeTime < 1_000) {
+            throw new InvalidArgumentsException(
+                "Close time must be more than 1 000 to not damage the lock"
+            );
+        }
+    }
 }
