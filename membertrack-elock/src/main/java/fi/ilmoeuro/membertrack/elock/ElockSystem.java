@@ -20,7 +20,7 @@ import java.time.Duration;
 
 public class ElockSystem implements AutoCloseable {
     
-    private final LockActuatorImpl lockActuator;
+    private final GpioLockActuator lockActuator;
     private final JsscModemAdapter modemAdapter;
     private final PhoneCallSensorImpl phoneCallSensor;
     private final TemporalFilter<String> temporalFilter;
@@ -31,7 +31,7 @@ public class ElockSystem implements AutoCloseable {
         ElockSystemParameters params
     ) throws InitializationException {
         final Duration ringDelay = Duration.ofMillis(params.getRingDelay());
-        lockActuator = new LockActuatorImpl(params.getPinNumber());
+        lockActuator = new GpioLockActuator(params.getPinNumber());
         modemAdapter = new JsscModemAdapter(params.getSerialDevice());
         temporalFilter = new TemporalFilter<>(ringDelay);
         phoneCallSensor = new PhoneCallSensorImpl(

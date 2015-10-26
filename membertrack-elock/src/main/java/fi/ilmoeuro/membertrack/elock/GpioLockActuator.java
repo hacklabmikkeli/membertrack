@@ -24,12 +24,12 @@ import com.pi4j.io.gpio.RaspiPin;
 import lombok.extern.java.Log;
 
 @Log
-public final class LockActuatorImpl implements LockActuator, AutoCloseable {
+public final class GpioLockActuator implements LockActuator, AutoCloseable {
 
     private final GpioController gpioController;
     private final GpioPinDigitalOutput outputPin;
 
-    public LockActuatorImpl(int pinNumber) throws InitializationException {
+    public GpioLockActuator(int pinNumber) throws InitializationException {
         if (pinNumber < 0 || pinNumber > 29) {
             throw new InitializationException("Invalid pin number");
         }
