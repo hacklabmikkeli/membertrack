@@ -62,6 +62,7 @@ public class ElockSystem implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
+        memberLookup.close();
         phoneCallSensor.close();
         modemAdapter.close();
         lockActuator.close();

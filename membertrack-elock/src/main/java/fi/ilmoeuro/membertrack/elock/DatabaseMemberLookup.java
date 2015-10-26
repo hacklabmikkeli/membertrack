@@ -28,9 +28,10 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 @Log
-public class DatabaseMemberLookup implements MemberLookup {
+public class DatabaseMemberLookup implements MemberLookup, AutoCloseable {
 
     private final DataSource dataSource;
+    private final Connection keepAliveConnection;
 
     public DatabaseMemberLookup(
         String url,
@@ -41,16 +42,17 @@ public class DatabaseMemberLookup implements MemberLookup {
         h2DataSource.setURL(url);
         h2DataSource.setUser(username);
         h2DataSource.setPassword(password);
+        dataSource = h2DataSource;
+
         try {
-            h2DataSource.getConnection();
+            keepAliveConnection = dataSource.getConnection();
         } catch (SQLException ex) {
             throw new InitializationException(
-                "Couldn't init database connection",
+                String.format(
+                    "Couldn't init database connection: %s", ex.getMessage()),
                 ex
             );
         }
-        
-        dataSource = h2DataSource;
     }
 
     @Override
@@ -71,5 +73,10 @@ public class DatabaseMemberLookup implements MemberLookup {
                 ex);
             return false;
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        keepAliveConnection.close();
     }
 }

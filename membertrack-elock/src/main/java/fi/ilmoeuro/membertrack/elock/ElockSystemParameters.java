@@ -40,7 +40,7 @@ public final class ElockSystemParameters {
     @Option(name = "--open-time",
             usage = "Lock open time (in ms)",
             metaVar = "<ms>")
-    private long openTime = 3_000;
+    private long openTime = 6_000;
     
     @Option(name = "--close-time",
             usage = "Lock close minimum time (in ms)",
@@ -50,7 +50,7 @@ public final class ElockSystemParameters {
     @Option(name = "--ring-delay",
             usage = "Ring delay (in ms)",
             metaVar = "<ms>")
-    private long ringDelay = 3_000;
+    private long ringDelay = 10_000;
 
     @Option(name = "--h2-url",
             usage = "H2 database URL",

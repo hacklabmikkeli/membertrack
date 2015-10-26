@@ -36,7 +36,7 @@ public final class LockActuatorImpl implements LockActuator, AutoCloseable {
         log.info("Initializing GPIO");
         gpioController = GpioFactory.getInstance();
         outputPin = gpioController.provisionDigitalOutputPin(
-                RaspiPin.getPinByName("GPIO " + pinNumber)
+            RaspiPin.getPinByName("GPIO " + pinNumber)
         );
         log.info("GPIO initialized");
     }
