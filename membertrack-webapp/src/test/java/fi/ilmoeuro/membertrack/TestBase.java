@@ -16,11 +16,17 @@
  */
 package fi.ilmoeuro.membertrack;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -29,25 +35,56 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class TestBase {
-    private static final String SCHEMA_FILE = "schema.sql";
+    private static final String SCHEMA_LIST_FILE = "schema_list.txt";
+    private static final String CONN_STRING = "jdbc:h2:mem:;CREATE=TRUE";
 
     private @Nullable Connection conn;
     private @Nullable DSLContext jooq;
+
+    protected void initSchema() {
+        try (final InputStream schemaFileStream =
+                ResourceRoot.class.getResourceAsStream(SCHEMA_LIST_FILE)) {
+            if (schemaFileStream == null) {
+                throw new RuntimeException("Schema list not found");
+            } else {
+                for (final String schemaFile : IOUtils.readLines(
+                    schemaFileStream, 
+                    Charsets.UTF_8
+                )) {
+                    try (final InputStream sqlStream
+                        = ResourceRoot.class.getResourceAsStream(schemaFile)) {
+                        if (sqlStream == null) {
+                            throw new RuntimeException(
+                                String.format(
+                                    "Schema file %s not found",
+                                    schemaFile
+                                )
+                            );
+                        } else {
+                            final String sql
+                                = IOUtils.toString(sqlStream, Charsets.US_ASCII);
+                            for (String part : sql.split(";")) {
+                                if (jooq == null) {
+                                    throw new IllegalStateException(
+                                        "jooq must be initialized"
+                                    );
+                                } else {
+                                    jooq.execute(part);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Couldn't retrieve schema file", ex);
+        }
+    }
     
     @BeforeMethod
     public void jooqSetUp() throws ClassNotFoundException, SQLException {
-        StringBuilder connString = new StringBuilder();
-        URL schemaUrl = TestBase.class.getResource(SCHEMA_FILE);
-        if (schemaUrl == null) {
-            throw new IllegalStateException(SCHEMA_FILE + " not found");
-        }
-        connString.append("jdbc:h2:mem:;");
-        connString.append("CREATE=TRUE;");
-        connString.append("INIT=runscript from '");
-        connString.append(new File(schemaUrl.getPath()).getAbsolutePath());
-        connString.append("'");
         Class.forName("org.h2.Driver");
-        conn = DriverManager.getConnection(connString.toString());
+        conn = DriverManager.getConnection(CONN_STRING);
         jooq = DSL.using(conn, SQLDialect.H2);
     }
     

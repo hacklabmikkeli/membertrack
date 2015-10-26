@@ -16,6 +16,7 @@
         <schema.srcdir>${project.basedir}/src/main/resources/fi/ilmoeuro/membertrack/schema</schema.srcdir>
         <schema.targetdir>${project.basedir}/target/schema/</schema.targetdir>
         <schema.targetfile>${project.basedir}/target/schema/schema.sql</schema.targetfile>
+        <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
     <dependencies>
         <dependency>
@@ -57,17 +58,17 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>${commons.io.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
+            <version>${commons.codec.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>${commons.lang.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
@@ -108,11 +109,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -41,13 +41,13 @@ import org.jooq.exception.DataAccessException;
 public class DatabaseInitializer {
 
     public static final @Data class Config {
-        private List<String> setupFiles = Arrays.asList();
-        private List<String> clearFiles = Arrays.asList();
-        private boolean enabled;
+        private String setupList = "";
+        private String clearList = "";
+        private boolean enabled = false;
     }
 
-    private DSLContext jooq;
-    private Config config;
+    private final DSLContext jooq;
+    private final Config config;
 
     @Inject
     public DatabaseInitializer(
@@ -60,8 +60,11 @@ public class DatabaseInitializer {
             Config.class);
     }
 
+    @SuppressWarnings("assignment.type.incompatible")
     public DatabaseInitializer() {
-        throw new IllegalStateException("Please call the other constructor");
+        /* Required by EJB, these nulls should never be visible */
+        jooq = null;
+        config = null;
     }
 
     private void runSqlFiles(List<String> fileNames) {
@@ -71,7 +74,11 @@ public class DatabaseInitializer {
                         = ResourceRoot.class.getResourceAsStream(fileName);
                 if (sqlStream == null) {
                     // TODO proper exception
-                    throw new RuntimeException("SQL file not found");
+                    throw new RuntimeException(
+                        String.format(
+                            "SQL file '%s'  not found",
+                            fileName
+                    ));
                 }
                 String sql = IOUtils.toString(sqlStream, Charsets.US_ASCII);
                 log.log(Level.INFO, "Executing: {0}", sql);
@@ -80,20 +87,40 @@ public class DatabaseInitializer {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error executing sql files", e);
         }
     }
 
     @PostConstruct
     public void init() {
         if (config.isEnabled()) {
-            try {
-                runSqlFiles(config.getClearFiles());
+            try (final InputStream clearStream =
+                    ResourceRoot.class.getResourceAsStream(
+                        config.getClearList()
+            )) {
+                if (clearStream != null) {
+                    final List<String> clearFiles =
+                        IOUtils.readLines(clearStream, Charsets.UTF_8);
+                    runSqlFiles(clearFiles);
+                }
             } catch (DataAccessException e) {
                 // Database is clean
+            } catch (IOException ex) {
+                throw new RuntimeException("Error loading clear list", ex);
             }
 
-            runSqlFiles(config.getSetupFiles());
+            try (final InputStream setupStream =
+                    ResourceRoot.class.getResourceAsStream(
+                        config.getSetupList()
+            )) {
+                if (setupStream != null) {
+                    final List<String> setupFiles =
+                        IOUtils.readLines(setupStream, Charsets.UTF_8);
+                    runSqlFiles(setupFiles);
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException("Error loading setup list", ex);
+            }
         }
     }
 }
