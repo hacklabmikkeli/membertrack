@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,17 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.data;
 
-import fi.ilmoeuro.membertrack.member.MembershipsUI;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.glassfish.jersey.linking.InjectLink;
+import static java.util.stream.Collectors.*;
+import org.jooq.impl.DSL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import org.jooq.Field;
 
-@Getter
-@NoArgsConstructor
-public final class Paths {
-    @InjectLink(resource = MembershipsUI.class)
-    private @Nullable String memberships;
+public class DataUtils {
+
+    public static <T,K,A,D> Collector<T,?,Map<K,D>> orderedGroupingBy(
+        Function<? super T,? extends K> fnctn, 
+        Collector<? super T,A,D> clctr
+    ) {
+        return groupingBy(fnctn, LinkedHashMap::new, clctr);
+    }
+
+    public static <T> Field<T> asNull(Field<T> field) {
+        return DSL.castNull(field).as(field);
+    }
 }

@@ -18,6 +18,7 @@ package fi.ilmoeuro.membertrack.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Condition;
@@ -32,7 +33,7 @@ public final class Queries {
         // Not meant to be instantiated
     }
 
-    public static <T extends @NonNull Object> @Nullable Entity<T> findOne(
+    public static <T extends @NonNull Object> Optional<Entity<T>> findOne(
         DSLContext jooq,
         Table<?> table,
         Class<T> targetClass,
@@ -45,11 +46,13 @@ public final class Queries {
             .where(conditions)
             .fetchAny();
         if (record == null) {
-            return null;
+            return Optional.empty();
         } else {
-            return new Entity<>(
-                    record.into(targetClass),
-                    record.getValue(idField));
+            return Optional.ofNullable(
+                new Entity<>(
+                    record.getValue(idField),
+                    record.into(targetClass))
+            );
         }
     }
 
@@ -70,9 +73,8 @@ public final class Queries {
         for (Record record : dataSet) {
             result.add(
                 new Entity<>(
-                    record.into(targetClass),
-                    record.getValue(idField)
-                ));
+                    record.getValue(idField),
+                    record.into(targetClass)));
         }
         return result;
     }

@@ -16,12 +16,8 @@
  */
 package fi.ilmoeuro.membertrack;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -56,7 +52,7 @@ public abstract class TestBase {
                         if (sqlStream == null) {
                             throw new RuntimeException(
                                 String.format(
-                                    "Schema file %s not found",
+                                    "Schema file '%s' not found",
                                     schemaFile
                                 )
                             );

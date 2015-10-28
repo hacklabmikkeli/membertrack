@@ -18,6 +18,7 @@ package fi.ilmoeuro.membertrack.plumbing;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Converter;
 
 public final class JooqDateConverter implements Converter<Timestamp, Instant> {
@@ -25,13 +26,21 @@ public final class JooqDateConverter implements Converter<Timestamp, Instant> {
     public static final long serialVersionUID = 0l;
 
     @Override
-    public Instant from(Timestamp databaseObject) {
-        return databaseObject.toInstant();
+    public @Nullable Instant from(@Nullable Timestamp databaseObject) {
+        if (databaseObject == null) {
+            return null;
+        } else {
+            return databaseObject.toInstant();
+        }
     }
 
     @Override
-    public Timestamp to(Instant instant) {
-        return new Timestamp(instant.toEpochMilli());
+    public @Nullable Timestamp to(@Nullable Instant instant) {
+        if (instant == null) {
+            return null;
+        } else {
+            return new Timestamp(instant.toEpochMilli());
+        }
     }
 
     @Override

@@ -22,10 +22,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Value
 public final class Entity<T extends @NonNull Object> {
-    private final T value;
     private final int id;
+    private final T value;
 
     public Entity<T> map(Function<T, T> func) {
-        return new Entity(func.apply(value), id);
+        return new Entity(id, func.apply(value));
     }
 }

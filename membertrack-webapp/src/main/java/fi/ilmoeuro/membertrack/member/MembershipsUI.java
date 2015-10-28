@@ -14,12 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.organization;
+package fi.ilmoeuro.membertrack.member;
 
-import fi.ilmoeuro.membertrack.auth.Authorizer;
-import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
-import fi.ilmoeuro.membertrack.data.Entity;
 import fi.ilmoeuro.membertrack.ui.Paths;
 import java.util.List;
 import javax.inject.Inject;
@@ -28,37 +25,28 @@ import javax.ws.rs.Path;
 import lombok.Value;
 import org.glassfish.jersey.server.mvc.Template;
 
-@Path("/organization/")
-public class OrganizationsUI {
+@Path("/membership/")
+public class MembershipsUI {
 
-
-    public static final @Value class ListViewModel {
-        private final List<Entity<Organization>> organizations;
-        private final Paths paths = new Paths();
+    public static final @Value class ViewModel {
+        final List<Membership> memberships;
+        final Paths paths = new Paths();
     }
 
-    private final Organizations organizations;
-    private final Authorizer authorizer;
+    private final Memberships memberships;
 
     @Inject
-    public OrganizationsUI(
-        Organizations organizations,
-        Authorizer authorizer
+    public MembershipsUI(
+        Memberships memberships
     ) {
-        this.organizations = organizations;
-        this.authorizer = authorizer;
-    }
-
-    @GET
-    @Template(name = "/organization/default")
-    public ListViewModel listAll() throws UnauthorizedException {
-        authorizer.ensureAuthorized(
-            Permission.LIST_ORGANIZATIONS
-        );
-        
-        return new ListViewModel(
-            organizations.getAll()
-        );
+        this.memberships = memberships;
     }
     
+    @GET
+    @Template(name = "/membership/default")
+    public ViewModel listAll() throws UnauthorizedException {
+        return new ViewModel(
+            memberships.listAll()
+        );
+    }
 }

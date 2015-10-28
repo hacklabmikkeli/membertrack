@@ -1,1 +1,1 @@
-clear/201510071545.sql
+clear/20151027_00_clear.sql

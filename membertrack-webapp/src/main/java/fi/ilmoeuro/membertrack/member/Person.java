@@ -14,10 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.organization;
+package fi.ilmoeuro.membertrack.member;
 
+import java.util.Locale;
 import lombok.Value;
+import org.apache.commons.codec.digest.DigestUtils;
 
-public final @Value class Organization {
-    private final String name;
+@Value
+public final class Person {
+    private final String email;
+
+    public String getGravatarUrl() {
+        return String.format("//gravatar.com/avatar/%s",
+            DigestUtils.md5Hex(
+                email.trim().toLowerCase(Locale.ROOT)
+            )
+        );
+    }
 }

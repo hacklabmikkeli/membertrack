@@ -1,7 +1,17 @@
+// out: ../css/membertrack.css
+
 @import "lesshat.less";
 
 @full-width: 768px;
-@sidebar-width: 300px;
+@sidebar-width: 120px;
+@sidebar-color: slategray;
+
+
+html, body {
+    @media screen and (min-width: @full-width) {
+        height: 100%;
+    }
+}
 
 * {
     .box-sizing(border-box);
@@ -28,6 +38,11 @@ fieldset {
     .l-sidebar {
         .flex-grow(0);
         width: @sidebar-width;
+        
+        @media screen and (min-width: @full-width) {
+            min-height: 100%;
+        }
+        background-color: @sidebar-color;
     }
 
     @media screen and (max-width: @full-width) {
@@ -48,3 +63,52 @@ fieldset {
     margin-bottom: 2em;
 }
 
+ul.subscriber-list, .subscriber-list ul {
+    list-style-type: none;
+}
+
+.subscriber-list > li {
+    .display(flex);
+    
+    .personal {
+        .flex-basis(40%);
+        font-size: 0.75rem;
+        
+        overflow: hidden;
+    }
+
+    .subscriptions {
+        .flex-grow(1);
+        
+        ul {
+            .display(flex);
+            margin-bottom: 0.5em;
+        }
+        
+        .date {
+            width: 7em;
+        }
+        
+        .date + .date {
+            &::before {
+                content: "–";
+                margin-right: 1em;
+            }
+        }
+    }
+}
+
+.main-nav {
+    li a {
+        color: white;
+    }
+    
+    li.selected a {
+        color: black;
+        background-color: white;
+    }
+    
+    li:not(.selected):hover a {
+        background-color: lighten(@sidebar-color, 10%);
+    }
+}

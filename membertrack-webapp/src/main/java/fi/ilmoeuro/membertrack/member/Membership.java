@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,17 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.member;
 
-import fi.ilmoeuro.membertrack.member.MembershipsUI;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.glassfish.jersey.linking.InjectLink;
+import fi.ilmoeuro.membertrack.data.Entity;
+import java.util.List;
+import lombok.Value;
 
-@Getter
-@NoArgsConstructor
-public final class Paths {
-    @InjectLink(resource = MembershipsUI.class)
-    private @Nullable String memberships;
+public @Value class Membership {
+    Entity<Person> person;
+    List<Entity<PhoneNumber>> phoneNumbers;
+    List<MemberSubscribedServices> subscribed;
 }
