@@ -20,7 +20,7 @@ import java.util.Arrays;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class DoorOpenMechanismNGTest {
+public class DoorOpenMechanismTest {
 
     @Test
     public void testAuthorizedPhoneNumber()

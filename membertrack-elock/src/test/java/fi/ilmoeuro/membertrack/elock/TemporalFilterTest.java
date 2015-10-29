@@ -20,7 +20,7 @@ import java.time.Duration;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class TemporalFilterNGTest {
+public class TemporalFilterTest {
 
     @Test
     public void testDeadObject() throws InterruptedException {

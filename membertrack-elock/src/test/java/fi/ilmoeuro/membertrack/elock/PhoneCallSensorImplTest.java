@@ -24,7 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-public class PhoneCallSensorImplNGTest {
+public class PhoneCallSensorImplTest {
 
     private static final Duration CLIP_TTL = Duration.ofMillis(20);
 
