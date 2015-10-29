@@ -74,7 +74,7 @@ public final class OptionalUtils {
         final Map<K,V> meal = new HashMap<>();
         Optional<V> leftover = Optional.empty();
         for (Map.Entry<Optional<K>, V> entry : map.entrySet()) {
-            K key = entry.getKey().get();
+            K key = entry.getKey().orElse(null);
             if (key != null) {
                 meal.put(key, entry.getValue());
             } else {
