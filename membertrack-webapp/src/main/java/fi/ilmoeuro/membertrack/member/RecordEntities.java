@@ -74,7 +74,8 @@ public class RecordEntities {
                     r.getValue(SERVICE_SUBSCRIPTION.ID),
                     new ServiceSubscription(
                         r.getValue(SERVICE_SUBSCRIPTION.START_TIME),
-                        r.getValue(SERVICE_SUBSCRIPTION.LENGTH)
+                        r.getValue(SERVICE_SUBSCRIPTION.LENGTH),
+                        r.getValue(SERVICE_SUBSCRIPTION.PAYMENT)
                     )
                 )
             );

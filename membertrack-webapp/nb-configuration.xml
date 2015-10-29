@@ -62,5 +62,13 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-editor-indent.text.x-tag.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.x-tag.CodeStyle.project.spaces-per-tab>
         <org-netbeans-modules-editor-indent.text.x-tag.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.x-tag.CodeStyle.project.tab-size>
         <org-netbeans-modules-editor-indent.text.x-tag.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.x-tag.CodeStyle.project.expand-tabs>
+        <org-netbeans-modules-editor-indent.text.less.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.less.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.text.less.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.less.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.text.less.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.less.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.text.less.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.less.CodeStyle.project.expand-tabs>
+        <org-netbeans-modules-css-prep.less_2e_mappings>/static/less:/static/css</org-netbeans-modules-css-prep.less_2e_mappings>
+        <org-netbeans-modules-css-prep.less_2e_enabled>true</org-netbeans-modules-css-prep.less_2e_enabled>
+        <org-netbeans-modules-css-prep.less_2e_configured>true</org-netbeans-modules-css-prep.less_2e_configured>
+        <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
     </properties>
 </project-shared-configuration>

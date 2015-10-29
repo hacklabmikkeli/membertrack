@@ -80,7 +80,7 @@ public class DatabaseInitializer {
                             fileName
                     ));
                 }
-                String sql = IOUtils.toString(sqlStream, Charsets.US_ASCII);
+                String sql = IOUtils.toString(sqlStream, Charsets.UTF_8);
                 log.log(Level.INFO, "Executing: {0}", sql);
                 for (String part : sql.split(";")) {
                     jooq.execute(part);

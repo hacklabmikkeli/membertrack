@@ -4,6 +4,7 @@
 
 <%@ attribute name="sidebar" type="java.lang.Boolean" %>
 <%@ attribute name="title" %>
+<%@ attribute name="menupos" %>
 <%@ attribute name="css" fragment="true" %>
 <%@ attribute name="js" fragment="true" %>
 
@@ -29,8 +30,9 @@
         </div>
         <c:if test="${empty sidebar or sidebar}">
             <div class="l-sidebar">
-                <ul class="pure-menu-list">
-                    <li class="pure-menu-item">
+                <ul class="main-nav pure-menu-list">
+                    <li class="pure-menu-item
+                               ${menupos eq 'membership' ? 'selected' : ''}">
                         <a class="pure-menu-link"
                            href="${it.paths.memberships}">
                             Memberships

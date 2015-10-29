@@ -29,7 +29,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.JoinType;
 
 @Dependent
 public final class Memberships {
@@ -138,7 +137,8 @@ public final class Memberships {
                     SERVICE.DESCRIPTION,
                     SERVICE_SUBSCRIPTION.ID,
                     SERVICE_SUBSCRIPTION.START_TIME,
-                    SERVICE_SUBSCRIPTION.LENGTH)
+                    SERVICE_SUBSCRIPTION.LENGTH,
+                    SERVICE_SUBSCRIPTION.PAYMENT)
                 .from(PERSON)
                 .leftOuterJoin(SERVICE_SUBSCRIPTION)
                     .on(SERVICE_SUBSCRIPTION.PERSON_ID.eq(PERSON.ID))
@@ -156,7 +156,8 @@ public final class Memberships {
                         asNull(SERVICE.DESCRIPTION),
                         asNull(SERVICE_SUBSCRIPTION.ID),
                         asNull(SERVICE_SUBSCRIPTION.START_TIME),
-                        asNull(SERVICE_SUBSCRIPTION.LENGTH))
+                        asNull(SERVICE_SUBSCRIPTION.LENGTH),
+                        asNull(SERVICE_SUBSCRIPTION.PAYMENT))
                     .from(PHONE_NUMBER)
                     .join(PERSON).onKey()
                     .where(conditions))

@@ -3,7 +3,7 @@
 @import "lesshat.less";
 
 @full-width: 768px;
-@sidebar-width: 120px;
+@sidebar-width: 150px;
 @sidebar-color: slategray;
 
 
@@ -65,31 +65,62 @@ fieldset {
 
 ul.subscriber-list, .subscriber-list ul {
     list-style-type: none;
+    padding-left: 0;
 }
 
 .subscriber-list > li {
     .display(flex);
+
+    margin-bottom: 4em;
     
     .personal {
         .flex-basis(40%);
         font-size: 0.75rem;
         
-        overflow: hidden;
+        .email {
+            font-style: italic;
+            font-size: 0.6rem;
+            margin-bottom: 0.5em;
+
+            max-width: 20em;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &:hover {
+                overflow: visible;
+                background: white;
+            }
+        }
     }
 
     .subscriptions {
+        font-size: 0.8rem;
         .flex-grow(1);
         
         ul {
             .display(flex);
             margin-bottom: 0.5em;
         }
+
+        .service {
+            font-weight: bold;
+        }
+
+        & > li:not(.service) {
+            margin-left: 2em;
+        }
+
+        li:not(.service) + li.service {
+            margin-top: 2em;
+        }
         
         .date {
-            width: 7em;
+            width: 6em;
         }
         
         .date + .date {
+            width: 9em;
             &::before {
                 content: "–";
                 margin-right: 1em;

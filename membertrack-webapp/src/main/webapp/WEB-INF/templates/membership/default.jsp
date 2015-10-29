@@ -6,7 +6,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<t:master title="Organizations">
+<t:master title="Memberships" menupos="membership">
     <ul class="subscriber-list">
       <c:forEach items="${it.memberships}" var="membership">
           <li>
@@ -35,13 +35,14 @@
                   <li>
                     <ul>
                       <li class="date">
-                        <c:out value="${subscription.value.start}" />
+                        <c:out value="${subscription.value.start_fi_FI}" />
                       </li>
                       <li class="date">
-                        <c:out value="${subscription.value.end}" />
+                        <c:out value="${subscription.value.end_fi_FI}" />
                       </li>
                       <li class="payment">
-                        ?? €
+                        <c:out value="${subscription.value.paymentFormatted}" />
+                        &euro;
                       </li>
                     </ul>
                   </li>

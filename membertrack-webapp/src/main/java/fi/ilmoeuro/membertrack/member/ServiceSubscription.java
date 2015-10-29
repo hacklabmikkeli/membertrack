@@ -17,14 +17,35 @@
 package fi.ilmoeuro.membertrack.member;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import lombok.Value;
 
 @Value
 public final class ServiceSubscription {
     Instant start;
-    int length;
+    long length;
+    int payment;
+
+    private static String format_fi_FI(Instant instant) {
+        return instant
+            .atZone(ZoneId.of("Europe/Helsinki"))
+            .format(DateTimeFormatter.ofPattern("d. M. uuuu"));
+    }
 
     public Instant getEnd() {
         return start.plusMillis(length);
+    }
+
+    public String getStart_fi_FI() {
+        return format_fi_FI(getStart());
+    }
+
+    public String getEnd_fi_FI() {
+        return format_fi_FI(getEnd());
+    }
+
+    public String getPaymentFormatted() {
+        return String.format("%d,%02d", getPayment() / 100, getPayment() % 100);
     }
 }
