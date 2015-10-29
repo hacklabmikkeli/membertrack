@@ -21,7 +21,11 @@ import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import java.util.Optional;
 import org.jooq.Record;
 
-public class RecordEntities {
+public final class RecordEntities {
+
+    private RecordEntities() {
+        // not meant to be instantiated
+    }
     
     public static Optional<Entity<Person>> person(
         Record r

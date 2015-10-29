@@ -20,8 +20,8 @@ import fi.ilmoeuro.membertrack.data.Entity;
 import java.util.List;
 import lombok.Value;
 
-public @Value class Membership {
+public final @Value class Membership {
     Entity<Person> person;
     List<Entity<PhoneNumber>> phoneNumbers;
-    List<MemberSubscribedServices> subscribed;
+    List<SubscribedService> subscribed;
 }

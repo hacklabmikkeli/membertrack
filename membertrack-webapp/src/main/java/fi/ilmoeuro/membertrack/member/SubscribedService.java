@@ -16,9 +16,11 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
+import fi.ilmoeuro.membertrack.data.Entity;
+import java.util.List;
 import lombok.Value;
 
-public final @Value class Service {
-    String title;
-    String description;
+public final @Value class SubscribedService {
+    Entity<Service> service;
+    List<Entity<ServiceSubscription>> subscriptions;
 }
