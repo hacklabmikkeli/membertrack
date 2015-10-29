@@ -25,6 +25,7 @@ public final class JooqDateConverter implements Converter<Timestamp, Instant> {
 
     public static final long serialVersionUID = 0l;
 
+    @SuppressWarnings("nullness")
     @Override
     public @Nullable Instant from(@Nullable Timestamp databaseObject) {
         if (databaseObject == null) {
@@ -34,6 +35,7 @@ public final class JooqDateConverter implements Converter<Timestamp, Instant> {
         }
     }
 
+    @SuppressWarnings("nullness")
     @Override
     public @Nullable Timestamp to(@Nullable Instant instant) {
         if (instant == null) {
