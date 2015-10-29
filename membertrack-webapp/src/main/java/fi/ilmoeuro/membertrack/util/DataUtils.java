@@ -14,26 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.data;
+package fi.ilmoeuro.membertrack.util;
 
-import static java.util.stream.Collectors.*;
 import org.jooq.impl.DSL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jooq.Field;
 
 public class DataUtils {
-
-    public static <T,K,A,D> Collector<T,?,Map<K,D>> orderedGroupingBy(
-        Function<? super T,? extends K> fnctn, 
-        Collector<? super T,A,D> clctr
-    ) {
-        return groupingBy(fnctn, LinkedHashMap::new, clctr);
-    }
-
-    public static <T> Field<T> asNull(Field<T> field) {
+    public static <T extends @NonNull Object> Field<T> asNull(Field<T> field) {
         return DSL.castNull(field).as(field);
     }
 }

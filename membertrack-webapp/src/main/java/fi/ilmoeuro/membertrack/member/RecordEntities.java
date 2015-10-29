@@ -19,18 +19,20 @@ package fi.ilmoeuro.membertrack.member;
 import fi.ilmoeuro.membertrack.data.Entity;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Record;
 
 public final class RecordEntities {
 
     private RecordEntities() {
-        // not meant to be instantiated
+        // Not meant to be instantiated
     }
     
     public static Optional<Entity<Person>> person(
-        Record r
+        @Nullable Record r
     ) {
-        if (r.getValue(PERSON.ID) == null ||
+        if (r == null ||
+            r.getValue(PERSON.ID) == null ||
             r.getValue(PERSON.EMAIL) == null) {
             return Optional.empty();
         } else {
@@ -48,7 +50,8 @@ public final class RecordEntities {
     public static Optional<Entity<Service>> service(
         Record r
     ) {
-        if (r.getValue(SERVICE.ID) == null ||
+        if (r == null ||
+            r.getValue(SERVICE.ID) == null ||
             r.getValue(SERVICE.TITLE) == null ||
             r.getValue(SERVICE.DESCRIPTION) == null) {
             return Optional.empty();
@@ -68,7 +71,8 @@ public final class RecordEntities {
     public static Optional<Entity<ServiceSubscription>> subscription(
         Record r
     ) {
-        if (r.getValue(SERVICE_SUBSCRIPTION.ID) == null ||
+        if (r == null ||
+            r.getValue(SERVICE_SUBSCRIPTION.ID) == null ||
             r.getValue(SERVICE_SUBSCRIPTION.START_TIME) == null ||
             r.getValue(SERVICE_SUBSCRIPTION.LENGTH) == null) {
             return Optional.empty();
@@ -89,7 +93,8 @@ public final class RecordEntities {
     public static Optional<Entity<PhoneNumber>> phoneNumber(
         Record r
     ) {
-        if (r.getValue(PHONE_NUMBER.ID) == null ||
+        if (r == null ||
+            r.getValue(PHONE_NUMBER.ID) == null ||
             r.getValue(PHONE_NUMBER.PHONE_NUMBER_) == null) {
             return Optional.empty();
         } else {

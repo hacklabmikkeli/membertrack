@@ -1,0 +1,41 @@
+package java.util.stream;
+
+class Collectors {
+    static <T, C> Collector<T,?,C> toCollection(Supplier<C> arg0);
+    static <T> Collector<T,?,List<T>> toList();
+    static <T> Collector<T,?,Set<T>> toSet();
+    static Collector<CharSequence,?,String> joining();
+    static Collector<CharSequence,?,String> joining(CharSequence arg0);
+    static Collector<CharSequence,?,String> joining(CharSequence arg0, CharSequence arg1, CharSequence arg2);
+    static <T, U, A, R> Collector<T,?,R> mapping(Function<? super T,? extends U> arg0, Collector<? super U,A,R> arg1);
+    static <T, A, R, RR> Collector<T,A,RR> collectingAndThen(Collector<T,A,R> arg0, Function<R,RR> arg1);
+    static <T> Collector<T,?,Long> counting();
+    static <T> Collector<T,?,Optional<T>> minBy(Comparator<? super T> arg0);
+    static <T> Collector<T,?,Optional<T>> maxBy(Comparator<? super T> arg0);
+    static <T> Collector<T,?,Integer> summingInt(ToIntFunction<? super T> arg0);
+    static <T> Collector<T,?,Long> summingLong(ToLongFunction<? super T> arg0);
+    static <T> Collector<T,?,Double> summingDouble(ToDoubleFunction<? super T> arg0);
+    static <T> Collector<T,?,Double> averagingInt(ToIntFunction<? super T> arg0);
+    static <T> Collector<T,?,Double> averagingLong(ToLongFunction<? super T> arg0);
+    static <T> Collector<T,?,Double> averagingDouble(ToDoubleFunction<? super T> arg0);
+    static <T> Collector<T,?,T> reducing(T arg0, BinaryOperator<T> arg1);
+    static <T> Collector<T,?,Optional<T>> reducing(BinaryOperator<T> arg0);
+    static <T, U> Collector<T,?,U> reducing(U arg0, Function<? super T,? extends U> arg1, BinaryOperator<U> arg2);
+    static <T, K> Collector<T,?,Map<K,List<T>>> groupingBy(Function<? super T,? extends K> arg0);
+    static <T, K, A, D> Collector<T,?,Map<K,D>> groupingBy(Function<? super T,? extends K> arg0, Collector<? super T,A,D> arg1);
+    static <T, K, D, A, M> Collector<T,?,M> groupingBy(Function<? super T,? extends K> arg0, Supplier<M> arg1, Collector<? super T,A,D> arg2);
+    static <T, K> Collector<T,?,ConcurrentMap<K,List<T>>> groupingByConcurrent(Function<? super T,? extends K> arg0);
+    static <T, K, A, D> Collector<T,?,ConcurrentMap<K,D>> groupingByConcurrent(Function<? super T,? extends K> arg0, Collector<? super T,A,D> arg1);
+    static <T, K, A, D, M> Collector<T,?,M> groupingByConcurrent(Function<? super T,? extends K> arg0, Supplier<M> arg1, Collector<? super T,A,D> arg2);
+    static <T> Collector<T,?,Map<Boolean,List<T>>> partitioningBy(Predicate<? super T> arg0);
+    static <T, D, A> Collector<T,?,Map<Boolean,D>> partitioningBy(Predicate<? super T> arg0, Collector<? super T,A,D> arg1);
+    static <T, K, U> Collector<T,?,Map<K,U>> toMap(Function<? super T,? extends K> arg0, Function<? super T,? extends U> arg1);
+    static <T, K, U> Collector<T,?,Map<K,U>> toMap(Function<? super T,? extends K> arg0, Function<? super T,? extends U> arg1, BinaryOperator<U> arg2);
+    static <T, K, U, M> Collector<T,?,M> toMap(Function<? super T,? extends K> arg0, Function<? super T,? extends U> arg1, BinaryOperator<U> arg2, Supplier<M> arg3);
+    static <T, K, U> Collector<T,?,ConcurrentMap<K,U>> toConcurrentMap(Function<? super T,? extends K> arg0, Function<? super T,? extends U> arg1);
+    static <T, K, U> Collector<T,?,ConcurrentMap<K,U>> toConcurrentMap(Function<? super T,? extends K> arg0, Function<? super T,? extends U> arg1, BinaryOperator<U> arg2);
+    static <T, K, U, M> Collector<T,?,M> toConcurrentMap(Function<? super T,? extends K> arg0, Function<? super T,? extends U> arg1, BinaryOperator<U> arg2, Supplier<M> arg3);
+    static <T> Collector<T,?,IntSummaryStatistics> summarizingInt(ToIntFunction<? super T> arg0);
+    static <T> Collector<T,?,LongSummaryStatistics> summarizingLong(ToLongFunction<? super T> arg0);
+    static <T> Collector<T,?,DoubleSummaryStatistics> summarizingDouble(ToDoubleFunction<? super T> arg0);
+}
