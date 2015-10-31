@@ -16,23 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.mapping;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import static fi.ilmoeuro.membertrack.util.DataUtils.*;
-import static fi.ilmoeuro.membertrack.util.Collectors.*;
 import static fi.ilmoeuro.membertrack.util.OptionalUtils.*;
-import static org.jooq.impl.DSL.*;
-import fi.ilmoeuro.membertrack.data.Entity;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import static org.jooq.impl.DSL.*;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.jooq.Record;
+import org.jooq.Cursor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 
@@ -55,7 +47,7 @@ public final class Memberships {
     private List<Membership> listByConditions(
         Condition... conditions
     ) {
-        return buildMemberships(
+        try (Cursor<? extends Record> records =
             jooq
                 .select(
                     PERSON.ID,
@@ -95,56 +87,26 @@ public final class Memberships {
                     PERSON.EMAIL,
                     SERVICE.TITLE,
                     SERVICE_SUBSCRIPTION.START_TIME)
-                .fetch()
-                .stream()
-                .collect(
-                    orderedGroupingBy((Record r) -> RecordEntities.person(r),
-                    orderedGroupingBy((Record r) -> RecordEntities.phoneNumber(r),
-                    orderedGroupingBy((Record r) -> RecordEntities.service(r),
-                    mapping((Record r) -> RecordEntities.subscription(r),
-                    toNonNullList()))))));
-    }
-
-    private List<Membership> buildMemberships(
-        Map<Optional<Entity<Person>>, 
-        Map<Optional<Entity<PhoneNumber>>,
-        Map<Optional<Entity<Service>>, 
-        List<Optional<Entity<ServiceSubscription>>>>>>
-            source
-    ) {
-        final List<Membership> result = new ArrayList<>();
-        final PartitionedMap<Entity<Person>,
-            Map<Optional<Entity<PhoneNumber>>,
-            Map<Optional<Entity<Service>>,
-            List<Optional<Entity<ServiceSubscription>>>>>>
-            persons = partitionMap(source);
-        for (Map.Entry<Entity<Person>,
-                Map<Optional<Entity<PhoneNumber>>,
-                Map<Optional<Entity<Service>>,
-                List<Optional<Entity<ServiceSubscription>>>>>>
-                personsEntry : persons.getMeal().entrySet()) {
-            final Entity<Person> person = personsEntry.getKey();
-            final PartitionedMap<Entity<PhoneNumber>,
-                Map<Optional<Entity<Service>>,
-                List<Optional<Entity<ServiceSubscription>>>>>
-                personInfo = partitionMap(personsEntry.getValue());
-            final List<Entity<PhoneNumber>>
-                phoneNumbers = new ArrayList<>(personInfo.getMeal().keySet());
-            final Map<Entity<Service>, List<Optional<Entity<ServiceSubscription>>>>
-                servicesMap = partitionMap(
-                    personInfo
-                        .getLeftovers()
-                        .orElseGet(() -> new HashMap<>())).getMeal();
-            final ArrayList<SubscribedService> subscribed = new ArrayList<>();
-            for (Map.Entry<Entity<Service>,
-                    List<Optional<Entity<ServiceSubscription>>>>
-                    servicesEntry : servicesMap.entrySet()) {
-                subscribed.add(new SubscribedService(
-                    servicesEntry.getKey(),
-                    catMaybes(servicesEntry.getValue())));
+                .fetchLazy()) {
+            Membership.ListBuilder builder = new Membership.ListBuilder();
+            for (Record r : records) {
+                ifAllPresent(RecordEntities.person(r),
+                    p -> builder.putPerson(p));
+                ifAllPresent(
+                    RecordEntities.person(r),
+                    RecordEntities.phoneNumber(r),
+                    (p, pn) -> builder.putPhoneNumber(p, pn));
+                ifAllPresent(
+                    RecordEntities.person(r),
+                    RecordEntities.service(r),
+                    (p, s) -> builder.putService(p, s));
+                ifAllPresent(
+                    RecordEntities.person(r),
+                    RecordEntities.service(r),
+                    RecordEntities.subscription(r),
+                    (p, s, sn) -> builder.putSubscription(p, s, sn));
             }
-            result.add(new Membership(person, phoneNumbers, subscribed));
+            return builder.build();
         }
-        return result;
     }
 }

@@ -16,16 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import lombok.Value;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class OptionalUtils {
 
@@ -33,65 +26,32 @@ public final class OptionalUtils {
         // not meant to be instantiated
     }
 
-    public static @Value class PartitionedMap
-        <K extends @NonNull Object,
-         V extends @NonNull Object> {
-        Map<K,V> meal;
-        Optional<V> leftovers;
+    public static <T> void ifAllPresent(
+        Optional<T> opt1,
+        Consumer<T> action
+    ) {
+        opt1.ifPresent(v -> action.accept(v));
     }
 
-    public static <T extends @NonNull Object,
-                   R extends @NonNull Object> 
-    R optMatch(
-        Optional<T> value, 
-        Function<T, R> ifPresent, 
-        Supplier<R> ifNotPresent
+    public static <T1, T2> void ifAllPresent(
+        Optional<T1> opt1,
+        Optional<T2> opt2,
+        BiConsumer<T1, T2> action
     ) {
-        return value.map(ifPresent).orElseGet(ifNotPresent);
+        opt1.ifPresent(v1 ->
+            opt2.ifPresent(v2 ->
+                action.accept(v1, v2)));
     }
 
-    public static <T extends @NonNull Object>
-    void optMatch(
-        Optional<T> value,
-        Consumer<T> ifPresent, 
-        Runnable ifNotPresent
+    public static <T1, T2, T3> void ifAllPresent(
+        Optional<T1> opt1,
+        Optional<T2> opt2,
+        Optional<T3> opt3,
+        TriConsumer<T1, T2, T3> action
     ) {
-        value.map((T v) -> {
-            ifPresent.accept(v);
-            return false;
-        }).orElseGet(() -> {
-            ifNotPresent.run();
-            return false;
-        });
-    }
-
-    public static <K extends @NonNull Object,
-                   V extends @NonNull Object>
-    PartitionedMap<K, V> partitionMap(
-        Map<Optional<K>, V> map
-    ) {
-        // TODO streaming
-        final Map<K,V> meal = new HashMap<>();
-        Optional<V> leftover = Optional.empty();
-        for (Map.Entry<Optional<K>, V> entry : map.entrySet()) {
-            K key = entry.getKey().orElse(null);
-            if (key != null) {
-                meal.put(key, entry.getValue());
-            } else {
-                leftover = Optional.of(entry.getValue());
-            }
-        }
-        return new PartitionedMap<>(meal, leftover);
-    }
-
-    public static <E extends @NonNull Object> List<E> catMaybes(
-        List<Optional<E>> source
-    ) {
-        // TODO streaming
-        final List<E> result = new ArrayList<>();
-        for (Optional<E> elem : source) {
-            elem.ifPresent(val -> result.add(val));
-        }
-        return result;
+        opt1.ifPresent(v1 ->
+            opt2.ifPresent(v2 ->
+                opt3.ifPresent(v3 ->
+                action.accept(v1, v2, v3))));
     }
 }

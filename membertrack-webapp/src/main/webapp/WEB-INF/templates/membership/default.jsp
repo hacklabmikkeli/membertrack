@@ -26,11 +26,11 @@
               </c:forEach>
             </ul>
             <ul class="subscriptions">
-              <c:forEach items="${membership.subscribed}" var="subscribed">
+              <c:forEach items="${membership.subscriptions}" var="entry">
                   <li class="service">
-                    <c:out value="${subscribed.service.value.title}" />
+                    <c:out value="${entry.key.value.title}" />
                   </li>
-                  <c:forEach items="${subscribed.subscriptions}"
+                  <c:forEach items="${entry.value}"
                              var="subscription">
                   <li>
                     <ul>
