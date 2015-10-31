@@ -52,6 +52,6 @@ public final class OptionalUtils {
         opt1.ifPresent(v1 ->
             opt2.ifPresent(v2 ->
                 opt3.ifPresent(v3 ->
-                action.accept(v1, v2, v3))));
+                    action.accept(v1, v2, v3))));
     }
 }
