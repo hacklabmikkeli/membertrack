@@ -16,10 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
+import fi.ilmoeuro.membertrack.service.ServiceSubscription;
+import fi.ilmoeuro.membertrack.service.Service;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.Person;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import fi.ilmoeuro.membertrack.data.Entity;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -85,13 +90,19 @@ public final class Membership {
             Entity<Service> s,
             Entity<ServiceSubscription> sn
         ) {
-            subscriptions.put(new Tuple2<>(p, s), sn);
+            Tuple2<Entity<Person>, Entity<Service>> tuple = new Tuple2<>(p, s);
+            subscriptions.put(tuple, sn);
         }
 
+        private Membership buildSingle(Entity<Person> p) {
+            return new Membership(this, p);
+        }
+
+        @SuppressWarnings("nullness") // CF bug workaround
         public List<Membership> build() {
             return people
                 .stream()
-                .map(p -> new Membership(this, p))
+                .map(this::buildSingle)
                 .collect(Collectors.toList());
         }
     }

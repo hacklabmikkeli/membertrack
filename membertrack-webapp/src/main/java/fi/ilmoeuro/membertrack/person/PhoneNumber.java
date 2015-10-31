@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.member;
+package fi.ilmoeuro.membertrack.person;
 
 import lombok.Value;
 
-public final @Value class Service {
-    String title;
-    String description;
+@Value
+public final class PhoneNumber {
+    private final String phoneNumber;
 }

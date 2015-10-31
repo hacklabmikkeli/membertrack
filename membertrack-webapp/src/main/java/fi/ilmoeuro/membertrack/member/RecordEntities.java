@@ -16,8 +16,12 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
-import fi.ilmoeuro.membertrack.data.Entity;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
+import fi.ilmoeuro.membertrack.service.ServiceSubscription;
+import fi.ilmoeuro.membertrack.service.Service;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.Person;
+import fi.ilmoeuro.membertrack.data.Entity;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Record;
