@@ -44,6 +44,7 @@ public final class RecordEntities {
                 new Entity<>(
                     r.getValue(PERSON.ID),
                     new Person(
+                        r.getValue(PERSON.FULLNAME),
                         r.getValue(PERSON.EMAIL)
                     )
                 )

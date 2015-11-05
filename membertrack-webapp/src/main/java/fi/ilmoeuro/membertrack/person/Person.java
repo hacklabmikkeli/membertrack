@@ -22,6 +22,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 @Value
 public final class Person {
+    private final String fullName;
     private final String email;
 
     public String getGravatarUrl() {

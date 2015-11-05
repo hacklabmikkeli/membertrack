@@ -1,5 +1,6 @@
 CREATE TABLE "PUBLIC"."PERSON" (
     "id"                INTEGER             IDENTITY(1,1),
+    "fullname"          VARCHAR(255)        NOT NULL,
     "email"             VARCHAR(255)        NOT NULL,
     CONSTRAINT "person_pk"
         PRIMARY KEY ("id"),

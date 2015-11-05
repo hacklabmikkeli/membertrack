@@ -57,6 +57,7 @@ public final class Memberships {
             jooq
                 .select(
                     PERSON.ID,
+                    PERSON.FULLNAME,
                     PERSON.EMAIL,
                     asNull(PHONE_NUMBER.ID),
                     asNull(PHONE_NUMBER.PHONE_NUMBER_),
@@ -68,14 +69,15 @@ public final class Memberships {
                     SERVICE_SUBSCRIPTION.LENGTH,
                     SERVICE_SUBSCRIPTION.PAYMENT)
                 .from(PERSON)
+                .crossJoin(SERVICE)
                 .leftOuterJoin(SERVICE_SUBSCRIPTION)
-                    .on(SERVICE_SUBSCRIPTION.PERSON_ID.eq(PERSON.ID))
-                .join(SERVICE)
-                    .on(SERVICE_SUBSCRIPTION.SERVICE_ID.eq(SERVICE.ID))
+                    .on(SERVICE_SUBSCRIPTION.PERSON_ID.eq(PERSON.ID),
+                        SERVICE_SUBSCRIPTION.SERVICE_ID.eq(SERVICE.ID))
                 .where(conditions)
                 .unionAll(
                     select(
                         PERSON.ID,
+                        PERSON.FULLNAME,
                         PERSON.EMAIL,
                         PHONE_NUMBER.ID,
                         PHONE_NUMBER.PHONE_NUMBER_,

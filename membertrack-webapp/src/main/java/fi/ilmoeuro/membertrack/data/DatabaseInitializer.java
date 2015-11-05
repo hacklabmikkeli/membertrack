@@ -101,8 +101,8 @@ public class DatabaseInitializer {
                         IOUtils.readLines(clearStream, Charsets.UTF_8);
                     runSqlFiles(clearFiles);
                 }
-            } catch (DataAccessException e) {
-                // Database is clean
+            } catch (DataAccessException ex) {
+                log.log(Level.INFO, "Exception while clearing db", ex);
             } catch (IOException ex) {
                 throw new RuntimeException("Error loading clear list", ex);
             }

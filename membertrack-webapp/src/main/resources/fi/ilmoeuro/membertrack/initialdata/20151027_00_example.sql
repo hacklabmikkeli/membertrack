@@ -1,9 +1,9 @@
 INSERT INTO 
-    "PUBLIC"."PERSON" ("id", "email")
+    "PUBLIC"."PERSON" ("id", "fullname", "email")
 VALUES
-    (1, 'verylongemailohmygodhowisthisevenpossibleiamconfused@example.com'),
-    (2, 'john.doe@example.com'),
-    (3, 'matti.meikalainen@example.com');
+    (1, 'Mr Very Long', 'verylongemailohmygodhowisthisevenpossibleiamconfused@example.com'),
+    (2, 'John Doe', 'john.doe@example.com'),
+    (3, 'Matti Meikäläinen', 'matti.meikalainen@example.com');
 
 INSERT INTO
     "PUBLIC"."PHONE_NUMBER" ("person_id", "phone_number")
