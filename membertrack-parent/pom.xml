@@ -27,6 +27,7 @@
         <commons.io.version>2.4</commons.io.version>
         <commons.codec.version>1.10</commons.codec.version>
         <commons.lang.version>2.6</commons.lang.version>
+        <relate.version>0.6</relate.version>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
 

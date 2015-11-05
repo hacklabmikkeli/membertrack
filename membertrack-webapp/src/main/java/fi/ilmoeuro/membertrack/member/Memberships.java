@@ -16,7 +16,13 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
+import com.relatejava.relate.RelationMapper_2__1;
+import fi.ilmoeuro.membertrack.data.Entity;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
+import fi.ilmoeuro.membertrack.person.Person;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.service.Service;
+import fi.ilmoeuro.membertrack.service.ServiceSubscription;
 import static fi.ilmoeuro.membertrack.util.DataUtils.*;
 import static fi.ilmoeuro.membertrack.util.OptionalUtils.*;
 import java.util.List;
@@ -88,25 +94,33 @@ public final class Memberships {
                     SERVICE.TITLE,
                     SERVICE_SUBSCRIPTION.START_TIME)
                 .fetchLazy()) {
-            Membership.ListBuilder builder = new Membership.ListBuilder();
+            RelationMapper_2__1<
+                Entity<Person>,
+                Entity<Service>,
+                Entity<PhoneNumber>,
+                Entity<ServiceSubscription>>
+                mapper = new RelationMapper_2__1<>();
             for (Record r : records) {
                 ifAllPresent(RecordEntities.person(r),
-                    p -> builder.putPerson(p));
+                    p -> mapper.root(p));
                 ifAllPresent(
                     RecordEntities.person(r),
                     RecordEntities.phoneNumber(r),
-                    (p, pn) -> builder.putPhoneNumber(p, pn));
+                    (p, pn) -> mapper.relate_2(p, pn));
                 ifAllPresent(
                     RecordEntities.person(r),
                     RecordEntities.service(r),
-                    (p, s) -> builder.putService(p, s));
+                    (p, s) -> mapper.relate_1(p, s));
                 ifAllPresent(
                     RecordEntities.person(r),
                     RecordEntities.service(r),
                     RecordEntities.subscription(r),
-                    (p, s, sn) -> builder.putSubscription(p, s, sn));
+                    (p, s, sn) -> mapper.relate_1_1(p, s, sn));
             }
-            return builder.build();
+            return mapper.<Membership>build(
+                (people, phoneNumbers, subscriptions) ->
+                    new Membership(people, phoneNumbers, subscriptions)
+            );
         }
     }
 }

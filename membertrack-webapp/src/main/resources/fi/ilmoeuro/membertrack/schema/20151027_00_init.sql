@@ -42,7 +42,7 @@ CREATE TABLE "PUBLIC"."SERVICE_SUBSCRIPTION" (
     "id"                INTEGER             IDENTITY(1,1),
     "service_id"        INTEGER             NOT NULL,
     "person_id"         INTEGER             NOT NULL,
-    "start_time"        TIMESTAMP           NOT NULL,
+    "start_time"        DATETIME            NOT NULL,
     "length"            BIGINT              NOT NULL,
     "payment"           INTEGER             NOT NULL,
     CONSTRAINT "service_subscription_pk"

@@ -33,7 +33,7 @@ public final @Value class ServiceSubscription {
     }
 
     public Instant getEnd() {
-        return start.plusMillis(length);
+        return start.plusSeconds(length);
     }
 
     public String getStart_fi_FI() {

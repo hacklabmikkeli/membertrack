@@ -18,12 +18,17 @@
         <schema.targetfile>${project.basedir}/target/schema/schema.sql</schema.targetfile>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>relate-java</id>
+            <name>relate-java</name>
+            <url>http://dl.bintray.com/relate-java/relate-java</url>
+        </repository>
+    </repositories>
     <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>18.0</version>
-        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -129,6 +134,11 @@
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <version>${checkerframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.relatejava</groupId>
+            <artifactId>relate</artifactId>
+            <version>${relate.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
