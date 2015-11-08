@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.member.MembershipsUI;
+import fi.ilmoeuro.membertrack.person.PersonsUI;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,7 @@ import org.glassfish.jersey.linking.InjectLink;
 public final class Paths {
     @InjectLink(resource = MembershipsUI.class)
     private @Nullable String memberships;
+
+    @InjectLink(resource = PersonsUI.class)
+    private @Nullable String persons;
 }

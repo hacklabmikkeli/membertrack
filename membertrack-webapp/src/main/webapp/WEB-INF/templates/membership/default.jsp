@@ -22,6 +22,7 @@
     <c:forEach items="${it.memberships}" var="membership">
         <t:membership-person-edit
             membership="${membership}"
+            personsUrl="${it.paths.persons}"
             gotoUrl="${myUrl}" />
         <t:membership-subscriptions-edit
             membership="${membership}"

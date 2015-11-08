@@ -2,9 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="membership" type="fi.ilmoeuro.membertrack.member.Membership" %>
 <%@ attribute name="gotoUrl" type="java.lang.String" %>
+<%@ attribute name="personsUrl" type="java.lang.String" %>
 <c:set var="personId" value="${membership.person.id}" />
 <div class="popup" id="person-${personId}-edit">
-    <form class="pure-form pure-form-aligned">
+    <form
+        method="POST"
+        action="${personsUrl}update"
+        class="pure-form pure-form-aligned">
         <input type="hidden" name="personId" value="${personId}" />
         <input type="hidden" name="goto" value="${gotoUrl}" />
         <fieldset>
