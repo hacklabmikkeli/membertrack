@@ -18,18 +18,32 @@ package fi.ilmoeuro.membertrack.member;
 
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
 import fi.ilmoeuro.membertrack.ui.Paths;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import lombok.Value;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.server.mvc.Template;
 
 @Path("/membership/")
 public class MembershipsUI {
 
+    @Context
+    UriInfo uri;
+
     public static final @Value class ViewModel {
         final List<Membership> memberships;
+        final int numPages;
+        final int currentPage;
         final Paths paths = new Paths();
     }
 
@@ -41,12 +55,23 @@ public class MembershipsUI {
     ) {
         this.memberships = memberships;
     }
+
+    @GET
+    public Response index() {
+        URI newUri = URI.create(uri.getAbsolutePath().toString() + "/1");
+        return Response.seeOther(newUri).build();
+    }
     
     @GET
     @Template(name = "/membership/default")
-    public ViewModel listAll() throws UnauthorizedException {
+    @Path("{PAGE}")
+    public ViewModel listAll(
+        @PathParam("PAGE") @DefaultValue("1") Integer pageNum
+    ) throws UnauthorizedException {
         return new ViewModel(
-            memberships.listAll()
+            memberships.listPage(pageNum - 1),
+            memberships.numPages(),
+            pageNum
         );
     }
 }

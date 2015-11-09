@@ -28,6 +28,7 @@
         <commons.codec.version>1.10</commons.codec.version>
         <commons.lang.version>2.6</commons.lang.version>
         <relate.version>0.6</relate.version>
+        <slf4j.version>1.7.12</slf4j.version>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
 

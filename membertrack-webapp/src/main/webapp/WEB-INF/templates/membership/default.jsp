@@ -11,6 +11,19 @@
 <t:master title="Memberships" menupos="membership">
     <c:set var="myUrl"
            value="${requestScope['javax.servlet.forward.request_uri']}" />
+    <div class="pure-menu pure-menu-horizontal">
+        <ul class="pure-menu-list">
+        <c:forEach begin="1" end="${it.numPages}" var="pageNum">
+            <li class="pure-menu-item
+                       ${it.currentPage == pageNum ? 'pure-menu-selected' : ''}">
+                <a class="pure-menu-link"
+                   href="${it.paths.memberships}${pageNum}">
+                  <c:out value="${pageNum}" />
+                </a>
+            </li>
+        </c:forEach>
+        </ul>
+    </div>
     <ul class="subscriber-list">
       <c:forEach items="${it.memberships}" var="membership">
           <li>

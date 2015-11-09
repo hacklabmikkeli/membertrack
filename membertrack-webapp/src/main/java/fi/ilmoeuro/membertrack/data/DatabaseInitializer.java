@@ -21,13 +21,12 @@ import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 import lombok.Data;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;
@@ -35,7 +34,7 @@ import org.jooq.exception.DataAccessException;
 
 @Singleton
 @Startup
-@Log
+@Slf4j
 public class DatabaseInitializer {
 
     public static final @Data class Config {
@@ -79,7 +78,7 @@ public class DatabaseInitializer {
                     ));
                 }
                 String sql = IOUtils.toString(sqlStream, Charsets.UTF_8);
-                log.log(Level.INFO, "Executing: {0}", sql);
+                log.info("Executing: {}", sql);
                 for (String part : sql.split(";")) {
                     jooq.execute(part);
                 }
@@ -102,7 +101,7 @@ public class DatabaseInitializer {
                     runSqlFiles(clearFiles);
                 }
             } catch (DataAccessException ex) {
-                log.log(Level.INFO, "Exception while clearing db", ex);
+                log.info("Exception while clearing db", ex);
             } catch (IOException ex) {
                 throw new RuntimeException("Error loading clear list", ex);
             }

@@ -25,25 +25,73 @@ import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.ServiceSubscription;
 import static fi.ilmoeuro.membertrack.util.DataUtils.*;
 import static fi.ilmoeuro.membertrack.util.OptionalUtils.*;
+import java.util.Collections;
 import java.util.List;
 import static org.jooq.impl.DSL.*;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jooq.Table;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Cursor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.impl.DSL;
 
 @Dependent
 public final class Memberships {
 
     private final DSLContext jooq;
+    private static final int PAGE_SIZE = 10;
 
     @Inject
     public Memberships(
         DSLContext jooq
     ) {
        this.jooq = jooq;
+    }
+
+    public int numPages() {
+        return (int)
+            Math.ceil(
+                jooq.select(DSL.count())
+                    .from(PERSON)
+                    .fetchAnyInto(Integer.class)
+                / (double)PAGE_SIZE);
+    }
+
+    public List<Membership> listPage(int pageNum) {
+        @Nullable String start = jooq
+            .select(PERSON.FULLNAME)
+            .from(PERSON)
+            .orderBy(PERSON.FULLNAME)
+            .limit(pageNum * PAGE_SIZE, 1)
+            .fetchAny(r -> r.getValue(PERSON.FULLNAME));
+
+        @Nullable String end = jooq
+            .select(PERSON.FULLNAME)
+            .from(PERSON)
+            .orderBy(PERSON.FULLNAME)
+            .limit((pageNum + 1) * PAGE_SIZE, 1)
+            .fetchAny(r -> r.getValue(PERSON.FULLNAME));
+
+        if (start != null) {
+            if (end != null) {
+                return listByConditions(
+                    PERSON.FULLNAME.ge(start),
+                    PERSON.FULLNAME.lt(end)
+                );
+            } else {
+                return listByConditions(
+                    PERSON.FULLNAME.ge(start)
+                );
+            }
+        }
+
+        return Collections.emptyList();
     }
 
     public List<Membership> listAll() {
@@ -92,7 +140,7 @@ public final class Memberships {
                     .join(PERSON).onKey()
                     .where(conditions))
                 .orderBy(
-                    PERSON.EMAIL,
+                    PERSON.FULLNAME,
                     SERVICE.TITLE,
                     SERVICE_SUBSCRIPTION.START_TIME)
                 .fetchLazy()) {
