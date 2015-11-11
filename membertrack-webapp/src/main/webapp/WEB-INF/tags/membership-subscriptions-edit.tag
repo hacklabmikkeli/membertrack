@@ -5,7 +5,7 @@
 <c:set var="personId" value="${membership.person.id}" />
 <c:forEach items="${membership.subscriptions}" var="entry">
 <c:set var="subId" value="${entry.key.id}" />
-<div class="popup" id="sub-${personId}-${subId}-edit">
+<div class="popup" id="edit-sub-${personId}-${subId}">
     <form class="pure-form pure-form-aligned">
         <input type="hidden" name="personId" value="${personId}" />
         <input type="hidden" name="subId" value="${subId}" />
@@ -36,9 +36,10 @@
                        width="8"
                        value="${subscription.value.paymentFormatted}" />
                 &euro;
+                <button class="pure-button" data-destroy="{parent}">Remove</button>
             </div>
             </c:forEach>
-            <div class="pure-control-group">
+            <div class="pure-control-group hide-prototype proto-sub-new">
                 <input type="text"
                        style="width: 8em;"
                        name="startDate"
@@ -57,7 +58,13 @@
                        width="8"
                        value="" />
                 &euro;
+                <button class="pure-button" data-destroy="{parent}">Remove</button>
             </div>
+        </fieldset>
+        <fieldset>
+            <button class="pure-button" data-clone=".proto-sub-new:not([data-cloned])">
+                Add
+            </button>
         </fieldset>
         <fieldset>
             <div class="pure-control-group for-buttons">

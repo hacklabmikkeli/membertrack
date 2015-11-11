@@ -27,6 +27,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.StringUtils;
 
 @Path("/person/")
 public class PersonsUI {
@@ -52,10 +53,30 @@ public class PersonsUI {
     ) throws URISyntaxException {
         List<PhoneNumber>
             phoneNumbers = phoneNumberStrings.stream()
+                                             .filter(s -> !StringUtils.isBlank(s))
                                              .map(PhoneNumber::new)
                                              .collect(Collectors.toList());
         Entity<Person>
             person = new Entity<>(personId, new Person(fullName, email));
+        persons.put(person, phoneNumbers);
+        return Response.seeOther(new URI(gotoUrl)).build();
+    }
+
+    @POST
+    @Path("create")
+    @Consumes("application/x-www-form-urlencoded")
+    public Response create(
+        @FormParam("goto") String gotoUrl,
+        @FormParam("fullName") String fullName,
+        @FormParam("email") String email,
+        @FormParam("phoneNumber") List<String> phoneNumberStrings
+    ) throws URISyntaxException {
+        List<PhoneNumber>
+            phoneNumbers = phoneNumberStrings.stream()
+                                             .filter(s -> !StringUtils.isBlank(s))
+                                             .map(PhoneNumber::new)
+                                             .collect(Collectors.toList());
+        Person person = new Person(fullName, email);
         persons.put(person, phoneNumbers);
         return Response.seeOther(new URI(gotoUrl)).build();
     }

@@ -5,7 +5,7 @@
   <c:forEach items="${membership.subscriptions}" var="entry">
       <li class="service">
         <c:out value="${entry.key.value.title}" />
-        <a href="#sub-${membership.person.id}-${entry.key.id}-edit">
+        <a href="#edit-sub-${membership.person.id}-${entry.key.id}">
             Edit
         </a>
       </li>

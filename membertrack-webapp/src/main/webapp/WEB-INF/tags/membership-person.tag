@@ -19,7 +19,7 @@
       </li>
   </c:forEach>
   <li>
-      <a href="#person-${membership.person.id}-edit">
+      <a href="#edit-person-${membership.person.id}">
         Edit
       </a>
   </li>

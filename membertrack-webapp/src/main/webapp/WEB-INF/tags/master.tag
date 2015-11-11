@@ -11,6 +11,7 @@
 <c:url value="/static/css/pure.css"         var="pureUrl" />
 <c:url value="/static/css/pure-theme.css"   var="pureThemeUrl" />
 <c:url value="/static/css/membertrack.css"  var="masterCssUrl" />
+<c:url value="/static/js/membertrack.js"    var="masterJsUrl" />
 
 <!DOCTYPE html>
 <html class="pure-theme-membertrack">
@@ -41,6 +42,7 @@
                 </ul>
             </div>
         </c:if>
+        <script src="${masterJsUrl}"></script>
         <jsp:invoke fragment="js" />
     </body>
 </html>

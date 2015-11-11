@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       name="jdbc/membertrack_pool">
     <property name="driverClass" value="org.h2.Driver"/>
     <property name="schema" value="PUBLIC"/>
-    <property name="URL" value="jdbc:h2:mem:membertrack;CREATE=TRUE;DB_CLOSE_DELAY=-1"/>
+    <property name="URL" value="jdbc:h2:mem:membertrack;CREATE=TRUE;DB_CLOSE_DELAY=-1;MODE=PostgreSQL"/>
     <property name="User" value="root"/>
     <property name="Password" value="root"/>
   </jdbc-connection-pool>

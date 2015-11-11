@@ -19,7 +19,6 @@ package fi.ilmoeuro.membertrack.member;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
 import fi.ilmoeuro.membertrack.ui.Paths;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -30,8 +29,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import lombok.Value;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.glassfish.jersey.linking.InjectLink;
 import org.glassfish.jersey.server.mvc.Template;
 
 @Path("/membership/")

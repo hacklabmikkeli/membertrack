@@ -1,10 +1,11 @@
 <%@ tag description="Edit personal info about membership" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="e" uri="/WEB-INF/extra-tags" %>
 <%@ attribute name="membership" type="fi.ilmoeuro.membertrack.member.Membership" %>
 <%@ attribute name="gotoUrl" type="java.lang.String" %>
 <%@ attribute name="personsUrl" type="java.lang.String" %>
 <c:set var="personId" value="${membership.person.id}" />
-<div class="popup" id="person-${personId}-edit">
+<div class="popup" id="edit-person-${personId}">
     <form
         method="POST"
         action="${personsUrl}update"
@@ -14,15 +15,15 @@
         <fieldset>
             <legend>Personal information</legend>
             <div class="pure-control-group">
-                <label for="person-${personId}-edit-email">Full name</label>
-                <input id="person-${personId}-edit-email"
+                <label for="lb-${e:nextNum()}">Full name</label>
+                <input id="lb-${e:lastNum()}" 
                        type="text"
                        name="fullName"
                        value="${membership.person.value.fullName}" />
             </div>
             <div class="pure-control-group">
-                <label for="person-${personId}-edit-email">Email</label>
-                <input id="person-${personId}-edit-email"
+                <label for="lb-${e:nextNum()}">Email</label>
+                <input id="lb-${e:lastNum()}"
                        type="text"
                        name="email"
                        value="${membership.person.value.email}" />
@@ -31,22 +32,36 @@
         <fieldset>
             <legend>Phone numbers</legend>
             <c:forEach items="${membership.phoneNumbers}" var="phoneNumber">
-            <c:set var="pnId" value="${phoneNumber.id}" />
             <div class="pure-control-group">
-                <label for="person-${personId}-edit-pn-${pnId}"></label>
-                <input id="person-${personId}-edit-pn-${pnId}"
-                       type="text"
+                <label></label>
+                <input type="text"
                        name="phoneNumber"
                        value="${phoneNumber.value.phoneNumber}" />
+                <button type="button"
+                        class="pure-button"
+                        data-destroy="{parent}">
+                    Remove
+                </button>
             </div>
             </c:forEach>
-            <div class="pure-control-group">
-                <label for="person-${personId}-edit-pn-new}"></label>
-                <input id="person-${personId}-edit-pn-new"
-                       type="text"
+            <div class="pure-control-group hide-prototype prototype-new-pn">
+                <label></label>
+                <input type="text"
                        name="phoneNumber"
                        />
+                <button type="button"
+                        class="pure-button"
+                        data-destroy="{parent}">
+                    Remove
+                </button>
             </div>
+        </fieldset>
+        <fieldset>
+            <button type="button"
+                    class="pure-button"
+                    data-clone=".prototype-new-pn:not([data-cloned])">
+                Add
+            </button>
         </fieldset>
         <fieldset>
             <div class="pure-control-group for-buttons">

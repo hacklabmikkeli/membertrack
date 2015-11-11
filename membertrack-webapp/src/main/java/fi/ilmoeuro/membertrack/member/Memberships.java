@@ -31,14 +31,10 @@ import static org.jooq.impl.DSL.*;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jooq.Table;
-import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Cursor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.impl.DSL;
 
 @Dependent

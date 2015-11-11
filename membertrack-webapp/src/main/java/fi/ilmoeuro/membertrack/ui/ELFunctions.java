@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.person;
+package fi.ilmoeuro.membertrack.ui;
 
-import lombok.Value;
+public final class ELFunctions {
+    private ELFunctions() {
+        // not meant to be instantiated
+    }
 
-public final @Value class PhoneNumber {
-    private final String phoneNumber;
+    private static int currentNum = 1;
+
+    public static int lastNum() {
+        return currentNum;
+    }
+
+    public static int nextNum() {
+        currentNum++;
+        return currentNum;
+    }
 }
