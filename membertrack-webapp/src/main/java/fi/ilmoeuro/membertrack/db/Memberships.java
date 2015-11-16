@@ -25,8 +25,8 @@ import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.ServiceSubscription;
 import static fi.ilmoeuro.membertrack.db.RecordEntityMapper.*;
-import fi.ilmoeuro.membertrack.entity.View;
-import fi.ilmoeuro.membertrack.member.MembershipSearchCriteria;
+import fi.ilmoeuro.membertrack.entity.PaginatedView;
+import fi.ilmoeuro.membertrack.member.MembershipsQuery;
 import fi.ilmoeuro.membertrack.person.Person;
 import static fi.ilmoeuro.membertrack.util.DataUtils.*;
 import static fi.ilmoeuro.membertrack.util.OptionalUtils.*;
@@ -48,7 +48,7 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
 @Dependent
-public final class Memberships implements View<Membership, MembershipSearchCriteria> {
+public final class Memberships implements PaginatedView<Membership, MembershipsQuery> {
 
     private final DSLContext jooq;
     private static final int PAGE_SIZE = 10;
@@ -60,7 +60,8 @@ public final class Memberships implements View<Membership, MembershipSearchCrite
        this.jooq = jooq;
     }
 
-    private int numPages() {
+    @Override
+    public int numPages() {
         return (int)
             Math.ceil(
                 jooq.select(DSL.count())
@@ -192,7 +193,12 @@ public final class Memberships implements View<Membership, MembershipSearchCrite
     }
 
     @Override
-    public List<Entity<Membership>> list(MembershipSearchCriteria query) {
-        return listPage(query.getPageNumber());
+    public List<Entity<Membership>> listPage(MembershipsQuery query, int pageNum) {
+        return listPage(pageNum);
+    }
+
+    @Override
+    public List<Entity<Membership>> list(MembershipsQuery query) {
+        return listByConditions();
     }
 }

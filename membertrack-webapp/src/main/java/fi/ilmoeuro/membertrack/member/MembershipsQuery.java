@@ -18,8 +18,5 @@ package fi.ilmoeuro.membertrack.member;
 
 import lombok.Value;
 
-public @Value class MembershipSearchCriteria {
-    
-    int pageNumber;
-    
+public @Value class MembershipsQuery {
 }
