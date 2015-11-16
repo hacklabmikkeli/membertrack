@@ -19,6 +19,8 @@ package fi.ilmoeuro.membertrack.member;
 import fi.ilmoeuro.membertrack.auth.Authorizer;
 import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
+import fi.ilmoeuro.membertrack.entity.Entity;
+import fi.ilmoeuro.membertrack.entity.View;
 import fi.ilmoeuro.membertrack.ui.Paths;
 import java.net.URI;
 import java.util.List;
@@ -41,18 +43,18 @@ public class MembershipsUI {
     UriInfo uri;
 
     public static final @Value class ViewModel {
-        final List<Membership> memberships;
+        final List<Entity<Membership>> memberships;
         final int numPages;
         final int currentPage;
         final Paths paths = new Paths();
     }
 
-    private final Memberships memberships;
+    private final View<Membership, MembershipSearchCriteria> memberships;
     private final Authorizer authorizer;
 
     @Inject
     public MembershipsUI(
-        Memberships memberships,
+        View<Membership, MembershipSearchCriteria> memberships,
         Authorizer authorizer
     ) {
         this.memberships = memberships;
@@ -73,8 +75,8 @@ public class MembershipsUI {
     ) throws UnauthorizedException {
         authorizer.ensureAuthorized(Permission.LOGGED_IN);
         return new ViewModel(
-            memberships.listPage(pageNum - 1),
-            memberships.numPages(),
+            memberships.list(new MembershipSearchCriteria(pageNum)),
+            5,
             pageNum
         );
     }

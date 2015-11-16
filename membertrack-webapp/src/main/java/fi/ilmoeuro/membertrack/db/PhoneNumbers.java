@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.person;
+package fi.ilmoeuro.membertrack.db;
 
-import fi.ilmoeuro.membertrack.data.Entity;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import java.util.Collection;
 import java.util.Iterator;
@@ -40,21 +40,18 @@ public final class PhoneNumbers {
         this.jooq = jooq;
     }
 
-    public void update(
-        Entity<Person> person,
-        Collection<PhoneNumber> phoneNumbers
-    ) {
+    public void update(int personId, Collection<PhoneNumber> phoneNumbers) {
         final Iterator<PhoneNumber> it = phoneNumbers.iterator();
         if (it.hasNext()) {
             PhoneNumber phoneNumber = it.next();
             final SelectSelectStep<Record2<Integer, String>> newPns = jooq.select(
-                DSL.cast(person.getId(), PHONE_NUMBER.PERSON_ID),
+                DSL.cast(personId, PHONE_NUMBER.PERSON_ID),
                 DSL.cast(phoneNumber.getPhoneNumber(), PHONE_NUMBER.PHONE_NUMBER_));
             while (it.hasNext()) {
                 phoneNumber = it.next();
                 newPns.unionAll(
                     DSL.select(
-                        DSL.cast(person.getId(), PHONE_NUMBER.PERSON_ID),
+                        DSL.cast(personId, PHONE_NUMBER.PERSON_ID),
                         DSL.cast(phoneNumber.getPhoneNumber(), PHONE_NUMBER.PHONE_NUMBER_)));
             }
 
@@ -64,14 +61,14 @@ public final class PhoneNumbers {
                 .select(newPns.except(
                     DSL.select(PHONE_NUMBER.PERSON_ID, PHONE_NUMBER.PHONE_NUMBER_)
                         .from(PHONE_NUMBER)
-                        .where(PHONE_NUMBER.PERSON_ID.eq(person.getId()))))
+                        .where(PHONE_NUMBER.PERSON_ID.eq(personId))))
                 .execute();
         }
             
         jooq.deleteFrom(PHONE_NUMBER)
             .where(
                 DSL.and(
-                    PHONE_NUMBER.PERSON_ID.eq(person.getId()),
+                    PHONE_NUMBER.PERSON_ID.eq(personId),
                     PHONE_NUMBER.PHONE_NUMBER_.notIn(
                         phoneNumbers.stream()
                                     .map(PhoneNumber::getPhoneNumber)

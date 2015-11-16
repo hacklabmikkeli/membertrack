@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.member;
+package fi.ilmoeuro.membertrack.entity;
 
-import fi.ilmoeuro.membertrack.service.ServiceSubscription;
-import fi.ilmoeuro.membertrack.service.Service;
-import fi.ilmoeuro.membertrack.entity.Entity;
-import fi.ilmoeuro.membertrack.person.Person;
-import java.util.Map;
-import java.util.Set;
-import lombok.Value;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final @Value class Membership {
-    Person person;
-    Map<Entity<Service>,
-        Set<Entity<ServiceSubscription>>> subscriptions;
+public interface Manager<T> {
+    public Entity<@NonNull T> insert(@NonNull T value);
+    public Entity<@NonNull T> update(int id, @NonNull T value);
+    public Entity<@NonNull T> update(Entity<@NonNull T> entity);
+    public void delete(int id);
 }

@@ -1,10 +1,10 @@
 <%@ tag description="Edit personal info about membership" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="e" uri="/WEB-INF/extra-tags" %>
-<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.member.Membership" %>
+<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.entity.Entity" %>
 <%@ attribute name="gotoUrl" type="java.lang.String" %>
 <%@ attribute name="personsUrl" type="java.lang.String" %>
-<c:set var="personId" value="${membership.person.id}" />
+<c:set var="personId" value="${membership.id}" />
 <div class="popup hide-nontarget" id="edit-person-${personId}">
     <form
         method="POST"
@@ -19,24 +19,24 @@
                 <input id="lb-${e:lastNum()}" 
                        type="text"
                        name="fullName"
-                       value="${membership.person.value.fullName}" />
+                       value="${membership.value.person.fullName}" />
             </div>
             <div class="pure-control-group">
                 <label for="lb-${e:nextNum()}">Email</label>
                 <input id="lb-${e:lastNum()}"
                        type="text"
                        name="email"
-                       value="${membership.person.value.email}" />
+                       value="${membership.value.person.email}" />
             </div>
         </fieldset>
         <fieldset>
             <legend>Phone numbers</legend>
-            <c:forEach items="${membership.phoneNumbers}" var="phoneNumber">
+            <c:forEach items="${membership.value.person.phoneNumbers}" var="phoneNumber">
             <div class="pure-control-group">
                 <label></label>
                 <input type="text"
                        name="phoneNumber"
-                       value="${phoneNumber.value.phoneNumber}" />
+                       value="${phoneNumber.phoneNumber}" />
                 <button type="button"
                         class="pure-button"
                         data-destroy="{parent}">

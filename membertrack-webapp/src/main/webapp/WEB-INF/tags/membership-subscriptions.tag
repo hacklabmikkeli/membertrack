@@ -1,11 +1,11 @@
 <%@ tag description="Personal info about membership" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.member.Membership" %>
+<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.entity.Entity" %>
 <ul class="subscriptions">
-  <c:forEach items="${membership.subscriptions}" var="entry">
+  <c:forEach items="${membership.value.subscriptions}" var="entry">
       <li class="service">
         <c:out value="${entry.key.value.title}" />
-        <a href="#edit-sub-${membership.person.id}-${entry.key.id}">
+        <a href="#edit-sub-${membership.id}-${entry.key.id}">
             Edit
         </a>
       </li>

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,18 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.data;
+package fi.ilmoeuro.membertrack.person;
 
-import java.util.function.Function;
 import lombok.Value;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-@Value
-public final class Entity<T extends @NonNull Object> {
-    private final int id;
-    private final T value;
-
-    public Entity<T> map(Function<T, T> func) {
-        return new Entity<>(id, func.apply(value));
-    }
+public final @Value class PersonData {
+    private final String fullName;
+    private final String email;
 }

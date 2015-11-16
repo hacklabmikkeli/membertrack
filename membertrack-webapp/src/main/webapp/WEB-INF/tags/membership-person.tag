@@ -1,25 +1,25 @@
 <%@ tag description="Personal info about membership" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.member.Membership" %>
+<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.entity.Entity" %>
 <ul class="person">
   <li class="pic">
-    <img src="${membership.person.value.gravatarUrl}"
+    <img src="${membership.value.person.gravatarUrl}"
          alt="Avatar" />
   </li>
   <li class="fullname">
-    <c:out value="${membership.person.value.fullName}" />
+    <c:out value="${membership.value.person.fullName}" />
   </li>
   <li class="email">
-    <c:out value="${membership.person.value.email}" />
+    <c:out value="${membership.value.person.email}" />
   </li>
-  <c:forEach items="${membership.phoneNumbers}"
+  <c:forEach items="${membership.value.person.phoneNumbers}"
              var="phoneNumber">
       <li class="phone-number">
-        <c:out value="${phoneNumber.value.phoneNumber}" />
+        <c:out value="${phoneNumber.phoneNumber}" />
       </li>
   </c:forEach>
   <li>
-      <a href="#edit-person-${membership.person.id}">
+      <a href="#edit-person-${membership.id}">
         Edit
       </a>
   </li>

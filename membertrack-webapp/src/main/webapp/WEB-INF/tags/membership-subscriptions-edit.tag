@@ -1,9 +1,9 @@
 <%@ tag description="Personal info about membership" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.member.Membership" %>
+<%@ attribute name="membership" type="fi.ilmoeuro.membertrack.entity.Entity" %>
 <%@ attribute name="gotoUrl" type="java.lang.String" %>
-<c:set var="personId" value="${membership.person.id}" />
-<c:forEach items="${membership.subscriptions}" var="entry">
+<c:set var="personId" value="${membership.id}" />
+<c:forEach items="${membership.value.subscriptions}" var="entry">
 <c:set var="subId" value="${entry.key.id}" />
 <div class="popup hide-nontarget" id="edit-sub-${personId}-${subId}">
     <form class="pure-form pure-form-aligned">
@@ -12,7 +12,7 @@
         <input type="hidden" name="goto" value="${gotoUrl}" />
         <fieldset>
             <legend>
-                <c:out value="${membership.person.value.fullName}" />
+                <c:out value="${membership.value.person.fullName}" />
                 &mdash;
                 <c:out value="${entry.key.value.title}" />
             </legend>

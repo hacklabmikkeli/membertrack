@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,33 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
+import java.util.Collection;
 import java.util.Locale;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.codec.digest.DigestUtils;
 
-@Value
-public final class Person {
-    private final String fullName;
-    private final String email;
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+public class Person {
+    private final @Getter PersonData data;
+    private final @Getter Collection<PhoneNumber> phoneNumbers;
+
+    public String getEmail() {
+        return data.getEmail();
+    }
+
+    public String getFullName() {
+        return data.getFullName();
+    }
 
     public String getGravatarUrl() {
         return String.format("//gravatar.com/avatar/%s",
             DigestUtils.md5Hex(
-                email.trim().toLowerCase(Locale.ROOT)
+                data.getEmail().trim().toLowerCase(Locale.ROOT)
             )
         );
     }

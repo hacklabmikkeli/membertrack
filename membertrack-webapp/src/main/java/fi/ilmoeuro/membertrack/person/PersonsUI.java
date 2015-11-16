@@ -19,7 +19,7 @@ package fi.ilmoeuro.membertrack.person;
 import fi.ilmoeuro.membertrack.auth.Authorizer;
 import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
-import fi.ilmoeuro.membertrack.data.Entity;
+import fi.ilmoeuro.membertrack.entity.Manager;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -36,15 +36,15 @@ import org.apache.commons.lang.StringUtils;
 @Path("/person/")
 public class PersonsUI {
 
-    private final Persons persons;
+    private final Manager<Person> personManager;
     private final Authorizer authorizer;
 
     @Inject
     public PersonsUI(
-        Persons persons,
+        Manager<Person> personManager,
         Authorizer authorizer
     ) {
-        this.persons = persons;
+        this.personManager = personManager;
         this.authorizer = authorizer;
     }
     
@@ -63,11 +63,13 @@ public class PersonsUI {
         List<PhoneNumber> phoneNumbers = phoneNumberStrings
             .stream()
             .filter(this::notBlank)
-            .map(PhoneNumber::new)
+            .<PhoneNumber>map(PhoneNumber::new)
             .collect(Collectors.<PhoneNumber>toList());
-        Entity<Person>
-            person = new Entity<>(personId, new Person(fullName, email));
-        persons.put(person, phoneNumbers);
+        personManager.update(
+            personId,
+            new Person(
+                new PersonData(fullName, email),
+                phoneNumbers));
         return Response.seeOther(new URI(gotoUrl)).build();
     }
 
@@ -85,10 +87,12 @@ public class PersonsUI {
         List<PhoneNumber> phoneNumbers = phoneNumberStrings
             .stream()
             .filter(this::notBlank)
-            .map(PhoneNumber::new)
+            .<PhoneNumber>map(PhoneNumber::new)
             .collect(Collectors.<PhoneNumber>toList());
-        Person person = new Person(fullName, email);
-        persons.put(person, phoneNumbers);
+        personManager.insert(
+            new Person(
+                new PersonData(fullName, email),
+                phoneNumbers));
         return Response.seeOther(new URI(gotoUrl)).build();
     }
 
