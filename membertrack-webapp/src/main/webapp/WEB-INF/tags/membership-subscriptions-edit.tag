@@ -5,7 +5,7 @@
 <c:set var="personId" value="${membership.person.id}" />
 <c:forEach items="${membership.subscriptions}" var="entry">
 <c:set var="subId" value="${entry.key.id}" />
-<div class="popup" id="edit-sub-${personId}-${subId}">
+<div class="popup hide-nontarget" id="edit-sub-${personId}-${subId}">
     <form class="pure-form pure-form-aligned">
         <input type="hidden" name="personId" value="${personId}" />
         <input type="hidden" name="subId" value="${subId}" />

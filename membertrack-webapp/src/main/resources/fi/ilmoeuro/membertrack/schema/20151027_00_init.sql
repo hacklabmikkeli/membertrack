@@ -1,6 +1,6 @@
 CREATE TABLE "PUBLIC"."PERSON" (
     "id"                INTEGER             IDENTITY(1,1),
-    "fullname"          VARCHAR(255)        NOT NULL,
+    "full_name"         VARCHAR(255)        NOT NULL,
     "email"             VARCHAR(255)        NOT NULL,
     CONSTRAINT "person_pk"
         PRIMARY KEY ("id"),
@@ -11,8 +11,8 @@ CREATE TABLE "PUBLIC"."PERSON" (
 CREATE TABLE "PUBLIC"."ACCOUNT" (
     "id"                INTEGER             IDENTITY(1,1),
     "person_id"         INTEGER             NOT NULL,
-    "hash"              VARCHAR(255)        NOT NULL,
-    "salt"              VARCHAR(255)        NOT NULL,
+    "hash"              VARCHAR(4096)       NOT NULL,
+    "salt"              VARCHAR(4096)       NOT NULL,
     CONSTRAINT "account_pk"
         PRIMARY KEY ("id"),
     CONSTRAINT "account_fk_person_id"

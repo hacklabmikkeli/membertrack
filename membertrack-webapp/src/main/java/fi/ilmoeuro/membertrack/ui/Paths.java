@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
+import fi.ilmoeuro.membertrack.auth.ui.AuthenticationUI;
 import fi.ilmoeuro.membertrack.member.MembershipsUI;
 import fi.ilmoeuro.membertrack.person.PersonsUI;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -31,4 +32,7 @@ public final class Paths {
 
     @InjectLink(resource = PersonsUI.class)
     private @Nullable String persons;
+
+    @InjectLink(resource = AuthenticationUI.class)
+    private @Nullable String authentication;
 }

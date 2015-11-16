@@ -22,9 +22,20 @@ public interface Authorizer {
 
     boolean isAuthorized(Permission permission, Object context);
 
-    void ensureAuthorized(Permission permission)
-        throws UnauthorizedException;
+    default void ensureAuthorized(
+        Permission permission
+    ) throws UnauthorizedException {
+        if (!isAuthorized(permission)) {
+            throw new UnauthorizedException();
+        }
+    }
     
-    void ensureAuthorized(Permission permission, Object context)
-        throws UnauthorizedException;
+    default void ensureAuthorized(
+        Permission permission,
+        Object context
+    ) throws UnauthorizedException {
+        if (!isAuthorized(permission, context)) {
+            throw new UnauthorizedException();
+        }
+    }
 }

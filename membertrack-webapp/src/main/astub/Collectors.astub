@@ -2,7 +2,7 @@ package java.util.stream;
 
 class Collectors {
     static <T, C> Collector<T,?,C> toCollection(Supplier<C> arg0);
-    static <T> Collector<@PolyNull T,?,List<@PolyNull T>> toList();
+    static <T> Collector<T,?,List<T>> toList();
     static <T> Collector<T,?,Set<T>> toSet();
     static Collector<CharSequence,?,String> joining();
     static Collector<CharSequence,?,String> joining(CharSequence arg0);

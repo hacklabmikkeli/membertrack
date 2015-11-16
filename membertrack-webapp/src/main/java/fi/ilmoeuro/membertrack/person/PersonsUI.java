@@ -16,12 +16,16 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
+import fi.ilmoeuro.membertrack.auth.Authorizer;
+import fi.ilmoeuro.membertrack.auth.Permission;
+import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
 import fi.ilmoeuro.membertrack.data.Entity;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,29 +37,34 @@ import org.apache.commons.lang.StringUtils;
 public class PersonsUI {
 
     private final Persons persons;
+    private final Authorizer authorizer;
 
     @Inject
     public PersonsUI(
-        Persons persons
+        Persons persons,
+        Authorizer authorizer
     ) {
         this.persons = persons;
+        this.authorizer = authorizer;
     }
     
     @POST
     @Path("update")
     @Consumes("application/x-www-form-urlencoded")
+    @Transactional
     public Response update(
         @FormParam("goto") String gotoUrl,
         @FormParam("personId") int personId,
         @FormParam("fullName") String fullName,
         @FormParam("email") String email,
         @FormParam("phoneNumber") List<String> phoneNumberStrings
-    ) throws URISyntaxException {
-        List<PhoneNumber>
-            phoneNumbers = phoneNumberStrings.stream()
-                                             .filter(s -> !StringUtils.isBlank(s))
-                                             .map(PhoneNumber::new)
-                                             .collect(Collectors.toList());
+    ) throws URISyntaxException, UnauthorizedException {
+        authorizer.ensureAuthorized(Permission.LOGGED_IN);
+        List<PhoneNumber> phoneNumbers = phoneNumberStrings
+            .stream()
+            .filter(this::notBlank)
+            .map(PhoneNumber::new)
+            .collect(Collectors.<PhoneNumber>toList());
         Entity<Person>
             person = new Entity<>(personId, new Person(fullName, email));
         persons.put(person, phoneNumbers);
@@ -65,19 +74,25 @@ public class PersonsUI {
     @POST
     @Path("create")
     @Consumes("application/x-www-form-urlencoded")
+    @Transactional
     public Response create(
         @FormParam("goto") String gotoUrl,
         @FormParam("fullName") String fullName,
         @FormParam("email") String email,
         @FormParam("phoneNumber") List<String> phoneNumberStrings
-    ) throws URISyntaxException {
-        List<PhoneNumber>
-            phoneNumbers = phoneNumberStrings.stream()
-                                             .filter(s -> !StringUtils.isBlank(s))
-                                             .map(PhoneNumber::new)
-                                             .collect(Collectors.toList());
+    ) throws URISyntaxException, UnauthorizedException {
+        authorizer.ensureAuthorized(Permission.LOGGED_IN);
+        List<PhoneNumber> phoneNumbers = phoneNumberStrings
+            .stream()
+            .filter(this::notBlank)
+            .map(PhoneNumber::new)
+            .collect(Collectors.<PhoneNumber>toList());
         Person person = new Person(fullName, email);
         persons.put(person, phoneNumbers);
         return Response.seeOther(new URI(gotoUrl)).build();
+    }
+
+    private boolean notBlank(String s) {
+        return !StringUtils.isBlank(s);
     }
 }

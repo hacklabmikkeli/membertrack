@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import lombok.Value;
 
 public final @Value class ServiceSubscription {
-    Instant start;
+    Instant startTime;
     long length;
     int payment;
 
@@ -33,11 +33,11 @@ public final @Value class ServiceSubscription {
     }
 
     public Instant getEnd() {
-        return start.plusSeconds(length);
+        return startTime.plusSeconds(length);
     }
 
     public String getStart_fi_FI() {
-        return format_fi_FI(getStart());
+        return format_fi_FI(getStartTime());
     }
 
     public String getEnd_fi_FI() {

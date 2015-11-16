@@ -23,6 +23,7 @@ import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.ServiceSubscription;
+import static fi.ilmoeuro.membertrack.data.RecordEntityMapper.*;
 import static fi.ilmoeuro.membertrack.util.DataUtils.*;
 import static fi.ilmoeuro.membertrack.util.OptionalUtils.*;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.List;
 import static org.jooq.impl.DSL.*;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Record;
 import org.jooq.Cursor;
@@ -61,28 +63,28 @@ public final class Memberships {
 
     public List<Membership> listPage(int pageNum) {
         @Nullable String start = jooq
-            .select(PERSON.FULLNAME)
+            .select(PERSON.FULL_NAME)
             .from(PERSON)
-            .orderBy(PERSON.FULLNAME)
+            .orderBy(PERSON.FULL_NAME)
             .limit(pageNum * PAGE_SIZE, 1)
-            .fetchAny(r -> r.getValue(PERSON.FULLNAME));
+            .fetchAny(this::personFullName);
 
         @Nullable String end = jooq
-            .select(PERSON.FULLNAME)
+            .select(PERSON.FULL_NAME)
             .from(PERSON)
-            .orderBy(PERSON.FULLNAME)
+            .orderBy(PERSON.FULL_NAME)
             .limit((pageNum + 1) * PAGE_SIZE, 1)
-            .fetchAny(r -> r.getValue(PERSON.FULLNAME));
+            .fetchAny(this::personFullName);
 
         if (start != null) {
             if (end != null) {
                 return listByConditions(
-                    PERSON.FULLNAME.ge(start),
-                    PERSON.FULLNAME.lt(end)
+                    PERSON.FULL_NAME.ge(start),
+                    PERSON.FULL_NAME.lt(end)
                 );
             } else {
                 return listByConditions(
-                    PERSON.FULLNAME.ge(start)
+                    PERSON.FULL_NAME.ge(start)
                 );
             }
         }
@@ -101,7 +103,7 @@ public final class Memberships {
             jooq
                 .select(
                     PERSON.ID,
-                    PERSON.FULLNAME,
+                    PERSON.FULL_NAME,
                     PERSON.EMAIL,
                     asNull(PHONE_NUMBER.ID),
                     asNull(PHONE_NUMBER.PHONE_NUMBER_),
@@ -121,7 +123,7 @@ public final class Memberships {
                 .unionAll(
                     select(
                         PERSON.ID,
-                        PERSON.FULLNAME,
+                        PERSON.FULL_NAME,
                         PERSON.EMAIL,
                         PHONE_NUMBER.ID,
                         PHONE_NUMBER.PHONE_NUMBER_,
@@ -136,37 +138,40 @@ public final class Memberships {
                     .join(PERSON).onKey()
                     .where(conditions))
                 .orderBy(
-                    PERSON.FULLNAME,
+                    PERSON.FULL_NAME,
                     SERVICE.TITLE,
                     SERVICE_SUBSCRIPTION.START_TIME)
                 .fetchLazy()) {
-            RelationMapper_2__1<
+            final @NonNull
+                RelationMapper_2__1<
                 Entity<Person>,
                 Entity<Service>,
                 Entity<PhoneNumber>,
                 Entity<ServiceSubscription>>
                 mapper = new RelationMapper_2__1<>();
             for (Record r : records) {
-                ifAllPresent(RecordEntities.person(r),
+                ifAllPresent(
+                    mapToEntity(r.into(r.fields(0,1,2)), Person.class),
                     p -> mapper.root(p));
                 ifAllPresent(
-                    RecordEntities.person(r),
-                    RecordEntities.phoneNumber(r),
+                    mapToEntity(r.into(r.fields(0,1,2)), Person.class),
+                    mapToEntity(r.into(r.fields(3,4)), PhoneNumber.class),
                     (p, pn) -> mapper.relate_2(p, pn));
                 ifAllPresent(
-                    RecordEntities.person(r),
-                    RecordEntities.service(r),
+                    mapToEntity(r.into(r.fields(0,1,2)), Person.class),
+                    mapToEntity(r.into(r.fields(5,6,7)), Service.class),
                     (p, s) -> mapper.relate_1(p, s));
                 ifAllPresent(
-                    RecordEntities.person(r),
-                    RecordEntities.service(r),
-                    RecordEntities.subscription(r),
+                    mapToEntity(r.into(r.fields(0,1,2)), Person.class),
+                    mapToEntity(r.into(r.fields(5,6,7)), Service.class),
+                    mapToEntity(r.into(r.fields(8,9,10,11)), ServiceSubscription.class),
                     (p, s, sn) -> mapper.relate_1_1(p, s, sn));
             }
-            return mapper.<Membership>build(
-                (people, phoneNumbers, subscriptions) ->
-                    new Membership(people, phoneNumbers, subscriptions)
-            );
+            return mapper.<Membership>build(Membership::new);
         }
+    }
+
+    private String personFullName(Record r) {
+        return r.getValue(PERSON.FULL_NAME);
     }
 }

@@ -1,4 +1,4 @@
-INSERT INTO "PUBLIC"."PERSON" ("id","fullname","email") VALUES
+INSERT INTO "PUBLIC"."PERSON" ("id","full_name","email") VALUES
     (1,'Kaseem Dickson','sed.dolor@lacusUt.co.uk'),
     (2,'Wynne Chandler','cursus.luctus@Namnullamagna.net'),
     (3,'Jolene Clarke','hendrerit.Donec@lacusCras.ca'),
@@ -48,7 +48,11 @@ INSERT INTO "PUBLIC"."PERSON" ("id","fullname","email") VALUES
     (47,'Hanna Foreman','luctus.vulputate@nonmassanon.co.uk'),
     (48,'Brenna Wade','semper.et@ut.com'),
     (49,'Drew Noel','ipsum.dolor.sit@at.com'),
-    (50,'Connor Horton','cursus.in.hendrerit@dolorFuscefeugiat.com');
+    (50,'Connor Horton','cursus.in.hendrerit@dolorFuscefeugiat.com'),
+    (51,'Administrator', 'admin@example.com');
+
+INSERT INTO "PUBLIC"."ACCOUNT" ("person_id", "hash", "salt") VALUES
+    (51, 'a90df67816fd16f347f5d8b9d7ee55fb', 'admin');
 
 INSERT INTO "PUBLIC"."PHONE_NUMBER" ("person_id","phone_number") VALUES
     (25,'+35844095801'),

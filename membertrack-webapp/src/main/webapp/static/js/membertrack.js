@@ -17,40 +17,20 @@
 
 "use strict";
 
--function() {
-    var elems = document.querySelectorAll("*[data-destroy]");
-    for (var i=0; i<elems.length; i++) {
-        -function() {
-            var target = elems[i].dataset.destroy;
-            if (target === "{parent}") {
-                elems[i].addEventListener('click', function() {
-                    this.parentNode.parentNode.removeChild(this.parentNode);
-                });
-            } else {
-                elems[i].addEventListener('click', function() {
-                    var targets = document.querySelectorAll(target);
-                    for (var j=0; j<targets.length; j++) {
-                        targets[j].parentNode.removeChild(targets[j]);
-                    }
-                });
-            }
-        }();
+$(document).on("click", "[data-destroy]", function() {
+    var target = $(this).attr('data-destroy');
+    if (target === "{parent}") {
+        $(this).parent().remove();
+    } else {
+        $(target).remove();
     }
-}();
+});
 
--function() {
-    var elems = document.querySelectorAll("*[data-clone]");
-    for (var i=0; i<elems.length; i++) {
-        -function() {
-            var target = elems[i].dataset.clone;
-            elems[i].addEventListener('click', function() {
-                var targets = document.querySelectorAll(target);
-                for (var j=0; j<targets.length; j++) {
-                    var newChild = targets[j].cloneNode(true);
-                    newChild.dataset.cloned = "data-cloned";
-                    targets[j].parentNode.appendChild(newChild);
-                }
-            });
-        }();
-    }
-}();
+$(document).on("click", "[data-clone]", function() {
+    var target = $(this).attr('data-clone');
+    $(target).each(function () {
+        var newNode = $(this).clone();
+        newNode.attr('data-cloned', 'data-cloned');
+        $(this).after(newNode);
+    });
+});

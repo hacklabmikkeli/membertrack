@@ -16,6 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
+import fi.ilmoeuro.membertrack.auth.Authorizer;
+import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
 import fi.ilmoeuro.membertrack.ui.Paths;
 import java.net.URI;
@@ -35,6 +37,7 @@ import org.glassfish.jersey.server.mvc.Template;
 public class MembershipsUI {
 
     @Context
+    @SuppressWarnings("nullness")
     UriInfo uri;
 
     public static final @Value class ViewModel {
@@ -45,12 +48,15 @@ public class MembershipsUI {
     }
 
     private final Memberships memberships;
+    private final Authorizer authorizer;
 
     @Inject
     public MembershipsUI(
-        Memberships memberships
+        Memberships memberships,
+        Authorizer authorizer
     ) {
         this.memberships = memberships;
+        this.authorizer = authorizer;
     }
 
     @GET
@@ -65,6 +71,7 @@ public class MembershipsUI {
     public ViewModel listAll(
         @PathParam("PAGE") @DefaultValue("1") Integer pageNum
     ) throws UnauthorizedException {
+        authorizer.ensureAuthorized(Permission.LOGGED_IN);
         return new ViewModel(
             memberships.listPage(pageNum - 1),
             memberships.numPages(),

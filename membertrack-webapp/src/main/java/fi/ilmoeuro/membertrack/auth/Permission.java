@@ -17,5 +17,6 @@
 package fi.ilmoeuro.membertrack.auth;
 
 public enum Permission {
-    LIST_ORGANIZATIONS;
+    GUEST,
+    LOGGED_IN;
 }

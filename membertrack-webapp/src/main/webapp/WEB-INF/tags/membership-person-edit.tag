@@ -5,7 +5,7 @@
 <%@ attribute name="gotoUrl" type="java.lang.String" %>
 <%@ attribute name="personsUrl" type="java.lang.String" %>
 <c:set var="personId" value="${membership.person.id}" />
-<div class="popup" id="edit-person-${personId}">
+<div class="popup hide-nontarget" id="edit-person-${personId}">
     <form
         method="POST"
         action="${personsUrl}update"

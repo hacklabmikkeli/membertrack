@@ -42,7 +42,7 @@ public class Persons {
         Person person,
         Collection<PhoneNumber> newPhoneNumbers
     ) {
-        jooq.insertInto(PERSON, PERSON.FULLNAME, PERSON.EMAIL)
+        jooq.insertInto(PERSON, PERSON.FULL_NAME, PERSON.EMAIL)
             .values(person.getFullName(), person.getEmail())
             .execute();
         Entity<Person>
@@ -55,7 +55,7 @@ public class Persons {
         Collection<PhoneNumber> newPhoneNumbers
     ) {
         jooq.update(PERSON)
-            .set(PERSON.FULLNAME, person.getValue().getFullName())
+            .set(PERSON.FULL_NAME, person.getValue().getFullName())
             .set(PERSON.EMAIL, person.getValue().getEmail())
             .where(PERSON.ID.eq(person.getId()))
             .execute();

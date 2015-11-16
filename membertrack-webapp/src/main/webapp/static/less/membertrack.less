@@ -62,7 +62,7 @@ a.button {
 }
 
 .popup {
-    display: none;
+    .display(flex);
     background-color: rgba(0,0,0,0.5);
     position: fixed;
     left: 0;
@@ -72,10 +72,6 @@ a.button {
     z-index: 1000;
     .justify-content(center);
     .align-items(center);
-
-    &:target {
-        .display(flex);
-    }
 
     & > * {
         overflow-y: auto;
@@ -177,10 +173,10 @@ ul.subscriber-list, .subscriber-list ul {
     }
 }
 
-.hide-prototype {
+.hide-nontarget:not(:target) {
     display: none;
 }
 
-.hide-prototype[data-clone] {
-    display: inherit;
+.hide-prototype:not([data-cloned]) {
+    display: none;
 }
