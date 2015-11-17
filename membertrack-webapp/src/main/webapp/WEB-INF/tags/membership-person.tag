@@ -15,7 +15,7 @@
   <c:forEach items="${membership.value.person.phoneNumbers}"
              var="phoneNumber">
       <li class="phone-number">
-        <c:out value="${phoneNumber.phoneNumber}" />
+        <c:out value="${phoneNumber.value.phoneNumber}" />
       </li>
   </c:forEach>
   <li>

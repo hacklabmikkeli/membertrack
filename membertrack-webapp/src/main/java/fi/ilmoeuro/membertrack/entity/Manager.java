@@ -16,11 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.entity;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 public interface Manager<T> {
-    public Entity<@NonNull T> insert(@NonNull T value);
-    public Entity<@NonNull T> update(int id, @NonNull T value);
-    public Entity<@NonNull T> update(Entity<@NonNull T> entity);
+    public Entity<T> put(Entity<T> entity);
     public void delete(int id);
 }

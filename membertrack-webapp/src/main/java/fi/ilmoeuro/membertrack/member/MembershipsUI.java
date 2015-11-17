@@ -43,18 +43,18 @@ public class MembershipsUI {
     UriInfo uri;
 
     public static final @Value class ViewModel {
-        final List<Entity<Membership>> memberships;
+        final List<Entity<PersonMembership>> memberships;
         final int numPages;
         final int currentPage;
         final Paths paths = new Paths();
     }
 
-    private final PaginatedView<Membership, MembershipsQuery> memberships;
+    private final PaginatedView<PersonMembership, MembershipsQuery> memberships;
     private final Authorizer authorizer;
 
     @Inject
     public MembershipsUI(
-        PaginatedView<Membership, MembershipsQuery> memberships,
+        PaginatedView<PersonMembership, MembershipsQuery> memberships,
         Authorizer authorizer
     ) {
         this.memberships = memberships;

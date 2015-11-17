@@ -16,16 +16,41 @@
  */
 package fi.ilmoeuro.membertrack.entity;
 
-import java.util.function.Function;
-import lombok.Value;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-@Value
-public final class Entity<T extends @NonNull Object> {
-    private final int id;
-    private final T value;
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
+@EqualsAndHashCode
+public final class Entity<T> {
+    private final @Nullable Integer id;
+    private final @NonNull T value;
+    
+    public static <T> Entity<T> existing(int id, @NonNull T value) {
+        return new Entity<>(id, value);
+    }
 
-    public Entity<T> map(Function<T, T> func) {
-        return new Entity<>(id, func.apply(value));
+    public static <T> Entity<T> fresh(@NonNull T value) {
+        return new Entity<>(null, value);
+    }
+
+    public @NonNull T getValue() {
+        return value;
+    }
+
+    public int getId() {
+        if (id == null) {
+            throw new RuntimeException("Trying to access ID of a fresh Entity");
+        } else {
+            return id;
+        }
+    }
+
+    public boolean isFresh() {
+        return id == null;
     }
 }

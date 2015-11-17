@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
+import fi.ilmoeuro.membertrack.entity.Entity;
 import java.util.Collection;
 import java.util.Locale;
 import lombok.EqualsAndHashCode;
@@ -27,9 +28,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class Person {
+public final class Person {
     private final @Getter PersonData data;
-    private final @Getter Collection<PhoneNumber> phoneNumbers;
+    private final @Getter Collection<Entity<PhoneNumber>> phoneNumbers;
 
     public String getEmail() {
         return data.getEmail();

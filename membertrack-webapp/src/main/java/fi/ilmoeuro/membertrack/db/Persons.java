@@ -16,62 +16,62 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
+import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import fi.ilmoeuro.membertrack.entity.Entity;
+import fi.ilmoeuro.membertrack.entity.KeyedManager;
 import fi.ilmoeuro.membertrack.entity.Manager;
 import fi.ilmoeuro.membertrack.person.Person;
-import fi.ilmoeuro.membertrack.person.PersonData;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.jooq.DSLContext;
 
 @Dependent
-public class Persons implements Manager<Person> {
+public final class Persons implements Manager<Person> {
 
     private final DSLContext jooq;
-    private final PhoneNumbers phoneNumbers;
+    private final KeyedManager<Integer, PhoneNumber> phoneNumbers;
 
     @Inject
     public Persons(
         DSLContext jooq,
-        PhoneNumbers phoneNumbers
+        KeyedManager<Integer, PhoneNumber> phoneNumbers
     ) {
         this.jooq = jooq;
         this.phoneNumbers = phoneNumbers;
     }
 
-    public void put(
-        PersonData person,
-        Collection<PhoneNumber> newPhoneNumbers
-    ) {
-    }
-
-    @Override
-    public Entity<Person> insert(Person value) {
+    private Entity<Person> insert(Person value) {
         int id = jooq.insertInto(PERSON, PERSON.FULL_NAME, PERSON.EMAIL)
             .values(value.getFullName(), value.getEmail())
             .returning(PERSON.ID)
             .execute();
-        phoneNumbers.update(id, value.getPhoneNumbers());
-        return new Entity<>(id, value);
+        Collection<Entity<PhoneNumber>> newPhoneNumbers = phoneNumbers.put(
+            id,
+            value.getPhoneNumbers());
+        return Entity.existing(id, new Person(value.getData(), newPhoneNumbers));
     }
 
-    @Override
-    public Entity<Person> update(int id, Person value) {
+    private Entity<Person> update(int id, Person value) {
         jooq.update(PERSON)
             .set(PERSON.FULL_NAME, value.getFullName())
             .set(PERSON.EMAIL, value.getEmail())
             .where(PERSON.ID.eq(id))
             .execute();
-        phoneNumbers.update(id, value.getPhoneNumbers());
-        return new Entity<>(id, value);
+        Collection<Entity<PhoneNumber>> newPhoneNumbers = phoneNumbers.put(
+            id,
+            value.getPhoneNumbers());
+        return Entity.existing(id, new Person(value.getData(), newPhoneNumbers));
     }
 
     @Override
-    public Entity<Person> update(Entity<Person> entity) {
-        return update(entity.getId(), entity.getValue());
+    public Entity<Person> put(Entity<Person> entity) {
+        if (entity.isFresh()) {
+            return insert(entity.getValue());
+        } else {
+            return update(entity.getId(), entity.getValue());
+        }
     }
 
     @Override

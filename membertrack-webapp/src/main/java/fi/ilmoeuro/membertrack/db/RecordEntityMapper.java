@@ -38,7 +38,7 @@ public final class RecordEntityMapper {
             throw new IllegalArgumentException("Record not mappable to class");
         } else {
             if (id != null) {
-                return Optional.of(new Entity(id, r.into(clazz)));
+                return Optional.of(Entity.existing(id, r.into(clazz)));
             } else {
                 return Optional.empty();
             }

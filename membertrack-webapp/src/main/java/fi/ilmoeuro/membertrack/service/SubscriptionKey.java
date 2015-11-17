@@ -14,9 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.member;
+package fi.ilmoeuro.membertrack.service;
 
 import lombok.Value;
 
-public final @Value class MembershipsQuery {
+public final @Value class SubscriptionKey {
+    int personId;
+    int serviceId;
 }

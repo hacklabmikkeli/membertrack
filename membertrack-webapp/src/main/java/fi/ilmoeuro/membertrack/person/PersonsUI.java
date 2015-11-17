@@ -19,11 +19,12 @@ package fi.ilmoeuro.membertrack.person;
 import fi.ilmoeuro.membertrack.auth.Authorizer;
 import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
+import fi.ilmoeuro.membertrack.entity.Entity;
 import fi.ilmoeuro.membertrack.entity.Manager;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.FormParam;
@@ -31,7 +32,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Response;
-import org.apache.commons.lang.StringUtils;
+import org.jooq.tools.StringUtils;
 
 @Path("/person/")
 public class PersonsUI {
@@ -57,19 +58,33 @@ public class PersonsUI {
         @FormParam("personId") int personId,
         @FormParam("fullName") String fullName,
         @FormParam("email") String email,
+        @FormParam("phoneNumberId") List<Integer> phoneNumberIds,
         @FormParam("phoneNumber") List<String> phoneNumberStrings
     ) throws URISyntaxException, UnauthorizedException {
         authorizer.ensureAuthorized(Permission.LOGGED_IN);
-        List<PhoneNumber> phoneNumbers = phoneNumberStrings
-            .stream()
-            .filter(this::notBlank)
-            .<PhoneNumber>map(PhoneNumber::new)
-            .collect(Collectors.<PhoneNumber>toList());
-        personManager.update(
-            personId,
-            new Person(
-                new PersonData(fullName, email),
-                phoneNumbers));
+        List<Entity<PhoneNumber>> phoneNumbers = new ArrayList<>();
+        for (int i=0; i<phoneNumberIds.size(); i++) {
+            if (phoneNumberIds.get(i) == -1) {
+                if (!StringUtils.isBlank(phoneNumberStrings.get(i))) {
+                    phoneNumbers.add(
+                        Entity.fresh(
+                            new PhoneNumber(phoneNumberStrings.get(i))));
+                }
+            } else {
+                phoneNumbers.add(
+                    Entity.existing(
+                        phoneNumberIds.get(i),
+                        new PhoneNumber(phoneNumberStrings.get(i))));
+            }
+        }
+        personManager.put(
+            Entity.existing(
+                personId,
+                new Person(
+                    new PersonData(
+                        fullName,
+                        email),
+                    phoneNumbers)));
         return Response.seeOther(new URI(gotoUrl)).build();
     }
 
@@ -84,19 +99,15 @@ public class PersonsUI {
         @FormParam("phoneNumber") List<String> phoneNumberStrings
     ) throws URISyntaxException, UnauthorizedException {
         authorizer.ensureAuthorized(Permission.LOGGED_IN);
-        List<PhoneNumber> phoneNumbers = phoneNumberStrings
-            .stream()
-            .filter(this::notBlank)
-            .<PhoneNumber>map(PhoneNumber::new)
-            .collect(Collectors.<PhoneNumber>toList());
-        personManager.insert(
-            new Person(
-                new PersonData(fullName, email),
-                phoneNumbers));
+        ArrayList<Entity<PhoneNumber>> phoneNumbers = new ArrayList<>();
+        for (String pnString : phoneNumberStrings) {
+            phoneNumbers.add(Entity.fresh(new PhoneNumber(pnString)));
+        }
+        personManager.put(
+            Entity.fresh(
+                new Person(
+                    new PersonData(fullName, email),
+                    phoneNumbers)));
         return Response.seeOther(new URI(gotoUrl)).build();
-    }
-
-    private boolean notBlank(String s) {
-        return !StringUtils.isBlank(s);
     }
 }

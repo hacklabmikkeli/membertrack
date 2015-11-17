@@ -14,9 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.member;
+package fi.ilmoeuro.membertrack.entity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import lombok.Value;
 
-public final @Value class MembershipsQuery {
+public final @Value class PartitionedEntities<T> {
+    List<T> fresh;
+    List<Entity<T>> existing;
+    List<Integer> existingIds;
+
+    public PartitionedEntities(Collection<Entity<T>> entities) {
+        fresh = new ArrayList<>();
+        existing = new ArrayList<>();
+        existingIds = new ArrayList<>();
+
+        for (Entity<T> entity : entities) {
+            if (entity.isFresh()) {
+                fresh.add(entity.getValue());
+            } else {
+                existing.add(entity);
+                existingIds.add(entity.getId());
+            }
+        }
+    }
 }

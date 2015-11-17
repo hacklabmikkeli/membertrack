@@ -34,9 +34,12 @@
             <c:forEach items="${membership.value.person.phoneNumbers}" var="phoneNumber">
             <div class="pure-control-group">
                 <label></label>
+                <input type="hidden"
+                       name="phoneNumberId"
+                       value="${phoneNumber.id}" />
                 <input type="text"
                        name="phoneNumber"
-                       value="${phoneNumber.phoneNumber}" />
+                       value="${phoneNumber.value.phoneNumber}" />
                 <button type="button"
                         class="pure-button"
                         data-destroy="{parent}">
@@ -46,6 +49,9 @@
             </c:forEach>
             <div class="pure-control-group hide-prototype prototype-new-pn">
                 <label></label>
+                <input type="hidden"
+                       name="phoneNumberId"
+                       value="-1" />
                 <input type="text"
                        name="phoneNumber"
                        />

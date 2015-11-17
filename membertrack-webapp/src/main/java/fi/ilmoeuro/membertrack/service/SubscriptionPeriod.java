@@ -21,7 +21,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import lombok.Value;
 
-public final @Value class ServiceSubscription {
+public final @Value class SubscriptionPeriod {
     Instant startTime;
     long length;
     int payment;

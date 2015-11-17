@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2015 Ilmo Euro
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.member;
 
+import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
+import fi.ilmoeuro.membertrack.service.Service;
+import fi.ilmoeuro.membertrack.entity.Entity;
+import fi.ilmoeuro.membertrack.person.Person;
+import java.util.Map;
+import java.util.Set;
 import lombok.Value;
 
-public final @Value class MembershipsQuery {
+public final @Value class PersonMembership {
+    Person person;
+    Map<Entity<Service>, Set<Entity<SubscriptionPeriod>>> subscriptions;
 }

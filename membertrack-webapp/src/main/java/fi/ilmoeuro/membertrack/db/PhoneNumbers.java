@@ -16,20 +16,20 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
-import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
+import fi.ilmoeuro.membertrack.entity.Entity;
+import fi.ilmoeuro.membertrack.entity.KeyedManager;
+import fi.ilmoeuro.membertrack.entity.PartitionedEntities;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.stream.Collectors;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.jooq.DSLContext;
-import org.jooq.Record2;
-import org.jooq.SelectSelectStep;
-import org.jooq.impl.DSL;
 
 @Dependent
-public final class PhoneNumbers {
+public final class PhoneNumbers implements KeyedManager<Integer, PhoneNumber> {
 
     private final DSLContext jooq;
 
@@ -40,39 +40,40 @@ public final class PhoneNumbers {
         this.jooq = jooq;
     }
 
-    public void update(int personId, Collection<PhoneNumber> phoneNumbers) {
-        final Iterator<PhoneNumber> it = phoneNumbers.iterator();
-        if (it.hasNext()) {
-            PhoneNumber phoneNumber = it.next();
-            final SelectSelectStep<Record2<Integer, String>> newPns = jooq.select(
-                DSL.cast(personId, PHONE_NUMBER.PERSON_ID),
-                DSL.cast(phoneNumber.getPhoneNumber(), PHONE_NUMBER.PHONE_NUMBER_));
-            while (it.hasNext()) {
-                phoneNumber = it.next();
-                newPns.unionAll(
-                    DSL.select(
-                        DSL.cast(personId, PHONE_NUMBER.PERSON_ID),
-                        DSL.cast(phoneNumber.getPhoneNumber(), PHONE_NUMBER.PHONE_NUMBER_)));
-            }
+    @Override
+    public Collection<Entity<PhoneNumber>> put(
+        Integer personId,
+        Collection<Entity<PhoneNumber>> phoneNumbers
+    ) {
+        PartitionedEntities<PhoneNumber>
+            partitioned = new PartitionedEntities<>(phoneNumbers);
 
-            jooq.insertInto(PHONE_NUMBER,
-                            PHONE_NUMBER.PERSON_ID,
-                            PHONE_NUMBER.PHONE_NUMBER_)
-                .select(newPns.except(
-                    DSL.select(PHONE_NUMBER.PERSON_ID, PHONE_NUMBER.PHONE_NUMBER_)
-                        .from(PHONE_NUMBER)
-                        .where(PHONE_NUMBER.PERSON_ID.eq(personId))))
+        jooq.deleteFrom(PHONE_NUMBER)
+            .where(PHONE_NUMBER.PERSON_ID.eq(personId),
+                   PHONE_NUMBER.ID.notIn(partitioned.getExistingIds()))
+            .execute();
+
+        for (Entity<PhoneNumber> pne : partitioned.getExisting()) {
+            jooq.update(PHONE_NUMBER)
+                .set(PHONE_NUMBER.PHONE_NUMBER_,
+                    pne.getValue().getPhoneNumber())
+                .where(PHONE_NUMBER.ID.eq(pne.getId()))
                 .execute();
         }
-            
-        jooq.deleteFrom(PHONE_NUMBER)
-            .where(
-                DSL.and(
-                    PHONE_NUMBER.PERSON_ID.eq(personId),
-                    PHONE_NUMBER.PHONE_NUMBER_.notIn(
-                        phoneNumbers.stream()
-                                    .map(PhoneNumber::getPhoneNumber)
-                                    .collect(Collectors.toList()))))
-            .execute();
+
+        List<Entity<PhoneNumber>> result = new ArrayList<>();
+        for (PhoneNumber pn : partitioned.getFresh()) {
+            int id = jooq.insertInto(
+                PHONE_NUMBER,
+                PHONE_NUMBER.PERSON_ID,
+                PHONE_NUMBER.PHONE_NUMBER_)
+                .values(personId, pn.getPhoneNumber())
+                .returning(PHONE_NUMBER.ID)
+                .execute();
+            result.add(Entity.existing(id, pn));
+        }
+
+        result.addAll(partitioned.getExisting());
+        return result;
     }
 }
