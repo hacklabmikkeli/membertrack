@@ -27,6 +27,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import lombok.Value;
 import org.glassfish.jersey.server.mvc.Template;
@@ -49,12 +51,14 @@ public class AuthenticationUI {
 
     @GET
     @Template(name = "/authentication/default")
+    @Produces(MediaType.TEXT_HTML)
     public ViewModel index() {
         return new ViewModel();
     }
     
     @POST
     @Path("startSession")
+    @Produces(MediaType.TEXT_HTML)
     @Consumes("application/x-www-form-urlencoded")
     public Response startSession(
         @FormParam("goto") String gotoUrl,

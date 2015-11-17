@@ -8,11 +8,12 @@
 <%@ attribute name="css" fragment="true" %>
 <%@ attribute name="js" fragment="true" %>
 
-<c:url value="/static/css/pure.css"                     var="pureUrl" />
-<c:url value="/static/css/pure-theme.css"               var="pureThemeUrl" />
-<c:url value="/static/css/membertrack.css"              var="masterCssUrl" />
-<c:url value="/static/js/jquery.js"                     var="jQueryUrl" />
-<c:url value="/static/js/membertrack.js"                var="masterJsUrl" />
+<c:url value="/static/css/pure.css"                 var="pureUrl" />
+<c:url value="/static/css/pure-theme.css"           var="pureThemeUrl" />
+<c:url value="/static/css/membertrack.css"          var="masterCssUrl" />
+<c:url value="/static/js/jquery.js"                 var="jQueryUrl" />
+<c:url value="/static/js/instantclick.js"           var="instantClickUrl" />
+<c:url value="/static/js/membertrack.js"            var="masterJsUrl" />
 
 <!DOCTYPE html>
 <html class="pure-theme-membertrack">
@@ -25,11 +26,6 @@
         <jsp:invoke fragment="css" />
     </head>
     <body class="l-page">
-        <div class="l-main-area">
-            <div class="l-content">
-                <jsp:doBody />
-            </div>
-        </div>
         <c:if test="${empty sidebar or sidebar}">
             <div class="l-sidebar">
                 <ul class="main-nav pure-menu-list">
@@ -43,8 +39,16 @@
                 </ul>
             </div>
         </c:if>
-        <script src="${jQueryUrl}"></script>
-        <script src="${masterJsUrl}"></script>
+        <div class="l-main-area">
+            <div class="l-content">
+                <jsp:doBody />
+            </div>
+        </div>
+        <script src="${jQueryUrl}" data-no-instant></script>
+        <script src="${masterJsUrl}" data-no-instant></script>
         <jsp:invoke fragment="js" />
+
+        <script src="${instantClickUrl}" data-no-instant></script>
+        <script data-no-instant>InstantClick.init();</script>
     </body>
 </html>

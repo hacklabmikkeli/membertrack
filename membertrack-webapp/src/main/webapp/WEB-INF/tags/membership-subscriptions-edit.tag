@@ -21,19 +21,19 @@
                 <input type="text"
                        style="width: 8em;"
                        name="startDate"
-                       width="8"
+                       size="8"
                        value="${subscription.value.start_fi_FI}" />
                 &mdash;
                 <input type="text"
                        style="width: 8em;"
                        name="endDate"
-                       width="8"
+                       size="8"
                        value="${subscription.value.end_fi_FI}" />
                 <span style="display: inline-block; width: 1em;">&nbsp;</span>
                 <input type="text"
                        style="width: 8em;"
                        name="payment"
-                       width="8"
+                       size="8"
                        value="${subscription.value.paymentFormatted}" />
                 &euro;
                 <button class="pure-button" data-destroy="{parent}">Remove</button>
@@ -43,19 +43,19 @@
                 <input type="text"
                        style="width: 8em;"
                        name="startDate"
-                       width="8"
+                       size="8"
                        value="" />
                 &mdash;
                 <input type="text"
                        style="width: 8em;"
                        name="endDate"
-                       width="8"
+                       size="8"
                        value="" />
                 <span style="display: inline-block; width: 1em;">&nbsp;</span>
                 <input type="text"
                        style="width: 8em;"
                        name="payment"
-                       width="8"
+                       size="8"
                        value="" />
                 &euro;
                 <button class="pure-button" data-destroy="{parent}">Remove</button>

@@ -29,7 +29,9 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import lombok.Value;
@@ -62,6 +64,7 @@ public class MembershipsUI {
     }
 
     @GET
+    @Produces("text/html")
     public Response index() {
         URI newUri = URI.create(uri.getAbsolutePath().toString() + "/1");
         return Response.seeOther(newUri).build();
@@ -70,12 +73,13 @@ public class MembershipsUI {
     @GET
     @Template(name = "/membership/default")
     @Path("{PAGE}")
+    @Produces(MediaType.TEXT_HTML)
     public ViewModel listAll(
         @PathParam("PAGE") @DefaultValue("1") Integer pageNum
     ) throws UnauthorizedException {
         authorizer.ensureAuthorized(Permission.LOGGED_IN);
         return new ViewModel(
-            memberships.listPage(new MembershipsQuery(), pageNum),
+            memberships.listPage(new MembershipsQuery(), pageNum - 1),
             memberships.numPages(),
             pageNum
         );
