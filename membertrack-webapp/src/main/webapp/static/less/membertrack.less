@@ -4,7 +4,7 @@
 
 @full-width: 768px;
 @sidebar-width: 150px;
-@sidebar-fg: black;
+@sidebar-fg: white;
 @sidebar-bg: slategray;
 @main-fg: black;
 @main-bg: white;
@@ -107,29 +107,6 @@ a.button {
     }
 }
 
-.logout {
-    padding: 1em;
-    font-size: 0.7rem;
-
-    img {
-        border-radius: 50%;
-        float: left;
-    }
-
-    form {
-        button {
-
-
-        }
-    }
-
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-}
-
 
 ul.subscriber-list, .subscriber-list ul {
     list-style-type: none;
@@ -209,6 +186,37 @@ ul.subscriber-list, .subscriber-list ul {
             &::before {
                 content: "–";
                 margin-right: 1em;
+            }
+        }
+    }
+}
+
+.logout-badge {
+    padding: 1em;
+    font-size: 0.7rem;
+    .display(flex);
+    .flex-direction(row);
+
+    .pic {
+        img {
+            border-radius: 50%;
+            margin-right: 0.5em;
+        }
+    }
+
+    .personal {
+        .email {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 8em;
+        }
+
+        form {
+            button {
+                margin-top: 0.5em;
+                margin-left: 0.5em;
+                padding: 0.3em;
+                background: mix(@sidebar-bg, @sidebar-fg, 70%);
             }
         }
     }

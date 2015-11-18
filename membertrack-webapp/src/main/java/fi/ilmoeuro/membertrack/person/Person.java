@@ -41,7 +41,7 @@ public final class Person {
     }
 
     public String getGravatarUrl() {
-        return String.format("//gravatar.com/avatar/%s",
+        return String.format("//gravatar.com/avatar/%s?d=mm",
             DigestUtils.md5Hex(
                 data.getEmail().trim().toLowerCase(Locale.ROOT)
             )

@@ -28,28 +28,30 @@
   <body class="l-page">
     <c:if test="${empty sidebar or sidebar}">
         <div class="l-sidebar">
-          <ul class="main-nav pure-menu-list">
-            <c:if test="${it.common.loggedIn}">
-                <li class="pure-menu-item">
-                  <div class="logout">
-                    <img src="${it.common.gravatarUrl}" alt="face" />
-                    <span class="email">
-                      <c:out value="${it.common.loggedInEmail}" />
-                    </span>
-                    <form 
-                        method="post"
-                        action="${it.common.paths.authentication}endSession"
-                        >
-                      <input type="hidden"
-                             name="goto"
-                             value="${it.common.myUrl}" />
-                      <button
-                          type="submit"
-                          class="pure-button">Log out</button>
-                    </form>
+          <c:if test="${it.common.loggedIn}">
+              <div class="logout-badge">
+                <div class="pic">
+                  <img src="${it.common.gravatarUrl}" alt="face" />
+                </div>
+                <div class="personal">
+                  <div class="email">
+                    <c:out value="${it.common.loggedInEmail}" />
                   </div>
-                </li>
-            </c:if>
+                  <form 
+                      method="post"
+                      action="${it.common.paths.authentication}endSession"
+                      >
+                    <input type="hidden"
+                           name="goto"
+                           value="${it.common.myUrl}" />
+                    <button
+                        type="submit"
+                        class="pure-button">Log out</button>
+                  </form>
+                </div>
+              </div>
+          </c:if>
+          <ul class="main-nav pure-menu-list">
             <li class="pure-menu-item
                 ${menupos eq 'membership' ? 'selected' : ''}">
               <a class="pure-menu-link"

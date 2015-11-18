@@ -27,7 +27,7 @@ public final @Value class CommonViewModel {
     String myUrl;
 
     public String getGravatarUrl() {
-        return String.format("//gravatar.com/avatar/%s?s=40",
+        return String.format("//gravatar.com/avatar/%s?s=40&d=mm",
             DigestUtils.md5Hex(
                 loggedInEmail.trim().toLowerCase(Locale.ROOT)
             )
