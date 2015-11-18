@@ -21,9 +21,9 @@
           </li>
       </c:forEach>
       <li>
-          <a href="#edit-person-${membership.id}">
-            Edit
-          </a>
+        <a href="#edit-person-${membership.id}">
+          Edit
+        </a>
       </li>
     </ul>
   </li>

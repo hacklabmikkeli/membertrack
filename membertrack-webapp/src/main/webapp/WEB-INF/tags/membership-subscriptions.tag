@@ -6,25 +6,25 @@
       <li class="service">
         <c:out value="${entry.key.value.title}" />
         <a href="#edit-sub-${membership.id}-${entry.key.id}">
-            Edit
+          Edit
         </a>
       </li>
       <c:forEach items="${entry.value}"
                  var="subscription">
-      <li>
-        <ul>
-          <li class="date">
-            <c:out value="${subscription.value.start_fi_FI}" />
+          <li>
+            <ul>
+              <li class="date">
+                <c:out value="${subscription.value.start_fi_FI}" />
+              </li>
+              <li class="date">
+                <c:out value="${subscription.value.end_fi_FI}" />
+              </li>
+              <li class="payment">
+                <c:out value="${subscription.value.paymentFormatted}" />
+                &euro;
+              </li>
+            </ul>
           </li>
-          <li class="date">
-            <c:out value="${subscription.value.end_fi_FI}" />
-          </li>
-          <li class="payment">
-            <c:out value="${subscription.value.paymentFormatted}" />
-            &euro;
-          </li>
-        </ul>
-      </li>
       </c:forEach>
   </c:forEach>
 </ul>
