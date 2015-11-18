@@ -17,7 +17,7 @@
             <li class="pure-menu-item
                        ${it.currentPage == pageNum ? 'pure-menu-selected' : ''}">
                 <a class="pure-menu-link"
-                   href="${it.paths.memberships}${pageNum}">
+                   href="${it.common.paths.memberships}${pageNum}">
                   <c:out value="${pageNum}" />
                 </a>
             </li>
@@ -35,7 +35,7 @@
     <c:forEach items="${it.memberships}" var="membership">
         <t:membership-person-edit
             membership="${membership}"
-            personsUrl="${it.paths.persons}"
+            personsUrl="${it.common.paths.persons}"
             gotoUrl="${myUrl}" />
         <t:membership-subscriptions-edit
             membership="${membership}"

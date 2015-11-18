@@ -21,8 +21,8 @@ import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
 import fi.ilmoeuro.membertrack.entity.Entity;
 import fi.ilmoeuro.membertrack.entity.PaginatedView;
-import fi.ilmoeuro.membertrack.ui.Paths;
-import java.net.URI;
+import fi.ilmoeuro.membertrack.ui.CommonViewModel;
+import fi.ilmoeuro.membertrack.ui.CommonViewModelFactory;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -33,6 +33,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import lombok.Value;
 import org.glassfish.jersey.server.mvc.Template;
@@ -45,29 +46,34 @@ public class MembershipsUI {
     UriInfo uri;
 
     public static final @Value class ViewModel {
+        final CommonViewModel common;
         final List<Entity<PersonMembership>> memberships;
         final int numPages;
         final int currentPage;
-        final Paths paths = new Paths();
     }
 
     private final PaginatedView<PersonMembership, MembershipsQuery> memberships;
     private final Authorizer authorizer;
+    private final CommonViewModelFactory cvmFactory;
 
     @Inject
     public MembershipsUI(
         PaginatedView<PersonMembership, MembershipsQuery> memberships,
-        Authorizer authorizer
+        Authorizer authorizer,
+        CommonViewModelFactory cvmFactory
     ) {
         this.memberships = memberships;
         this.authorizer = authorizer;
+        this.cvmFactory = cvmFactory;
     }
 
     @GET
     @Produces("text/html")
-    public Response index() {
-        URI newUri = URI.create(uri.getAbsolutePath().toString() + "/1");
-        return Response.seeOther(newUri).build();
+    public Response index() throws NoSuchMethodException {
+        UriBuilder ub = uri.getBaseUriBuilder();
+        ub.path(MembershipsUI.class);
+        ub.path(MembershipsUI.class.getMethod("listAll", Integer.class));
+        return Response.seeOther(ub.build(1)).build();
     }
     
     @GET
@@ -79,6 +85,7 @@ public class MembershipsUI {
     ) throws UnauthorizedException {
         authorizer.ensureAuthorized(Permission.LOGGED_IN);
         return new ViewModel(
+            cvmFactory.buildCommonViewModel(),
             memberships.listPage(new MembershipsQuery(), pageNum - 1),
             memberships.numPages(),
             pageNum

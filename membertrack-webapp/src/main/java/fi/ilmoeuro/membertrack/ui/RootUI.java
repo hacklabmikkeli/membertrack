@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2015 Ilmo Euro
+/*
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,25 +17,25 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.auth.ui.AuthenticationUI;
-import fi.ilmoeuro.membertrack.member.MembershipsUI;
-import fi.ilmoeuro.membertrack.person.PersonsUI;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.glassfish.jersey.linking.InjectLink;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
-@Getter
-@NoArgsConstructor
-public final class Paths {
-    @InjectLink(resource = MembershipsUI.class)
-    private @Nullable String memberships;
+@Path("/")
+public class RootUI {
 
-    @InjectLink(resource = PersonsUI.class)
-    private @Nullable String persons;
-
-    @InjectLink(resource = AuthenticationUI.class)
-    private @Nullable String authentication;
-
-    @InjectLink(resource = RootUI.class)
-    private @Nullable String root;
+    @Context
+    UriInfo uri;
+    
+    @GET
+    public Response index() throws NoSuchMethodException {
+        return Response.seeOther(
+            uri
+                .getBaseUriBuilder()
+                .path(AuthenticationUI.class)
+                .build())
+            .build();
+    }
 }

@@ -62,7 +62,9 @@
             </div>
         </fieldset>
         <fieldset>
-            <button class="pure-button" data-clone=".proto-sub-new:not([data-cloned])">
+            <button type="button"
+                    class="pure-button"
+                    data-clone=".proto-sub-new:not([data-cloned])">
                 Add
             </button>
         </fieldset>
