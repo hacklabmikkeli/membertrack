@@ -14,31 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.plumbing;
 
-import fi.ilmoeuro.membertrack.auth.ui.AuthenticationUI;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import fi.ilmoeuro.membertrack.MembertrackException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-@Path("/")
-public class RootUI {
+@Provider
+public class MembertrackExceptionMapper 
+    implements ExceptionMapper<MembertrackException> {
 
-    @Context
-    UriInfo uri;
-    
-    @GET
+    @Override
     @Produces(MediaType.TEXT_HTML)
-    public Response index() throws NoSuchMethodException {
-        return Response.seeOther(
-            uri
-                .getBaseUriBuilder()
-                .path(AuthenticationUI.class)
-                .build())
-            .build();
+    public Response toResponse(MembertrackException exception) {
+        try {
+            URI uri = new URI(exception.getRedirectURL());
+            return Response
+                .seeOther(uri)
+                .build();
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

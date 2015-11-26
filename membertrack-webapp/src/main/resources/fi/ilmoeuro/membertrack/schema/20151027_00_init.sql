@@ -39,17 +39,17 @@ CREATE TABLE "PUBLIC"."SERVICE" (
         UNIQUE ("title")
 );
 
-CREATE TABLE "PUBLIC"."SERVICE_SUBSCRIPTION" (
+CREATE TABLE "PUBLIC"."SUBSCRIPTION_PERIOD" (
     "id"                INTEGER             IDENTITY(1,1),
     "service_id"        INTEGER             NOT NULL,
     "person_id"         INTEGER             NOT NULL,
     "start_time"        DATETIME            NOT NULL,
     "length"            BIGINT              NOT NULL,
     "payment"           INTEGER             NOT NULL,
-    CONSTRAINT "service_subscription_pk"
+    CONSTRAINT "subscription_period_pk"
         PRIMARY KEY ("id"),
-    CONSTRAINT "service_subscription_fk_service_id"
+    CONSTRAINT "subscription_period_fk_service_id"
         FOREIGN KEY ("service_id") REFERENCES "SERVICE" ("id"),
-    CONSTRAINT "service_subscription_fk_person_id"
+    CONSTRAINT "subscription_period_fk_person_id"
         FOREIGN KEY ("person_id") REFERENCES "PERSON" ("id")
 );

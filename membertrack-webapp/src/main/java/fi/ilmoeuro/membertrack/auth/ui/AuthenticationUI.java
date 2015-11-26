@@ -18,9 +18,11 @@ package fi.ilmoeuro.membertrack.auth.ui;
 
 import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.auth.InvalidAuthenticationException;
-import fi.ilmoeuro.membertrack.ui.Paths;
+import fi.ilmoeuro.membertrack.ui.CommonViewModel;
+import fi.ilmoeuro.membertrack.ui.CommonViewModelFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import javax.inject.Inject;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -37,23 +39,28 @@ import org.glassfish.jersey.server.mvc.Template;
 public class AuthenticationUI {
 
     public static final @Value class ViewModel {
-        final Paths paths = new Paths();
+        CommonViewModel common;
     }
 
     private final Authenticator authenticator;
+    private final CommonViewModelFactory cvmf;
 
     @Inject
     public AuthenticationUI(
-        Authenticator authenticator
+        Authenticator authenticator,
+        CommonViewModelFactory cvmf
     ) {
         this.authenticator = authenticator;
+        this.cvmf = cvmf;
     }
 
     @GET
     @Template(name = "/authentication/default")
     @Produces(MediaType.TEXT_HTML)
     public ViewModel index() {
-        return new ViewModel();
+        return new ViewModel(
+            cvmf.buildCommonViewModel()
+        );
     }
     
     @POST
@@ -62,19 +69,26 @@ public class AuthenticationUI {
     @Consumes("application/x-www-form-urlencoded")
     public Response startSession(
         @FormParam("goto") String gotoUrl,
+        @FormParam("fail") String failUrl,
         @FormParam("email") String email,
         @FormParam("password") String password
     ) throws InvalidAuthenticationException, URISyntaxException {
-        authenticator.startSession(email, password);
-        return Response.seeOther(new URI(gotoUrl)).build();
+        try {
+            authenticator.startSession(email, password);
+            return Response.seeOther(new URI(gotoUrl)).build();
+        } catch (InvalidAuthenticationException ex) {
+            ex.addFormFieldSet(email, Arrays.asList(email));
+            throw ex;
+        }
     }
 
     @POST
     @Path("endSession")
+    @Produces(MediaType.TEXT_HTML)
     @Consumes("application/x-www-form-urlencoded")
     public Response endSession(
         @FormParam("goto") String gotoUrl
-    ) throws InvalidAuthenticationException, URISyntaxException {
+    ) throws URISyntaxException {
         authenticator.endSession();
         return Response.seeOther(new URI(gotoUrl)).build();
     }

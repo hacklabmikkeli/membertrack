@@ -14,25 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.Value;
-import org.apache.commons.codec.digest.DigestUtils;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-public final @Value class CommonViewModel {
-    Paths paths = new Paths();
-    boolean loggedIn;
-    String loggedInEmail;
-    String myUrl;
+@EqualsAndHashCode(callSuper = true)
+@ToString
+public abstract class MembertrackException extends Exception {
+    @Getter
+    @Setter
+    private String redirectURL = "";
+    
+    @Getter
+    private final Map<String, Collection<String>>
+        formFields = new LinkedHashMap<>();
 
-    public String getGravatarUrl() {
-        return String.format("//gravatar.com/avatar/%s?s=40&d=mm",
-            DigestUtils.md5Hex(
-                loggedInEmail.trim().toLowerCase(Locale.ROOT)
-            )
-        );
+    @Getter
+    private final Collection<String>
+        errors = new ArrayList<>();
+
+    public void addFormFieldSet(String key, Collection<String> value) {
+        formFields.put(key, value);
+    }
+
+    public void addError(String error) {
+        errors.add(error);
     }
 }

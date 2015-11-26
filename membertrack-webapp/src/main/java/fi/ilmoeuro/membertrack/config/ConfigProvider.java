@@ -38,7 +38,7 @@ public class ConfigProvider {
         final @Nullable URL url
             = ResourceRoot.class.getResource(CONF_FILE);
         if (url == null) {
-            throw new IllegalStateException(CONF_FILE + " not found");
+            throw new RuntimeException(CONF_FILE + " not found");
         }
         final @Nullable String configFileLocation
             = System.getProperty(CONF_PROPERTY);

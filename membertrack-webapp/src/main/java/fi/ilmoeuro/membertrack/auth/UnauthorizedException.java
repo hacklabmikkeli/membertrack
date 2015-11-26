@@ -16,6 +16,16 @@
  */
 package fi.ilmoeuro.membertrack.auth;
 
-public final class UnauthorizedException extends Exception {
-    
+import fi.ilmoeuro.membertrack.MembertrackException;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode(callSuper = false)
+@ToString
+public final class UnauthorizedException
+    extends MembertrackException {
+
+    public UnauthorizedException() {
+        addError("You are not authorized to view this page");
+    }
 }

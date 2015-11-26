@@ -18,12 +18,10 @@ package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.auth.Account;
 import fi.ilmoeuro.membertrack.auth.Authenticator;
-import java.util.Locale;
+import java.util.Collections;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.UriInfo;
-import org.apache.commons.codec.digest.DigestUtils;
 
 @Dependent
 public final class CommonViewModelFactory {

@@ -114,7 +114,7 @@ VALUES
     (2, 'Tilankäyttö', 'Tilankäyttomaksut');
 
 
-INSERT INTO "SERVICE_SUBSCRIPTION" ("service_id","person_id","start_time","length","payment") VALUES
+INSERT INTO "SUBSCRIPTION_PERIOD" ("service_id","person_id","start_time","length","payment") VALUES
     (1,13,{ts '2015-1-1 00:00:00.00'},364*86400,2000),
     (1,14,{ts '2015-1-1 00:00:00.00'},364*86400,2000),
     (1,16,{ts '2015-1-1 00:00:00.00'},364*86400,2000),

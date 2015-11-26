@@ -12,9 +12,9 @@
     <div class="popup">
       <form
           method="POST"
-          action="${it.paths.authentication}startSession"
+          action="${it.common.paths.authentication}startSession"
           class="pure-form pure-form-aligned">
-        <input type="hidden" name="goto" value="${it.paths.memberships}" />
+        <input type="hidden" name="goto" value="${it.common.paths.memberships}" />
         <fieldset>
           <div class="pure-control-group">
             <label for="email">Email</label>

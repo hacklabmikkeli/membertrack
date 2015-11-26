@@ -113,15 +113,15 @@ public final class Memberships implements PaginatedView<PersonMembership, Member
                     SERVICE.ID,
                     SERVICE.TITLE,
                     SERVICE.DESCRIPTION,
-                    SERVICE_SUBSCRIPTION.ID,
-                    SERVICE_SUBSCRIPTION.START_TIME,
-                    SERVICE_SUBSCRIPTION.LENGTH,
-                    SERVICE_SUBSCRIPTION.PAYMENT)
+                    SUBSCRIPTION_PERIOD.ID,
+                    SUBSCRIPTION_PERIOD.START_TIME,
+                    SUBSCRIPTION_PERIOD.LENGTH,
+                    SUBSCRIPTION_PERIOD.PAYMENT)
                 .from(PERSON)
                 .crossJoin(SERVICE)
-                .leftOuterJoin(SERVICE_SUBSCRIPTION)
-                    .on(SERVICE_SUBSCRIPTION.PERSON_ID.eq(PERSON.ID),
-                        SERVICE_SUBSCRIPTION.SERVICE_ID.eq(SERVICE.ID))
+                .leftOuterJoin(SUBSCRIPTION_PERIOD)
+                    .on(SUBSCRIPTION_PERIOD.PERSON_ID.eq(PERSON.ID),
+                        SUBSCRIPTION_PERIOD.SERVICE_ID.eq(SERVICE.ID))
                 .where(conditions)
                 .unionAll(
                     select(
@@ -133,17 +133,17 @@ public final class Memberships implements PaginatedView<PersonMembership, Member
                         asNull(SERVICE.ID),
                         asNull(SERVICE.TITLE),
                         asNull(SERVICE.DESCRIPTION),
-                        asNull(SERVICE_SUBSCRIPTION.ID),
-                        asNull(SERVICE_SUBSCRIPTION.START_TIME),
-                        asNull(SERVICE_SUBSCRIPTION.LENGTH),
-                        asNull(SERVICE_SUBSCRIPTION.PAYMENT))
+                        asNull(SUBSCRIPTION_PERIOD.ID),
+                        asNull(SUBSCRIPTION_PERIOD.START_TIME),
+                        asNull(SUBSCRIPTION_PERIOD.LENGTH),
+                        asNull(SUBSCRIPTION_PERIOD.PAYMENT))
                     .from(PHONE_NUMBER)
                     .join(PERSON).onKey()
                     .where(conditions))
                 .orderBy(
                     PERSON.FULL_NAME,
                     SERVICE.TITLE,
-                    SERVICE_SUBSCRIPTION.START_TIME)
+                    SUBSCRIPTION_PERIOD.START_TIME)
                 .fetchLazy()) {
             final @NonNull
                 RelationMapper_2__1<
