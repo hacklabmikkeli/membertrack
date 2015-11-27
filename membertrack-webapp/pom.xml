@@ -30,6 +30,31 @@
     </repositories>
     <dependencies>
         <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>${jasypt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers.glassfish</groupId>
+            <artifactId>jersey-gf-ejb</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
@@ -242,16 +267,25 @@
                             <inputSchema>PUBLIC</inputSchema>
                             <customTypes>
                                 <customType>
-                                    <name>Instant</name>
-                                    <type>java.time.Instant</type>
+                                    <name>LocalDate</name>
+                                    <type>java.time.LocalDate</type>
                                     <converter>fi.ilmoeuro.membertrack.plumbing.JooqDateConverter</converter>
+                                </customType>
+                                <customType>
+                                    <name>PeriodTimeUnit</name>
+                                    <type>fi.ilmoeuro.membertrack.service.PeriodTimeUnit</type>
+                                    <converter>fi.ilmoeuro.membertrack.plumbing.JooqTimeUnitConverter</converter>
                                 </customType>
                             </customTypes>
                             <forcedTypes>
                                 <forcedType>
-                                    <name>Instant</name>
+                                    <name>LocalDate</name>
                                     <expression>.*</expression>
-                                    <types>.*TIMESTAMP.*</types>
+                                    <types>.*DATE.*</types>
+                                </forcedType>
+                                <forcedType>
+                                    <name>PeriodTimeUnit</name>
+                                    <expression>.*\.length_unit</expression>
                                 </forcedType>
                             </forcedTypes>
                         </database>

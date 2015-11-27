@@ -114,9 +114,11 @@ public final class Memberships implements PaginatedView<PersonMembership, Member
                     SERVICE.TITLE,
                     SERVICE.DESCRIPTION,
                     SUBSCRIPTION_PERIOD.ID,
-                    SUBSCRIPTION_PERIOD.START_TIME,
+                    SUBSCRIPTION_PERIOD.START_DATE,
+                    SUBSCRIPTION_PERIOD.LENGTH_UNIT,
                     SUBSCRIPTION_PERIOD.LENGTH,
-                    SUBSCRIPTION_PERIOD.PAYMENT)
+                    SUBSCRIPTION_PERIOD.PAYMENT,
+                    SUBSCRIPTION_PERIOD.APPROVED)
                 .from(PERSON)
                 .crossJoin(SERVICE)
                 .leftOuterJoin(SUBSCRIPTION_PERIOD)
@@ -134,16 +136,18 @@ public final class Memberships implements PaginatedView<PersonMembership, Member
                         asNull(SERVICE.TITLE),
                         asNull(SERVICE.DESCRIPTION),
                         asNull(SUBSCRIPTION_PERIOD.ID),
-                        asNull(SUBSCRIPTION_PERIOD.START_TIME),
+                        asNull(SUBSCRIPTION_PERIOD.START_DATE),
+                        asNull(SUBSCRIPTION_PERIOD.LENGTH_UNIT),
                         asNull(SUBSCRIPTION_PERIOD.LENGTH),
-                        asNull(SUBSCRIPTION_PERIOD.PAYMENT))
+                        asNull(SUBSCRIPTION_PERIOD.PAYMENT),
+                        asNull(SUBSCRIPTION_PERIOD.APPROVED))
                     .from(PHONE_NUMBER)
                     .join(PERSON).onKey()
                     .where(conditions))
                 .orderBy(
                     PERSON.FULL_NAME,
                     SERVICE.TITLE,
-                    SUBSCRIPTION_PERIOD.START_TIME)
+                    SUBSCRIPTION_PERIOD.START_DATE)
                 .fetchLazy()) {
             final @NonNull
                 RelationMapper_2__1<
@@ -163,7 +167,7 @@ public final class Memberships implements PaginatedView<PersonMembership, Member
                     (p, s) -> mapper.relate_1(p, s));
                 ifAllPresent(mapToEntity(r.into(r.fields(0,1,2)), PersonData.class),
                     mapToEntity(r.into(r.fields(5,6,7)), Service.class),
-                    mapToEntity(r.into(r.fields(8,9,10,11)), SubscriptionPeriod.class),
+                    mapToEntity(r.into(r.fields(8,9,10,11,12,12)), SubscriptionPeriod.class),
                     (p, s, sn) -> mapper.relate_1_1(p, s, sn));
             }
             return mapper.<Entity<PersonMembership>>build(this::buildMembership);

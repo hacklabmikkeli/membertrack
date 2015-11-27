@@ -16,42 +16,41 @@
  */
 package fi.ilmoeuro.membertrack.plumbing;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Converter;
 
-public final class JooqDateConverter implements Converter<Date, LocalDate> {
+public final class JooqTimeUnitConverter implements Converter<String, PeriodTimeUnit> {
 
     public static final long serialVersionUID = 0l;
 
     @SuppressWarnings("nullness")
     @Override
-    public @Nullable LocalDate from(@Nullable Date databaseObject) {
+    public @Nullable PeriodTimeUnit from(@Nullable String databaseObject) {
         if (databaseObject == null) {
             return null;
         } else {
-            return databaseObject.toLocalDate();
+            return PeriodTimeUnit.valueOf(databaseObject);
         }
     }
 
     @SuppressWarnings("nullness")
     @Override
-    public @Nullable Date to(@Nullable LocalDate localDate) {
-        if (localDate == null) {
+    public @Nullable String to(@Nullable PeriodTimeUnit localString) {
+        if (localString == null) {
             return null;
         } else {
-            return Date.valueOf(localDate);
+            return localString.name();
         }
     }
 
     @Override
-    public Class<Date> fromType() {
-        return Date.class;
+    public Class<String> fromType() {
+        return String.class;
     }
 
     @Override
-    public Class<LocalDate> toType() {
-        return LocalDate.class;
+    public Class<PeriodTimeUnit> toType() {
+        return PeriodTimeUnit.class;
     }
 }

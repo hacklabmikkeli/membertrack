@@ -43,13 +43,18 @@ CREATE TABLE "PUBLIC"."SUBSCRIPTION_PERIOD" (
     "id"                INTEGER             IDENTITY(1,1),
     "service_id"        INTEGER             NOT NULL,
     "person_id"         INTEGER             NOT NULL,
-    "start_time"        DATETIME            NOT NULL,
+    "start_date"        DATE                NOT NULL,
+    "length_unit"       VARCHAR(255)        NOT NULL,
     "length"            BIGINT              NOT NULL,
     "payment"           INTEGER             NOT NULL,
+    "approved"          BIT(1)              NOT NULL,
     CONSTRAINT "subscription_period_pk"
         PRIMARY KEY ("id"),
     CONSTRAINT "subscription_period_fk_service_id"
         FOREIGN KEY ("service_id") REFERENCES "SERVICE" ("id"),
     CONSTRAINT "subscription_period_fk_person_id"
-        FOREIGN KEY ("person_id") REFERENCES "PERSON" ("id")
+        FOREIGN KEY ("person_id") REFERENCES "PERSON" ("id"),
+    CONSTRAINT "subscription_period_c_length_unit"
+        CHECK ("length_unit" = 'YEAR' OR
+               "length_unit" = 'DAY')
 );

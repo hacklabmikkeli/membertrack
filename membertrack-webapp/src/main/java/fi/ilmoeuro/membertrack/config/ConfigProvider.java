@@ -22,7 +22,7 @@ import com.typesafe.config.ConfigFactory;
 import fi.ilmoeuro.membertrack.ResourceRoot;
 import java.io.File;
 import java.net.URL;
-import javax.ejb.Singleton;
+import javax.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

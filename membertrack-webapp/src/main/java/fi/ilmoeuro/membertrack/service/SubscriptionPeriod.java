@@ -16,32 +16,42 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import lombok.Value;
 
 public final @Value class SubscriptionPeriod {
-    Instant startTime;
+    LocalDate startDate;
+    PeriodTimeUnit lengthUnit;
     long length;
     int payment;
+    boolean approved;
 
-    private static String format_fi_FI(Instant instant) {
-        return instant
-            .atZone(ZoneId.of("Europe/Helsinki"))
+    private static String format_fi_FI(LocalDate localDate) {
+        return localDate
             .format(DateTimeFormatter.ofPattern("d. M. uuuu"));
     }
 
-    public Instant getEnd() {
-        return startTime.plusSeconds(length);
+    public LocalDate getEndDate() {
+        switch (getLengthUnit()) {
+            case DAY: {
+                return getStartDate().plusDays(getLength());
+            }
+            case YEAR: {
+                int nextYear = getStartDate().getYear() + 1;
+                return LocalDate.of(nextYear, Month.JANUARY, 1).minusDays(1);
+            }
+        }
+        throw new IllegalStateException("Invalid time unit");
     }
 
     public String getStart_fi_FI() {
-        return format_fi_FI(getStartTime());
+        return format_fi_FI(getStartDate());
     }
 
     public String getEnd_fi_FI() {
-        return format_fi_FI(getEnd());
+        return format_fi_FI(getEndDate());
     }
 
     public String getPaymentFormatted() {
