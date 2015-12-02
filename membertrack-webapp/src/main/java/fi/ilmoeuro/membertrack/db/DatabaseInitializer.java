@@ -21,9 +21,6 @@ import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import javax.inject.Inject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +29,6 @@ import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 
-@Singleton
-@Startup
 @Slf4j
 public class DatabaseInitializer {
 
@@ -41,27 +36,24 @@ public class DatabaseInitializer {
         private String setupList = "";
         private String clearList = "";
         private boolean enabled = false;
+        private boolean useExampleData = false;
     }
 
     private final DSLContext jooq;
     private final Config config;
+    private final ExampleData exampleData;
 
     @Inject
     public DatabaseInitializer(
         DSLContext jooq,
-        ConfigProvider configProvider
+        ConfigProvider configProvider, 
+        ExampleData exampleData
     ) {
         this.jooq = jooq;
         this.config = configProvider.getConfig(
             "databaseInitializer",
             Config.class);
-    }
-
-    @SuppressWarnings("assignment.type.incompatible")
-    public DatabaseInitializer() {
-        /* Required by EJB, these nulls should never be visible */
-        jooq = null;
-        config = null;
+        this.exampleData = exampleData;
     }
 
     private void runSqlFiles(List<String> fileNames) {
@@ -88,7 +80,6 @@ public class DatabaseInitializer {
         }
     }
 
-    @PostConstruct
     public void init() {
         if (config.isEnabled()) {
             try (final InputStream clearStream =
@@ -117,6 +108,10 @@ public class DatabaseInitializer {
                 }
             } catch (IOException ex) {
                 throw new RuntimeException("Error loading setup list", ex);
+            }
+
+            if (config.isUseExampleData()) {
+                exampleData.populate(jooq);
             }
         }
     }

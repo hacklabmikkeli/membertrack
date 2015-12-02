@@ -25,6 +25,6 @@ public final @Data class InvalidAuthenticationException
     extends MembertrackException {
 
     public InvalidAuthenticationException() {
-        addError("Invalid email or password");
+        super("Invalid email or password");
     }
 }

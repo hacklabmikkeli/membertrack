@@ -20,7 +20,7 @@ import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Converter;
 
-public final class JooqTimeUnitConverter implements Converter<String, PeriodTimeUnit> {
+public final class JooqPeriodTimeUnitConverter implements Converter<String, PeriodTimeUnit> {
 
     public static final long serialVersionUID = 0l;
 

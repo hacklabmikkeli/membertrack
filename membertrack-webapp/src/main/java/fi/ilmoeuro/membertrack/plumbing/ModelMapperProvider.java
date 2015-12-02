@@ -16,13 +16,10 @@
  */
 package fi.ilmoeuro.membertrack.plumbing;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NameTokenizers;
 import org.modelmapper.jooq.RecordValueReader;
 
-@ApplicationScoped
 public class ModelMapperProvider {
     private final ModelMapper modelMapper;
 
@@ -34,7 +31,6 @@ public class ModelMapperProvider {
             .setSourceNameTokenizer(NameTokenizers.UNDERSCORE);
     }
     
-    @Produces
     public ModelMapper getModelMapper() {
         return modelMapper;
     }

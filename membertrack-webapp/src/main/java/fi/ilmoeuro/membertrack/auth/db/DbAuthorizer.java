@@ -19,10 +19,8 @@ package fi.ilmoeuro.membertrack.auth.db;
 import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.auth.Authorizer;
 import fi.ilmoeuro.membertrack.auth.Permission;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-@Dependent
 public final class DbAuthorizer implements Authorizer {
 
     private final Authenticator authenticator;

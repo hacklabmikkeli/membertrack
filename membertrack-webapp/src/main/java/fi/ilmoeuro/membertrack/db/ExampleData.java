@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.member;
+package fi.ilmoeuro.membertrack.db;
 
-import lombok.Value;
+import org.jooq.DSLContext;
 
-public final @Value class MembershipsQuery {
+public interface ExampleData {
+    void populate(DSLContext jooq);
 }

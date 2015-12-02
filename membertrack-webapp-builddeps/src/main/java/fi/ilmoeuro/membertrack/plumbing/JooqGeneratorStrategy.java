@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,11 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.person;
+package fi.ilmoeuro.membertrack.plumbing;
 
-import lombok.Value;
+import org.jooq.util.DefaultGeneratorStrategy;
+import org.jooq.util.Definition;
 
-public final @Value class PersonData {
-    private final String fullName;
-    private final String email;
+public class JooqGeneratorStrategy extends DefaultGeneratorStrategy {
+
+    @Override
+    public String getJavaClassName(Definition def, Mode mode) {
+        if (mode == Mode.POJO) {
+            return super.getJavaClassName(def, mode) + "Base";
+        } else {
+            return super.getJavaClassName(def, mode);
+        }
+    }
 }

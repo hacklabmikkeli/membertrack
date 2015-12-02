@@ -14,13 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.entity;
+package fi.ilmoeuro.membertrack.membership;
 
-import java.util.Collection;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import fi.ilmoeuro.membertrack.person.Person;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
+import fi.ilmoeuro.membertrack.service.Service;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
+import lombok.Value;
 
-public interface KeyedManager<K, T> {
-    public Collection<Entity<T>> put(
-        @NonNull K key,
-        Collection<Entity<T>> entity);
+public @Value class Membership implements Serializable {
+
+    private static final long serialVersionUID = 0l;
+
+    Person person;
+    Set<PhoneNumber> phoneNumbers;
+    Map<Service, Set<SubscriptionPeriod>> subscriptionPeriods;
 }

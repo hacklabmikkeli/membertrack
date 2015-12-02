@@ -22,11 +22,9 @@ import com.typesafe.config.ConfigFactory;
 import fi.ilmoeuro.membertrack.ResourceRoot;
 import java.io.File;
 import java.net.URL;
-import javax.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-@Singleton
 public class ConfigProvider {
 
     private static final String CONF_FILE = "membertrack.properties";

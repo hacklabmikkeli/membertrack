@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,30 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
-import lombok.Value;
+import fi.ilmoeuro.membertrack.schema.tables.pojos.PhoneNumberBase;
+import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final @Value class PhoneNumber {
-    private final String phoneNumber;
+public final class PhoneNumber extends PhoneNumberBase {
+    private static final long serialVersionUID = 0l;
+    
+    @SuppressWarnings("nullness") // Interface with autogen code
+    @Deprecated
+    public PhoneNumber(
+        @Nullable Integer pk,
+        UUID id,
+        boolean deleted,
+        UUID personId,
+        String phoneNumber
+    ) {
+        super(pk, id, deleted, personId, phoneNumber);
+    }
+
+    @SuppressWarnings("deprecation")
+    public PhoneNumber(
+        UUID personId,
+        String phoneNumber
+    ) {
+        this(null, UUID.randomUUID(), false, personId, phoneNumber);
+    }
 }

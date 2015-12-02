@@ -14,30 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.entity;
+package fi.ilmoeuro.membertrack.db;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import lombok.Value;
+import javax.inject.Inject;
+import org.jooq.DSLContext;
+import org.jooq.Table;
+import org.jooq.UpdatableRecord;
 
-public final @Value class PartitionedEntities<T> {
-    List<T> fresh;
-    List<Entity<T>> existing;
-    List<Integer> existingIds;
+public final class UnitOfWork {
 
-    public PartitionedEntities(Collection<Entity<T>> entities) {
-        fresh = new ArrayList<>();
-        existing = new ArrayList<>();
-        existingIds = new ArrayList<>();
+    private final DSLContext jooq;
+    private final List<UpdatableRecord> records = new ArrayList<>();
 
-        for (Entity<T> entity : entities) {
-            if (entity.isFresh()) {
-                fresh.add(entity.getValue());
-            } else {
-                existing.add(entity);
-                existingIds.add(entity.getId());
-            }
+    @Inject
+    public UnitOfWork(
+        DSLContext jooq
+    ) {
+        this.jooq = jooq;
+    }
+
+    public <R extends UpdatableRecord> void addEntity(
+        Table<R> table,
+        Object val
+    ) {
+        R record = jooq.newRecord(table, val);
+        records.add(record);
+    }
+
+    public void execute() {
+        for (UpdatableRecord record : records) {
+            record.store();
         }
     }
 }
