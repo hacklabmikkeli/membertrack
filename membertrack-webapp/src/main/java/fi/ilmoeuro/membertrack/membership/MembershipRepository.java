@@ -16,81 +16,12 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
-import com.relatejava.relate.RelationMapper_2__1;
-import fi.ilmoeuro.membertrack.person.Person;
-import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import static fi.ilmoeuro.membertrack.schema.Tables.*;
-import fi.ilmoeuro.membertrack.schema.tables.records.PersonRecord;
-import fi.ilmoeuro.membertrack.schema.tables.records.PhoneNumberRecord;
-import fi.ilmoeuro.membertrack.schema.tables.records.ServiceRecord;
-import fi.ilmoeuro.membertrack.schema.tables.records.SubscriptionPeriodRecord;
-import fi.ilmoeuro.membertrack.service.Service;
-import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.jooq.Cursor;
-import org.jooq.SelectField;
 
-public final class MembershipRepository {
+public interface MembershipRepository {
 
-    private final DSLContext jooq;
+    List<Membership> listMembershipsPage(int pageNum);
 
-    public MembershipRepository(
-        DSLContext jooq
-    ) {
-        this.jooq = jooq;
-    }
-
-    public List<Membership> listMemberships() {
-        List<SelectField<?>> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(PERSON.fields()));
-        fields.addAll(Arrays.asList(PHONE_NUMBER.fields()));
-        fields.addAll(Arrays.asList(SERVICE.fields()));
-        fields.addAll(Arrays.asList(SUBSCRIPTION_PERIOD.fields()));
-        RelationMapper_2__1<Person, Service, PhoneNumber, SubscriptionPeriod>
-            mapper = new RelationMapper_2__1<>();
-        try (Cursor<? extends Record> records = jooq
-            .selectDistinct(fields)
-            .from(PERSON)
-            .leftOuterJoin(PHONE_NUMBER)
-                .onKey()
-            .crossJoin(SERVICE)
-            .leftOuterJoin(SUBSCRIPTION_PERIOD)
-                .on(SUBSCRIPTION_PERIOD.PERSON_ID.eq(PERSON.ID),
-                    SUBSCRIPTION_PERIOD.SERVICE_ID.eq(SERVICE.ID))
-            .fetchLazy()) {
-            for (Record r : records) {
-                PersonRecord pr = r.into(PERSON);
-                PhoneNumberRecord pnr = r.into(PHONE_NUMBER);
-                ServiceRecord sr = r.into(SERVICE);
-                SubscriptionPeriodRecord spr = r.into(SUBSCRIPTION_PERIOD);
-
-                if (pr.getId() != null) {
-                    Person p = pr.into(Person.class);
-                    mapper.root(p);
-
-                    if (sr.getId() != null) {
-                        Service s = sr.into(Service.class);
-                        mapper.relate_1(p, s);
-
-                        if (spr.getId() != null) {
-                            SubscriptionPeriod sp = spr.into(SubscriptionPeriod.class);
-
-                            mapper.relate_1_1(p, s, sp);
-                        }
-                    }
-
-                    if (pnr.getId() != null) {
-                        PhoneNumber pn = pnr.into(PhoneNumber.class);
-                        mapper.relate_2(p, pn);
-                    }
-                }
-            }
-        }
-
-        return mapper.<Membership>build(Membership::new);
-    }
+    int numMembershipsPages();
+    
 }

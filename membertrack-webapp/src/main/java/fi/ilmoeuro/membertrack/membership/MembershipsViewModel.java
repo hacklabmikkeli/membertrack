@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.auth;
+package fi.ilmoeuro.membertrack.membership;
 
-import fi.ilmoeuro.membertrack.MembertrackException;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
-@EqualsAndHashCode(callSuper = true)
-@ToString
-public final class InvalidAuthenticationException
-    extends MembertrackException {
+public final class MembershipsViewModel implements Serializable {
 
-    public InvalidAuthenticationException() {
-        super("Invalid email or password");
+    @Getter
+    private transient List<Membership> memberships = Collections.emptyList();
+
+    @Getter
+    private transient int numPages = 0;
+
+    @Getter
+    @Setter
+    private int pageNumber = 0;
+
+    public void load(MembershipRepository repo) {
+        memberships = repo.listMembershipsPage(pageNumber);
+        numPages = repo.numMembershipsPages();
     }
 }

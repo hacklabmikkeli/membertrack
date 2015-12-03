@@ -24,7 +24,6 @@ import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 
 public final class UnitOfWork {
-
     private final DSLContext jooq;
     private final List<UpdatableRecord> records = new ArrayList<>();
 

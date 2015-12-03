@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.Value;
 
-public @Value class Membership implements Serializable {
+public final @Value class Membership implements Serializable {
 
     private static final long serialVersionUID = 0l;
 

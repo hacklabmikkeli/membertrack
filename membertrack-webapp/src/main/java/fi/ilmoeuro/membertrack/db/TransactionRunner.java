@@ -32,9 +32,9 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-public class TransactionRunner {
+public final class TransactionRunner {
     public static final @Data class Config {
-        private String dataSourceJndiName = "";
+        private String dataSourceJndiName = "jdbc/membertrack";
         private String sqlDialect = "H2";
     }
 

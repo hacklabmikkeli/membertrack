@@ -30,7 +30,7 @@ import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 
 @Slf4j
-public class DatabaseInitializer {
+public final class DatabaseInitializer {
 
     public static final @Data class Config {
         private String setupList = "";
