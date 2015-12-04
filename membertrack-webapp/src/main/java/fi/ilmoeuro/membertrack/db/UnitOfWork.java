@@ -18,21 +18,15 @@ package fi.ilmoeuro.membertrack.db;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
+import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 
+@RequiredArgsConstructor
 public final class UnitOfWork {
     private final DSLContext jooq;
     private final List<UpdatableRecord> records = new ArrayList<>();
-
-    @Inject
-    public UnitOfWork(
-        DSLContext jooq
-    ) {
-        this.jooq = jooq;
-    }
 
     public <R extends UpdatableRecord> void addEntity(
         Table<R> table,

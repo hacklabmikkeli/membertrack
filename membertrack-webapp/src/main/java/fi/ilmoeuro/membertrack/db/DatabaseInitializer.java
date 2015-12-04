@@ -21,7 +21,6 @@ import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.inject.Inject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.Charsets;
@@ -43,7 +42,6 @@ public final class DatabaseInitializer {
     private final Config config;
     private final ExampleData exampleData;
 
-    @Inject
     public DatabaseInitializer(
         DSLContext jooq,
         ConfigProvider configProvider, 

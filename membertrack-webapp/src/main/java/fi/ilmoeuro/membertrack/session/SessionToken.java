@@ -14,13 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.membership;
+package fi.ilmoeuro.membertrack.session;
 
-import java.util.List;
+import lombok.Value;
 
-public interface
-    MembershipRepository
-{
-    List<Membership> listMembershipsPage(int pageNum);
-    int numMembershipsPages();
+public final @Value class SessionToken<T> {
+    T value;
 }

@@ -32,8 +32,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.inject.Inject;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.Charsets;
@@ -41,6 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.DSLContext;
 
 @Slf4j
+@RequiredArgsConstructor
 public final class DbAuthenticator implements Authenticator {
 
     public static @Data class Session implements Serializable {
@@ -50,15 +51,6 @@ public final class DbAuthenticator implements Authenticator {
 
     private final DSLContext jooq;
     private final Session session;
-    
-    @Inject
-    public DbAuthenticator(
-        DSLContext jooq,
-        Session session
-    ) {
-        this.jooq = jooq;
-        this.session = session;
-    }
 
     private String hash(String candidate, String salt) {
         try {

@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.db.exampledata;
 
+import fi.ilmoeuro.membertrack.db.ExampleData;
 import fi.ilmoeuro.membertrack.db.UnitOfWork;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
@@ -30,7 +31,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import org.jooq.DSLContext;
 
-public final class DefaultExampleData {
+public final class DefaultExampleData implements ExampleData {
+    @Override
     public void populate(DSLContext jooq) {
         Person p = new Person("John Doe", "john.doe@example.com");
         PhoneNumber pn = new PhoneNumber(p.getId(), "+1234567890");

@@ -33,6 +33,7 @@
         <jasypt.version>1.9.2</jasypt.version>
         <jackson.version>2.3.2</jackson.version>
         <dagger.version>2.0</dagger.version>
+        <wicket.version>7.1.0</wicket.version>
     </properties>
 
     <modules>
@@ -45,10 +46,6 @@
         <profile>
             <id>static-checks</id>
             <activation>
-                <property>
-                    <name>static-checks</name>
-                    <value>true</value>
-                </property>
                 <file>
                     <exists>findbugs-exclude-filter.xml</exists>
                 </file>

@@ -14,13 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.membership;
+package fi.ilmoeuro.membertrack.membership.ui;
 
-import java.util.List;
+import fi.ilmoeuro.membertrack.membership.MembershipsModel;
+import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
+import org.apache.wicket.markup.html.WebPage;
+import org.jooq.DSLContext;
 
-public interface
-    MembershipRepository
-{
-    List<Membership> listMembershipsPage(int pageNum);
-    int numMembershipsPages();
+public class MembershipsPage extends WebPage {
+    private static final long serialVersionUID = 0l;
+
+    private final MembershipsModel<DSLContext> model;
+
+    public MembershipsPage() {
+        model = new MembershipsModel<>(
+            new DbMembershipRepositoryFactory()
+        );
+    }
 }

@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.db;
+package fi.ilmoeuro.membertrack.session.db;
 
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
+import fi.ilmoeuro.membertrack.session.SessionRunner;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -32,7 +33,7 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-public final class TransactionRunner {
+public final class DbSessionRunner implements SessionRunner<DSLContext> {
     public static final @Data class Config {
         private String dataSourceJndiName = "jdbc/membertrack";
         private String sqlDialect = "H2";
@@ -40,8 +41,7 @@ public final class TransactionRunner {
 
     private final Config config;
 
-    @Inject
-    public TransactionRunner(
+    public DbSessionRunner(
         ConfigProvider configProvider
     ) {
         config = configProvider.getConfig(
@@ -49,14 +49,15 @@ public final class TransactionRunner {
             Config.class);
     }
 
-    public <R> R run(Function<DSLContext,@NonNull R> func) {
+    @Override
+    public <R> R run(Function<SessionToken<DSLContext>,@NonNull R> func) {
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup(config.getDataSourceJndiName());
             DSLContext jooq = DSL.using(ds, SQLDialect.valueOf(config.getSqlDialect()));
             AtomicReference<@NonNull R> resultRef = new AtomicReference<>();
             jooq.transaction((Configuration conf) -> {
-                resultRef.set(func.apply(DSL.using(conf)));
+                resultRef.set(func.apply(new SessionToken<>(DSL.using(conf))));
             });
             R result = resultRef.get();
             if (result != null) {
@@ -69,8 +70,9 @@ public final class TransactionRunner {
         }
     }
 
-    public void run(Consumer<DSLContext> func) {
-        this.<Object>run((DSLContext c) -> {
+    @Override
+    public void run(Consumer<SessionToken<DSLContext>> func) {
+        this.<Object>run((SessionToken<DSLContext> c) -> {
             func.accept(c);
             return new Object(); // Hack to satisfy null safety
         });

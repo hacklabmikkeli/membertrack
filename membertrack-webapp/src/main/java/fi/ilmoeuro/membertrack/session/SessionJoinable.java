@@ -14,28 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.membership;
+package fi.ilmoeuro.membertrack.session;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+public interface SessionJoinable<T> {
 
-public final class MembershipsViewModel implements Serializable {
-
-    @Getter
-    private transient List<Membership> memberships = Collections.emptyList();
-
-    @Getter
-    private transient int numPages = 0;
-
-    @Getter
-    @Setter
-    private int pageNumber = 0;
-
-    public void load(MembershipRepository repo) {
-        memberships = repo.listMembershipsPage(pageNumber);
-        numPages = repo.numMembershipsPages();
-    }
+    void join(SessionToken<T> token);
+    
 }

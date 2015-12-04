@@ -82,5 +82,7 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-editor-indent.text.plain.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.plain.CodeStyle.project.tab-size>
         <org-netbeans-modules-editor-indent.text.plain.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.plain.CodeStyle.project.expand-tabs>
         <org-netbeans-modules-javascript2-requirejs.enabled>true</org-netbeans-modules-javascript2-requirejs.enabled>
+        <netbeans.hint.jdkPlatform>OpenJDK_1.8</netbeans.hint.jdkPlatform>
+        <org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>static/js</org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>
     </properties>
 </project-shared-configuration>

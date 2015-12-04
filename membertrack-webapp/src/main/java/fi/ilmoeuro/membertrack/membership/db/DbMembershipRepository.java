@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.Map;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Condition;
 import org.jooq.Cursor;
@@ -39,17 +41,16 @@ import org.jooq.SelectField;
 import org.jooq.impl.DSL;
 import fi.ilmoeuro.membertrack.membership.MembershipRepository;
 import fi.ilmoeuro.membertrack.membership.Membership;
+import lombok.RequiredArgsConstructor;
 
-public final class DbMembershipRepository implements MembershipRepository {
-
+@RequiredArgsConstructor
+public final class
+    DbMembershipRepository
+implements
+    MembershipRepository
+{
     private final DSLContext jooq;
     private static final int PAGE_SIZE = 10;
-
-    public DbMembershipRepository(
-        DSLContext jooq
-    ) {
-        this.jooq = jooq;
-    }
 
     @Override
     public int numMembershipsPages() {
@@ -67,14 +68,14 @@ public final class DbMembershipRepository implements MembershipRepository {
             .from(PERSON)
             .orderBy(PERSON.FULL_NAME)
             .limit(pageNum * PAGE_SIZE, 1)
-            .fetchAny((Record r) -> r.getValue(PERSON.FULL_NAME));
+            .fetchAny(this::getFullName);
 
         @Nullable String end = jooq
             .select(PERSON.FULL_NAME)
             .from(PERSON)
             .orderBy(PERSON.FULL_NAME)
             .limit((pageNum + 1) * PAGE_SIZE, 1)
-            .fetchAny((Record r) -> r.getValue(PERSON.FULL_NAME));
+            .fetchAny(this::getFullName);
 
         if (start != null) {
             if (end != null) {
@@ -139,6 +140,18 @@ public final class DbMembershipRepository implements MembershipRepository {
                 }
             }
         }
-        return mapper.<Membership>build(Membership::new);
+        return mapper.<Membership>build(this::buildMembership);
+    }
+
+    private Membership buildMembership(
+        Person person,
+        Set<PhoneNumber> phoneNumbers,
+        Map<Service, Set<SubscriptionPeriod>> subscriptions
+    ) {
+        return new Membership(person, phoneNumbers, subscriptions);
+    }
+
+    private String getFullName(Record r) {
+        return r.getValue(PERSON.FULL_NAME);
     }
 }

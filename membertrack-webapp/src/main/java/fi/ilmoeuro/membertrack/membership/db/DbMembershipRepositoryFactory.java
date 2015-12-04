@@ -14,13 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.membership;
+package fi.ilmoeuro.membertrack.membership.db;
 
-import java.util.List;
+import fi.ilmoeuro.membertrack.membership.MembershipRepository;
+import fi.ilmoeuro.membertrack.membership.MembershipRepositoryFactory;
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import org.jooq.DSLContext;
 
-public interface
-    MembershipRepository
+public final class DbMembershipRepositoryFactory
+implements
+    MembershipRepositoryFactory<DSLContext>
 {
-    List<Membership> listMembershipsPage(int pageNum);
-    int numMembershipsPages();
+    private static final long serialVersionUID = 0l;
+
+    @Override
+    public MembershipRepository create(SessionToken<DSLContext> token) {
+        return new DbMembershipRepository(token.getValue());
+    }
 }

@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.membership;
+package fi.ilmoeuro.membertrack.session;
 
-import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface
-    MembershipRepository
-{
-    List<Membership> listMembershipsPage(int pageNum);
-    int numMembershipsPages();
+public interface SessionRunner<SessionTokenType> {
+    <R> R run(Function<SessionToken<SessionTokenType>,@NonNull R> func);
+    void run(Consumer<SessionToken<SessionTokenType>> func);
 }
