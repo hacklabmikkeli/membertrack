@@ -18,21 +18,51 @@ package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import fi.ilmoeuro.membertrack.config.TypesafeConfigProvider;
+import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
+import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
+import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
+import fi.ilmoeuro.membertrack.session.SessionRunner;
+import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
+import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
+import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.jooq.DSLContext;
 
 @Slf4j
-public class MembertrackApplication extends WebApplication {
+public final class MembertrackApplication extends WebApplication {
 
     @Getter
     private final ConfigProvider configProvider;
+    @Getter
+    private final SessionRunner<DSLContext> sessionRunner;
+
+    private final UnitOfWorkFactory<DSLContext> uowFactory;
+    private final DataSourceInitializer dsInitializer;
+    private final DatabaseInitializer dbInitializer;
 
     public MembertrackApplication() {
-        configProvider = new TypesafeConfigProvider();
+        configProvider
+            = new TypesafeConfigProvider();
+        sessionRunner
+            = new DbSessionRunner(configProvider);
+        uowFactory
+            = new DbUnitOfWorkFactory();
+        dsInitializer
+            = new DataSourceInitializer(configProvider);
+        dbInitializer
+            = new DatabaseInitializer(configProvider,
+                new DefaultExampleData<>(uowFactory));
+    }
+
+    @Override
+    public void init() {
+        dsInitializer.init();
+        sessionRunner.run(dbInitializer::init);
     }
 
     @Override

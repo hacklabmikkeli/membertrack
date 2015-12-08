@@ -17,23 +17,28 @@
 package fi.ilmoeuro.membertrack.db.exampledata;
 
 import fi.ilmoeuro.membertrack.db.ExampleData;
-import fi.ilmoeuro.membertrack.db.UnitOfWork;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import static fi.ilmoeuro.membertrack.schema.Tables.PERSON;
-import static fi.ilmoeuro.membertrack.schema.Tables.PHONE_NUMBER;
-import static fi.ilmoeuro.membertrack.schema.Tables.SERVICE;
-import static fi.ilmoeuro.membertrack.schema.Tables.SUBSCRIPTION_PERIOD;
 import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import fi.ilmoeuro.membertrack.session.UnitOfWork;
+import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.time.LocalDate;
 import java.time.Month;
-import org.jooq.DSLContext;
+import lombok.RequiredArgsConstructor;
 
-public final class DefaultExampleData implements ExampleData {
+@RequiredArgsConstructor
+public final class
+    DefaultExampleData<SessionTokenType>
+implements
+    ExampleData<SessionTokenType>
+{
+    private final UnitOfWorkFactory<SessionTokenType> uwf;
+    
     @Override
-    public void populate(DSLContext jooq) {
+    public void populate(SessionToken<SessionTokenType> session) {
         Person p = new Person("John Doe", "john.doe@example.com");
         PhoneNumber pn = new PhoneNumber(p.getId(), "+1234567890");
         Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
@@ -56,12 +61,12 @@ public final class DefaultExampleData implements ExampleData {
             true
         );
 
-        UnitOfWork uw = new UnitOfWork(jooq);
-        uw.addEntity(PERSON, p);
-        uw.addEntity(PHONE_NUMBER, pn);
-        uw.addEntity(SERVICE, s);
-        uw.addEntity(SUBSCRIPTION_PERIOD, pr1);
-        uw.addEntity(SUBSCRIPTION_PERIOD, pr2);
+        UnitOfWork uw = uwf.create(session);
+        uw.addEntity(p);
+        uw.addEntity(pn);
+        uw.addEntity(s);
+        uw.addEntity(pr1);
+        uw.addEntity(pr2);
         uw.execute();
     }
 }

@@ -14,31 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.db;
+package fi.ilmoeuro.membertrack.session;
 
-import java.util.ArrayList;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.jooq.DSLContext;
-import org.jooq.Table;
-import org.jooq.UpdatableRecord;
-
-@RequiredArgsConstructor
-public final class UnitOfWork {
-    private final DSLContext jooq;
-    private final List<UpdatableRecord> records = new ArrayList<>();
-
-    public <R extends UpdatableRecord> void addEntity(
-        Table<R> table,
-        Object val
-    ) {
-        R record = jooq.newRecord(table, val);
-        records.add(record);
-    }
-
-    public void execute() {
-        for (UpdatableRecord record : records) {
-            record.store();
-        }
-    }
+public interface UnitOfWorkFactory<SessionTokenType> {
+    UnitOfWork create(SessionToken<SessionTokenType> token);
 }

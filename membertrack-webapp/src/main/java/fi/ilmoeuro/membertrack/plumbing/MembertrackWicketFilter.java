@@ -14,10 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.db;
+package fi.ilmoeuro.membertrack.plumbing;
 
-import fi.ilmoeuro.membertrack.session.SessionToken;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
+import org.apache.wicket.protocol.http.WicketFilter;
 
-public interface ExampleData<SessionTokenType> {
-    void populate(SessionToken<SessionTokenType> jooq);
+@WebFilter(
+    value = "/*",
+    initParams = {
+        @WebInitParam(
+            name = "applicationClassName",
+            value = "fi.ilmoeuro.membertrack.ui.MembertrackApplication"),
+        @WebInitParam(
+            name = "filterMappingUrlPattern",
+            value = "/*"
+        )
+    }
+)
+public class MembertrackWicketFilter extends WicketFilter {
+    
 }

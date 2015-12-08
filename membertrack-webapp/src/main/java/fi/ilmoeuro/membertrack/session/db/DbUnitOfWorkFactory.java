@@ -14,10 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.db;
+package fi.ilmoeuro.membertrack.session.db;
 
+import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.session.SessionToken;
+import fi.ilmoeuro.membertrack.session.UnitOfWork;
+import org.jooq.DSLContext;
 
-public interface ExampleData<SessionTokenType> {
-    void populate(SessionToken<SessionTokenType> jooq);
+public class DbUnitOfWorkFactory implements UnitOfWorkFactory<DSLContext> {
+    @Override
+    public UnitOfWork create(SessionToken<DSLContext> token) {
+        return new DbUnitOfWork(token.getValue());
+    }
 }

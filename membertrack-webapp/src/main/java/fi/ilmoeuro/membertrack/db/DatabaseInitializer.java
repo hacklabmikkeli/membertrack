@@ -18,6 +18,7 @@ package fi.ilmoeuro.membertrack.db;
 
 import fi.ilmoeuro.membertrack.ResourceRoot;
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -29,7 +30,7 @@ import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 
 @Slf4j
-public final class DatabaseInitializer {
+public final class DatabaseInitializer<SessionTokenType> {
 
     public static final @Data class Config {
         private String setupList = "";
@@ -38,23 +39,20 @@ public final class DatabaseInitializer {
         private boolean useExampleData = false;
     }
 
-    private final DSLContext jooq;
     private final Config config;
-    private final ExampleData exampleData;
+    private final ExampleData<DSLContext> exampleData;
 
     public DatabaseInitializer(
-        DSLContext jooq,
         ConfigProvider configProvider, 
-        ExampleData exampleData
+        ExampleData<DSLContext> exampleData
     ) {
-        this.jooq = jooq;
         this.config = configProvider.getConfig(
             "databaseInitializer",
             Config.class);
         this.exampleData = exampleData;
     }
 
-    private void runSqlFiles(List<String> fileNames) {
+    private void runSqlFiles(DSLContext jooq, List<String> fileNames) {
         try {
             for (String fileName : fileNames) {
                 InputStream sqlStream
@@ -78,7 +76,7 @@ public final class DatabaseInitializer {
         }
     }
 
-    public void init() {
+    public void init(SessionToken<DSLContext> sessionToken) {
         if (config.isEnabled()) {
             try (final InputStream clearStream =
                     ResourceRoot.class.getResourceAsStream(
@@ -87,7 +85,7 @@ public final class DatabaseInitializer {
                 if (clearStream != null) {
                     final List<String> clearFiles =
                         IOUtils.readLines(clearStream, Charsets.UTF_8);
-                    runSqlFiles(clearFiles);
+                    runSqlFiles(sessionToken.getValue(), clearFiles);
                 }
             } catch (DataAccessException ex) {
                 log.info("Exception while clearing db", ex);
@@ -102,14 +100,14 @@ public final class DatabaseInitializer {
                 if (setupStream != null) {
                     final List<String> setupFiles =
                         IOUtils.readLines(setupStream, Charsets.UTF_8);
-                    runSqlFiles(setupFiles);
+                    runSqlFiles(sessionToken.getValue(), setupFiles);
                 }
             } catch (IOException ex) {
                 throw new RuntimeException("Error loading setup list", ex);
             }
 
             if (config.isUseExampleData()) {
-                exampleData.populate(jooq);
+                exampleData.populate(sessionToken);
             }
         }
     }

@@ -45,7 +45,7 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
         ConfigProvider configProvider
     ) {
         config = configProvider.getConfig(
-            "transactionRunner",
+            "sessionRunner",
             Config.class);
     }
 

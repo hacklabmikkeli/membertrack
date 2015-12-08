@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.db;
+package fi.ilmoeuro.membertrack.session;
 
-import fi.ilmoeuro.membertrack.session.SessionToken;
-
-public interface ExampleData<SessionTokenType> {
-    void populate(SessionToken<SessionTokenType> jooq);
+public interface UnitOfWork {
+    void addEntity(Object o);
+    void execute();
 }

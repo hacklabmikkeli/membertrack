@@ -16,12 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.membership.ui;
 
+import org.jooq.DSLContext;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.list.ListItem;
+import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
-import org.apache.wicket.markup.html.WebPage;
-import org.jooq.DSLContext;
+import fi.ilmoeuro.membertrack.ui.Components;
 
-public class MembershipsPage extends WebPage {
+public final class MembershipsPage extends WebPage {
     private static final long serialVersionUID = 0l;
 
     private final MembershipsModel<DSLContext> model;
@@ -30,5 +33,13 @@ public class MembershipsPage extends WebPage {
         model = new MembershipsModel<>(
             new DbMembershipRepositoryFactory()
         );
+
+        setDefaultModel(Components.model(model));
+        add(Components.label("numPages"));
+        add(Components.<Membership>listView(
+            "memberships",
+            (ListItem<Membership> item) -> {
+                item.add(
+                    Components.<Membership>label("person.fullName", item));}));
     }
 }
