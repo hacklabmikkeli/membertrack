@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,30 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
-import lombok.Value;
+import fi.ilmoeuro.membertrack.schema.tables.pojos.ServiceBase;
+import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final @Value class Service {
-    String title;
-    String description;
+public final class Service extends ServiceBase {
+    private static final long serialVersionUID = 0l;
+    
+    @SuppressWarnings("nullness") // Interface with autogen code
+    @Deprecated
+    public Service(
+        @Nullable Integer pk,
+        UUID id,
+        boolean deleted,
+        String title,
+        String description
+    ) {
+        super(pk, id, deleted, title, description);
+    }
+
+    @SuppressWarnings("deprecation")
+    public Service(
+        String title,
+        String description
+    ) {
+        this(null, UUID.randomUUID(), false, title, description);
+    }
 }

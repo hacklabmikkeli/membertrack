@@ -18,13 +18,10 @@ package fi.ilmoeuro.membertrack.db;
 
 import fi.ilmoeuro.membertrack.ResourceRoot;
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.inject.Inject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.Charsets;
@@ -32,39 +29,30 @@ import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 
-@Singleton
-@Startup
 @Slf4j
-public class DatabaseInitializer {
+public final class DatabaseInitializer<SessionTokenType> {
 
     public static final @Data class Config {
         private String setupList = "";
         private String clearList = "";
         private boolean enabled = false;
+        private boolean useExampleData = false;
     }
 
-    private final DSLContext jooq;
     private final Config config;
+    private final ExampleData<DSLContext> exampleData;
 
-    @Inject
     public DatabaseInitializer(
-        DSLContext jooq,
-        ConfigProvider configProvider
+        ConfigProvider configProvider, 
+        ExampleData<DSLContext> exampleData
     ) {
-        this.jooq = jooq;
         this.config = configProvider.getConfig(
             "databaseInitializer",
             Config.class);
+        this.exampleData = exampleData;
     }
 
-    @SuppressWarnings("assignment.type.incompatible")
-    public DatabaseInitializer() {
-        /* Required by EJB, these nulls should never be visible */
-        jooq = null;
-        config = null;
-    }
-
-    private void runSqlFiles(List<String> fileNames) {
+    private void runSqlFiles(DSLContext jooq, List<String> fileNames) {
         try {
             for (String fileName : fileNames) {
                 InputStream sqlStream
@@ -88,8 +76,7 @@ public class DatabaseInitializer {
         }
     }
 
-    @PostConstruct
-    public void init() {
+    public void init(SessionToken<DSLContext> sessionToken) {
         if (config.isEnabled()) {
             try (final InputStream clearStream =
                     ResourceRoot.class.getResourceAsStream(
@@ -98,7 +85,7 @@ public class DatabaseInitializer {
                 if (clearStream != null) {
                     final List<String> clearFiles =
                         IOUtils.readLines(clearStream, Charsets.UTF_8);
-                    runSqlFiles(clearFiles);
+                    runSqlFiles(sessionToken.getValue(), clearFiles);
                 }
             } catch (DataAccessException ex) {
                 log.info("Exception while clearing db", ex);
@@ -113,10 +100,14 @@ public class DatabaseInitializer {
                 if (setupStream != null) {
                     final List<String> setupFiles =
                         IOUtils.readLines(setupStream, Charsets.UTF_8);
-                    runSqlFiles(setupFiles);
+                    runSqlFiles(sessionToken.getValue(), setupFiles);
                 }
             } catch (IOException ex) {
                 throw new RuntimeException("Error loading setup list", ex);
+            }
+
+            if (config.isUseExampleData()) {
+                exampleData.populate(sessionToken);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro
+ * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,45 +16,84 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
+import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodBase;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import lombok.Value;
+import java.util.UUID;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final @Value class SubscriptionPeriod {
-    LocalDate startDate;
-    PeriodTimeUnit lengthUnit;
-    long length;
-    int payment;
-    boolean approved;
+public final class SubscriptionPeriod extends SubscriptionPeriodBase {
+    private static final long serialVersionUID = 0l;
+    
+    @SuppressWarnings("nullness") // Interface with autogen code
+    @Deprecated
+    public SubscriptionPeriod(
+        @Nullable Integer pk,
+        UUID id,
+        boolean deleted,
+        UUID serviceId,
+        UUID personId,
+        LocalDate startDate,
+        PeriodTimeUnit lengthUnit,
+        long length,
+        int payment,
+        boolean approved
+    ) {
+        super(
+            pk,
+            id,
+            deleted,
+            serviceId,
+            personId,
+            startDate,
+            lengthUnit,
+            length,
+            payment,
+            approved
+        );
+    }
 
-    private static String format_fi_FI(LocalDate localDate) {
-        return localDate
-            .format(DateTimeFormatter.ofPattern("d. M. uuuu"));
+    @SuppressWarnings("deprecation")
+    public SubscriptionPeriod(
+        UUID serviceId,
+        UUID personId,
+        LocalDate startDate,
+        PeriodTimeUnit lengthUnit,
+        long length,
+        int payment,
+        boolean approved
+    ) {
+        this(
+            null,
+            UUID.randomUUID(),
+            false,
+            serviceId,
+            personId,
+            startDate,
+            lengthUnit,
+            length,
+            payment,
+            approved
+        );
     }
 
     public LocalDate getEndDate() {
         switch (getLengthUnit()) {
-            case DAY: {
+            case DAY:
                 return getStartDate().plusDays(getLength());
-            }
-            case YEAR: {
-                int nextYear = getStartDate().getYear() + 1;
-                return LocalDate.of(nextYear, Month.JANUARY, 1).minusDays(1);
-            }
+            case YEAR:
+                return LocalDate.of(
+                        getStartDate().getYear() + 1,
+                        Month.JANUARY,
+                        1)
+                    .minusDays(1);
         }
-        throw new IllegalStateException("Invalid time unit");
-    }
 
-    public String getStart_fi_FI() {
-        return format_fi_FI(getStartDate());
-    }
-
-    public String getEnd_fi_FI() {
-        return format_fi_FI(getEndDate());
+        throw new IllegalStateException("Invalid length unit");
     }
 
     public String getPaymentFormatted() {
-        return String.format("%d,%02d", getPayment() / 100, getPayment() % 100);
+        int payment = getPayment();
+        return String.format("%d,%02d €", payment / 100, payment % 100);
     }
 }

@@ -1,2 +1,0 @@
-schema/20151027_00_init.sql
-initialdata/20151027_00_example.sql

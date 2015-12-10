@@ -23,22 +23,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <session-config>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
-
-    <filter>
-        <filter-name>JerseyContainer</filter-name>
-        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>fi.ilmoeuro.membertrack.plumbing.JerseyConfig</param-value>
-        </init-param>
-        <init-param>
-            <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
-            <param-value>/static/.*</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>JerseyContainer</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 </web-app>

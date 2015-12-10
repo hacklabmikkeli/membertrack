@@ -37,7 +37,7 @@ public abstract class TestBase {
     private @Nullable Connection conn;
     private @Nullable DSLContext jooq;
 
-    protected void initSchema() {
+    private void initSchema() {
         try (final InputStream schemaFileStream =
                 ResourceRoot.class.getResourceAsStream(SCHEMA_LIST_FILE)) {
             if (schemaFileStream == null) {
@@ -82,6 +82,7 @@ public abstract class TestBase {
         Class.forName("org.h2.Driver");
         conn = DriverManager.getConnection(CONN_STRING);
         jooq = DSL.using(conn, SQLDialect.H2);
+        initSchema();
     }
     
     @AfterMethod

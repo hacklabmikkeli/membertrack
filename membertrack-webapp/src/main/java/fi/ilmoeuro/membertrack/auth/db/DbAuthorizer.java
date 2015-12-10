@@ -19,20 +19,12 @@ package fi.ilmoeuro.membertrack.auth.db;
 import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.auth.Authorizer;
 import fi.ilmoeuro.membertrack.auth.Permission;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import lombok.RequiredArgsConstructor;
 
-@Dependent
+@RequiredArgsConstructor
 public final class DbAuthorizer implements Authorizer {
 
     private final Authenticator authenticator;
-
-    @Inject
-    public DbAuthorizer(
-        Authenticator authenticator
-    ) {
-        this.authenticator = authenticator;
-    }
 
     @Override
     public boolean isAuthorized(Permission permission) {

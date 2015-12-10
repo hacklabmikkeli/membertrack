@@ -16,44 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.config;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigBeanFactory;
-import com.typesafe.config.ConfigFactory;
-import fi.ilmoeuro.membertrack.ResourceRoot;
-import java.io.File;
-import java.net.URL;
-import javax.inject.Singleton;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-@Singleton
-public class ConfigProvider {
-
-    private static final String CONF_FILE = "membertrack.properties";
-    private static final String CONF_PROPERTY = "membertrack.config";
-
-    private final Config config;
-
-    public ConfigProvider() {
-        final @Nullable URL url
-            = ResourceRoot.class.getResource(CONF_FILE);
-        if (url == null) {
-            throw new RuntimeException(CONF_FILE + " not found");
-        }
-        final @Nullable String configFileLocation
-            = System.getProperty(CONF_PROPERTY);
-        final @Nullable File configFile
-            = configFileLocation == null ? null : new File(configFileLocation);
-        final Config userConfig;
-        if (configFile != null) {
-            userConfig = ConfigFactory.parseFile(configFile);
-        } else {
-            userConfig = ConfigFactory.empty();
-        }
-        config = userConfig.withFallback(ConfigFactory.parseURL(url));
-    }
-
-    public <T extends @NonNull Object> T getConfig(String path, Class<T> clazz) {
-        return ConfigBeanFactory.create(config.getConfig(path), clazz);
-    }
+public interface ConfigProvider {
+    <T extends @NonNull Object> T getConfig(String path, Class<T> clazz);
 }

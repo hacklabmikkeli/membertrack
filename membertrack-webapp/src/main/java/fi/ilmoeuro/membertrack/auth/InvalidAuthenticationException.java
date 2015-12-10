@@ -19,12 +19,14 @@ package fi.ilmoeuro.membertrack.auth;
 import fi.ilmoeuro.membertrack.MembertrackException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
-public final @Data class InvalidAuthenticationException
+@ToString
+public final class InvalidAuthenticationException
     extends MembertrackException {
 
     public InvalidAuthenticationException() {
-        addError("Invalid email or password");
+        super("Invalid email or password");
     }
 }

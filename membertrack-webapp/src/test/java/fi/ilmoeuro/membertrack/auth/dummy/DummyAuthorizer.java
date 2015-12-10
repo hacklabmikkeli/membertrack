@@ -19,9 +19,7 @@ package fi.ilmoeuro.membertrack.auth.dummy;
 import fi.ilmoeuro.membertrack.auth.Authorizer;
 import fi.ilmoeuro.membertrack.auth.Permission;
 import fi.ilmoeuro.membertrack.auth.UnauthorizedException;
-import javax.enterprise.context.Dependent;
 
-@Dependent
 public final class DummyAuthorizer implements Authorizer {
 
     @Override

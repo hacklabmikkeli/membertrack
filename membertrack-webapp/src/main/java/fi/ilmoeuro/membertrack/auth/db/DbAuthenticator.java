@@ -27,14 +27,13 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.Charsets;
@@ -42,26 +41,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.DSLContext;
 
 @Slf4j
-@Dependent
+@RequiredArgsConstructor
 public final class DbAuthenticator implements Authenticator {
 
-    @SessionScoped
     public static @Data class Session implements Serializable {
         private static final long serialVersionUID = 0l;
-        @Nullable Integer currentAccountId;
+        @Nullable UUID currentAccountId;
     }
 
     private final DSLContext jooq;
     private final Session session;
-    
-    @Inject
-    public DbAuthenticator(
-        DSLContext jooq,
-        Session session
-    ) {
-        this.jooq = jooq;
-        this.session = session;
-    }
 
     private String hash(String candidate, String salt) {
         try {
@@ -94,7 +83,7 @@ public final class DbAuthenticator implements Authenticator {
             .fetchAny(ACCOUNT.SALT);
         if (salt != null) {
             String hashed = hash(password, salt);
-            @Nullable Integer personId =
+            @Nullable UUID personId =
                 jooq.select(PERSON.ID)
                     .from(PERSON)
                     .innerJoin(ACCOUNT)
@@ -112,7 +101,7 @@ public final class DbAuthenticator implements Authenticator {
 
     @Override
     public Optional<Account> getActiveAccount() {
-        Integer accountId = session.getCurrentAccountId();
+        UUID accountId = session.getCurrentAccountId();
         if (accountId != null) {
             String email = jooq
                 .select(PERSON.EMAIL)

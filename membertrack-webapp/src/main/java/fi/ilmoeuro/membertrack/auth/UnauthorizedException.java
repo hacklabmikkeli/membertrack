@@ -26,6 +26,6 @@ public final class UnauthorizedException
     extends MembertrackException {
 
     public UnauthorizedException() {
-        addError("You are not authorized to view this page");
+        super("You are not authorized to view this page");
     }
 }

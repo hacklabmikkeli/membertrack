@@ -16,35 +16,38 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
-import fi.ilmoeuro.membertrack.entity.Entity;
-import java.util.Collection;
-import java.util.Locale;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import fi.ilmoeuro.membertrack.schema.tables.pojos.PersonBase;
+import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
-public final class Person {
-    private final @Getter PersonData data;
-    private final @Getter Collection<Entity<PhoneNumber>> phoneNumbers;
+public final class Person extends PersonBase {
+    private static final long serialVersionUID = 0l;
 
-    public String getEmail() {
-        return data.getEmail();
+    @SuppressWarnings("nullness") // Interface with autogen code
+    @Deprecated
+    public Person(
+        @Nullable Integer pk,
+        UUID id,
+        boolean deleted,
+        String fullName,
+        String email
+    ) {
+        super(pk, id, deleted, fullName, email);
     }
 
-    public String getFullName() {
-        return data.getFullName();
+    @SuppressWarnings("deprecation")
+    public Person(
+        String fullName,
+        String email
+    ) {
+        this(null, UUID.randomUUID(), false, fullName, email);
     }
 
     public String getGravatarUrl() {
-        return String.format("//gravatar.com/avatar/%s?d=mm",
-            DigestUtils.md5Hex(
-                data.getEmail().trim().toLowerCase(Locale.ROOT)
-            )
-        );
+        return String.format(
+            "//gravatar.com/avatar/%s",
+            DigestUtils.md5Hex(getEmail().toLowerCase().trim()));
     }
+
 }

@@ -16,35 +16,8 @@
  */
 package fi.ilmoeuro.membertrack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-@EqualsAndHashCode(callSuper = true)
-@ToString
 public abstract class MembertrackException extends Exception {
-    @Getter
-    @Setter
-    private String redirectURL = "";
-    
-    @Getter
-    private final Map<String, Collection<String>>
-        formFields = new LinkedHashMap<>();
-
-    @Getter
-    private final Collection<String>
-        errors = new ArrayList<>();
-
-    public void addFormFieldSet(String key, Collection<String> value) {
-        formFields.put(key, value);
-    }
-
-    public void addError(String error) {
-        errors.add(error);
+    protected MembertrackException(String message) {
+        super(message);
     }
 }

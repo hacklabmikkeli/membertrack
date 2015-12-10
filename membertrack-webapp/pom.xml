@@ -30,35 +30,9 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>org.jasypt</groupId>
-            <artifactId>jasypt</artifactId>
-            <version>${jasypt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.containers.glassfish</groupId>
-            <artifactId>jersey-gf-ejb</artifactId>
-            <version>${jersey.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+            <version>${wicket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -69,36 +43,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet</artifactId>
-            <version>${jersey.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-mvc</artifactId>
-            <version>${jersey.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-mvc-jsp</artifactId>
-            <version>${jersey.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-mvc-bean-validation</artifactId>
-            <version>${jersey.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-declarative-linking</artifactId>
-            <version>${jersey.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -171,6 +115,11 @@
             <version>${checkerframework.version}</version>
         </dependency>
         <dependency>
+            <groupId>fi.ilmoeuro</groupId>
+            <artifactId>membertrack-webapp-builddeps</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.relatejava</groupId>
             <artifactId>relate</artifactId>
             <version>${relate.version}</version>
@@ -186,6 +135,11 @@
             <artifactId>hamcrest-all</artifactId>
             <version>${hamcrest.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet-api.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -259,7 +213,7 @@
                         <password>sa</password>
                     </jdbc>
                     <generator>
-                        <name>org.jooq.util.DefaultGenerator</name>
+                        <name>fi.ilmoeuro.membertrack.plumbing.JooqGenerator</name>
                         <database>
                             <name>org.jooq.util.h2.H2Database</name>
                             <includes>.*</includes>
@@ -274,7 +228,7 @@
                                 <customType>
                                     <name>PeriodTimeUnit</name>
                                     <type>fi.ilmoeuro.membertrack.service.PeriodTimeUnit</type>
-                                    <converter>fi.ilmoeuro.membertrack.plumbing.JooqTimeUnitConverter</converter>
+                                    <converter>fi.ilmoeuro.membertrack.plumbing.JooqPeriodTimeUnitConverter</converter>
                                 </customType>
                             </customTypes>
                             <forcedTypes>
@@ -286,13 +240,23 @@
                                 <forcedType>
                                     <name>PeriodTimeUnit</name>
                                     <expression>.*\.length_unit</expression>
+                                    <types>.*VARCHAR.*</types>
                                 </forcedType>
                             </forcedTypes>
                         </database>
+                        <generate>
+                            <pojos>true</pojos>
+                            <!--
+                            <immutablePojos>true</immutablePojos>
+                            -->
+                        </generate>
                         <target>
                             <packageName>fi.ilmoeuro.membertrack.schema</packageName>
                             <directory>target/generated-sources/jooq</directory>
                         </target>
+                        <strategy>
+                            <name>fi.ilmoeuro.membertrack.plumbing.JooqGeneratorStrategy</name>
+                        </strategy>
                     </generator>
                 </configuration>
             </plugin>
