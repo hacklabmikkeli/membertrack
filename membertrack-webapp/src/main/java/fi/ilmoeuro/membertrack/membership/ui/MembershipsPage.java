@@ -42,7 +42,6 @@ public final class MembershipsPage extends MembertrackPage {
     protected void onInitialize() {
         super.onInitialize();
         setDefaultModel(Components.model(model));
-        add(Components.label("numPages"));
         add(Components.<Membership>listView(
             "memberships",
             (ListItem<Membership> item) -> {

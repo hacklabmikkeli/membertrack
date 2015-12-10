@@ -18,10 +18,6 @@ html {
     .box-sizing(border-box);
 }
 
-#instantclick-bar {
-    background: mix(@sidebar-bg, @main-bg, 75%);
-}
-
 fieldset {
     border: none;
 }
@@ -62,6 +58,11 @@ fieldset {
 
 a.button {
     display: inline-block;
+}
+
+.pager {
+    padding-left: 0px;
+    margin-bottom: 2em;
 }
 
 .message-box {
@@ -234,12 +235,4 @@ ul.subscriber-list, .subscriber-list ul {
     li:not(.selected):hover a {
         background-color: mix(@sidebar-bg, @main-bg, 10%);
     }
-}
-
-.hide-nontarget:not(:target) {
-    display: none;
-}
-
-.hide-prototype:not([data-cloned]) {
-    display: none;
 }

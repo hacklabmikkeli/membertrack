@@ -20,10 +20,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../ui/pure.css" />
+        <link rel="stylesheet" href="../../ui/pure-theme.css" />
+        <link rel="stylesheet" href="../../ui/membertrack.css" />
     </head>
     <body>
     <wicket:extend>
-        <div wicket:id="numPages">1</div>
+        <ul class="pager pure-menu pure-menu-horizontal">
+            <li class="pure-menu-item pure-menu-selected">
+                <a class="pure-menu-link" href="#">1</a>
+            </li>
+            <li class="pure-menu-item">
+                <a class="pure-menu-link" href="#">2</a>
+            </li>
+            <li class="pure-menu-item">
+                <a class="pure-menu-link" href="#">3</a>
+            </li>
+            <li class="pure-menu-item">
+                <a class="pure-menu-link" href="#">4</a>
+            </li>
+            <li class="pure-menu-item">
+                <a class="pure-menu-link" href="#">5</a>
+            </li>
+            <li class="pure-menu-item">
+                <a class="pure-menu-link" href="#">6</a>
+            </li>
+        </ul>
         <ul class="subscriber-list">
             <li wicket:id="memberships">
                 <ul class="person">
