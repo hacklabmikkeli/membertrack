@@ -265,8 +265,9 @@
                 <artifactId>lesscss-maven-plugin</artifactId>
                 <version>1.7.0.1.1</version>
                 <configuration>
-                    <sourceDirectory>${project.basedir}/src/main/webapp/static/less</sourceDirectory>
-                    <outputDirectory>${project.build.directory}/${project.build.finalName}/static/css</outputDirectory>
+                    <alwaysOverwrite>true</alwaysOverwrite>
+                    <sourceDirectory>${project.basedir}/src/main/resources</sourceDirectory>
+                    <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
