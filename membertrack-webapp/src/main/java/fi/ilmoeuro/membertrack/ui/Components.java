@@ -17,13 +17,15 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.session.SessionJoinable;
-import java.util.function.Consumer;
+import java.io.Serializable;
+import java.util.List;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jooq.DSLContext;
 
 public final class Components {
@@ -31,8 +33,13 @@ public final class Components {
         // not meant to be instantiated
     }
 
+    @FunctionalInterface
+    public interface ListViewPopulator<T> extends Serializable {
+        void populateItem(ListItem<@NonNull T> item);
+    }
+
     public static <T extends SessionJoinable<DSLContext>>
-        IModel<T> model(T model)
+        IModel<T> model(@NonNull T model)
     {
         return new CompoundPropertyModel<T>(model) {
             private boolean dirty = true;
@@ -44,7 +51,7 @@ public final class Components {
                     MembertrackApplication
                         .get()
                         .getSessionRunner()
-                        .run(object::join);
+                        .exec(object::join);
                     dirty = false;
                 }
                 return super.getObject();
@@ -67,19 +74,34 @@ public final class Components {
         return new Label(id);
     }
 
-    public static <T> Label label(String id, ListItem<T> item) {
+    public static Label label(String id, ListItem<?> item) {
         return new Label(id,
-            new PropertyModel(item.getModelObject(), id));
+            new PropertyModel<>(item.getModelObject(), id));
     }
 
-    public static <T> ListView<T> listView(
+    public static <T> ListView<@NonNull T> listView(
         String id,
-        Consumer<ListItem<T>> populate
+        ListViewPopulator<T> populate
     ) {
-        return new ListView<T>(id) {
+        return new ListView<@NonNull T>(id) {
             @Override
-            protected void populateItem(ListItem<T> li) {
-                populate.accept(li);
+            protected void populateItem(ListItem<@NonNull T> li) {
+                populate.populateItem(li);
+            }
+        };
+    }
+
+    public static <T> ListView<@NonNull T> listView(
+        String id,
+        ListItem<?> item,
+        ListViewPopulator<T> populate
+    ) {
+        return new ListView<@NonNull T>(id,
+            new PropertyModel<>(item.getModelObject(), id
+        )) {
+            @Override
+            protected void populateItem(ListItem<@NonNull T> li) {
+                populate.populateItem(li);
             }
         };
     }

@@ -16,7 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
-import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import fi.ilmoeuro.membertrack.TestBase;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWork;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepository;

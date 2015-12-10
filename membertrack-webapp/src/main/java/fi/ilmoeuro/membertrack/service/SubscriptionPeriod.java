@@ -91,4 +91,9 @@ public final class SubscriptionPeriod extends SubscriptionPeriodBase {
 
         throw new IllegalStateException("Invalid length unit");
     }
+
+    public String getPaymentFormatted() {
+        int payment = getPayment();
+        return String.format("%d,%02d €", payment / 100, payment % 100);
+    }
 }

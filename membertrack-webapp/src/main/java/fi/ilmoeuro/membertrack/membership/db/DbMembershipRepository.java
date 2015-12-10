@@ -41,6 +41,7 @@ import org.jooq.SelectField;
 import org.jooq.impl.DSL;
 import fi.ilmoeuro.membertrack.membership.MembershipRepository;
 import fi.ilmoeuro.membertrack.membership.Membership;
+import fi.ilmoeuro.membertrack.service.Subscription;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -146,9 +147,22 @@ implements
     private Membership buildMembership(
         Person person,
         Set<PhoneNumber> phoneNumbers,
-        Map<Service, Set<SubscriptionPeriod>> subscriptions
+        Map<Service, Set<SubscriptionPeriod>> periods
     ) {
-        return new Membership(person, phoneNumbers, subscriptions);
+        List<Subscription> subscriptions = new ArrayList<>();
+        for (
+            Map.Entry<Service, Set<SubscriptionPeriod>>
+                entry : periods.entrySet()
+        ) {
+            subscriptions.add(
+                new Subscription(
+                    entry.getKey(),
+                    new ArrayList<>(entry.getValue())));
+        }
+        return new Membership(
+            person,
+            new ArrayList<>(phoneNumbers),
+            subscriptions);
     }
 
     private String getFullName(Record r) {

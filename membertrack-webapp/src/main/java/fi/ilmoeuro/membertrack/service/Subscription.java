@@ -14,13 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session;
+package fi.ilmoeuro.membertrack.service;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.io.Serializable;
+import java.util.List;
+import lombok.Value;
 
-public interface SessionRunner<SessionTokenType> {
-    <R> R eval(Function<SessionToken<SessionTokenType>,@NonNull R> func);
-    void exec(Consumer<SessionToken<SessionTokenType>> func);
+public final @Value class
+    Subscription
+implements
+    Serializable 
+{
+    private static final long serialVersionUID = 0l;
+
+    Service service;
+    List<SubscriptionPeriod> periods;
 }

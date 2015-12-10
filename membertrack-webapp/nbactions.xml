@@ -169,6 +169,17 @@
                 <activatedProfile>!static-checks</activatedProfile>
             </activatedProfiles>
         </action>
+        <action>
+            <actionName>CUSTOM-Clean and Build with Static Checks</actionName>
+            <displayName>Clean and Build with Static Checks</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>static-checks</activatedProfile>
+            </activatedProfiles>
+        </action>
         
         
         

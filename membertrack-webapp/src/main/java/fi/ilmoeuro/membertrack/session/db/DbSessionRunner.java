@@ -50,7 +50,7 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
     }
 
     @Override
-    public <R> R run(Function<SessionToken<DSLContext>,@NonNull R> func) {
+    public <R> R eval(Function<SessionToken<DSLContext>,@NonNull R> func) {
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup(config.getDataSourceJndiName());
@@ -71,8 +71,8 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
     }
 
     @Override
-    public void run(Consumer<SessionToken<DSLContext>> func) {
-        this.<Object>run((SessionToken<DSLContext> c) -> {
+    public void exec(Consumer<SessionToken<DSLContext>> func) {
+        this.<Object>eval((SessionToken<DSLContext> c) -> {
             func.accept(c);
             return new Object(); // Hack to satisfy null safety
         });

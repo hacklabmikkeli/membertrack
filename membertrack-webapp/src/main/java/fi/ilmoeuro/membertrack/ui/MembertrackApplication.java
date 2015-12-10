@@ -59,10 +59,26 @@ public final class MembertrackApplication extends WebApplication {
                 new DefaultExampleData<>(uowFactory));
     }
 
+    public MembertrackApplication(
+        ConfigProvider configProvider,
+        SessionRunner<DSLContext> sessionRunner,
+        UnitOfWorkFactory<DSLContext> uowFactory,
+        DataSourceInitializer dsInitializer,
+        DatabaseInitializer dbInitializer
+    ) {
+        this.configProvider = configProvider;
+        this.sessionRunner = sessionRunner;
+        this.uowFactory = uowFactory;
+        this.dsInitializer = dsInitializer;
+        this.dbInitializer = dbInitializer;
+    }
+
     @Override
     public void init() {
         dsInitializer.init();
-        sessionRunner.run(dbInitializer::init);
+        sessionRunner.exec(dbInitializer::init);
+
+        getMarkupSettings().setStripWicketTags(true);
     }
 
     @Override
@@ -70,6 +86,7 @@ public final class MembertrackApplication extends WebApplication {
         return MembershipsPage.class;
     }
 
+    @SuppressWarnings("unchecked")
     public static MembertrackApplication get() {
         try {
             return (MembertrackApplication) Application.get();

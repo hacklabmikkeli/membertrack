@@ -1,5 +1,9 @@
 {
-    "elements": {},
+    "elements": {
+        "wicket:remove": {},
+        "wicket:child": {},
+        "wicket:extend": {}
+    },
     "attributes": {
         "wicket:id": {}
     }

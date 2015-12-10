@@ -16,13 +16,11 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
+import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
-import fi.ilmoeuro.membertrack.service.Service;
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 import lombok.Value;
 
 public final @Value class
@@ -30,10 +28,9 @@ public final @Value class
 implements
     Serializable 
 {
-
     private static final long serialVersionUID = 0l;
 
     Person person;
-    Set<PhoneNumber> phoneNumbers;
-    Map<Service, Set<SubscriptionPeriod>> subscriptionPeriods;
+    List<PhoneNumber> phoneNumbers;
+    List<Subscription> subscriptions;
 }

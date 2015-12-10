@@ -17,14 +17,17 @@
 package fi.ilmoeuro.membertrack.membership.ui;
 
 import org.jooq.DSLContext;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.list.ListItem;
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
+import fi.ilmoeuro.membertrack.schema.tables.PhoneNumber;
+import fi.ilmoeuro.membertrack.schema.tables.SubscriptionPeriod;
+import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.ui.Components;
+import fi.ilmoeuro.membertrack.ui.MembertrackPage;
 
-public final class MembershipsPage extends WebPage {
+public final class MembershipsPage extends MembertrackPage {
     private static final long serialVersionUID = 0l;
 
     private final MembershipsModel<DSLContext> model;
@@ -33,13 +36,41 @@ public final class MembershipsPage extends WebPage {
         model = new MembershipsModel<>(
             new DbMembershipRepositoryFactory()
         );
+    }
 
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
         setDefaultModel(Components.model(model));
         add(Components.label("numPages"));
         add(Components.<Membership>listView(
             "memberships",
             (ListItem<Membership> item) -> {
-                item.add(
-                    Components.<Membership>label("person.fullName", item));}));
+                item.add(Components.label("person.fullName", item));
+                item.add(Components.label("person.email", item));
+                item.add(Components.<PhoneNumber>listView(
+                    "phoneNumbers",
+                    item,
+                    (ListItem<PhoneNumber> pnItem) -> {
+                        pnItem.add(Components.label("phoneNumber", pnItem));
+                    }
+                ));
+                item.add(Components.<Subscription>listView(
+                    "subscriptions",
+                    item,
+                    (ListItem<Subscription> subItem) -> {
+                        subItem.add(Components.label("service.title", subItem));
+                        subItem.add(Components.<SubscriptionPeriod>listView(
+                            "periods",
+                            subItem,
+                            (ListItem<SubscriptionPeriod> prdItem) -> {
+                                prdItem.add(Components.label("startDate", prdItem));
+                                prdItem.add(Components.label("endDate", prdItem));
+                                prdItem.add(Components.label("paymentFormatted", prdItem));
+                            }
+                        ));
+                    }
+                ));
+        }));
     }
 }
