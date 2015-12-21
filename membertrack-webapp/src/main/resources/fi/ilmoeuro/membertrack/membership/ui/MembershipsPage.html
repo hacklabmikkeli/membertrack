@@ -46,42 +46,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <a class="pure-menu-link" href="#">6</a>
             </li>
         </ul>
+        <div wicket:id="currentMembership.person.fullName">
+        </div>
         <ul class="subscriber-list">
             <li wicket:id="memberships">
-                <ul class="person">
-                    <li class="pic">
-                        <img src="//lorempixel.com/80/80"
-                             alt="Avatar" />
-                    </li>
-                    <li class="info">
-                        <ul>
-                            <li wicket:id="person.fullName"
-                                class="fullname">
-                            </li>
-                            <li wicket:id="person.email"
-                                class="email">
-                            </li>
-                            <li wicket:id="phoneNumbers"
-                                class="phone-number">
-                                <span wicket:id="phoneNumber"></span>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="subscriptions" wicket:id="subscriptions">
-                    <li class="service" wicket:id="service.title">
-                    </li>
-                    <li wicket:id="periods">
-                        <ul>
-                            <li class="date" wicket:id="startDate">
-                            </li>
-                            <li class="date" wicket:id="endDate">
-                            </li>
-                            <li class="payment" wicket:id="paymentFormatted">
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                <div wicket:id="personInfo">
+                </div>
+                <div wicket:id="subscriptions">
+                    <div wicket:id="subscription">
+                    </div>
+                </div>
             </li>
         </ul>
     </wicket:extend>

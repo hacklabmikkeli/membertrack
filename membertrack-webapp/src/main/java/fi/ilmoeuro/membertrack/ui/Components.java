@@ -18,12 +18,13 @@ package fi.ilmoeuro.membertrack.ui;
 
 import fi.ilmoeuro.membertrack.session.SessionJoinable;
 import java.io.Serializable;
-import java.util.List;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jooq.DSLContext;
@@ -36,6 +37,11 @@ public final class Components {
     @FunctionalInterface
     public interface ListViewPopulator<T> extends Serializable {
         void populateItem(ListItem<@NonNull T> item);
+    }
+
+    @FunctionalInterface
+    public interface LinkAction {
+        void onClick();
     }
 
     public static <T extends SessionJoinable<DSLContext>>
@@ -70,20 +76,23 @@ public final class Components {
         };
     }
 
-    public static Label label(String id) {
-        return new Label(id);
+    public static Label label(String id, IModel<?> baseModel) {
+        return new Label(id, new PropertyModel(baseModel, id));
     }
 
     public static Label label(String id, ListItem<?> item) {
-        return new Label(id,
-            new PropertyModel<>(item.getModelObject(), id));
+        return label(id, item.getModel());
     }
 
     public static <T> ListView<@NonNull T> listView(
         String id,
+        IModel<?> baseModel,
         ListViewPopulator<T> populate
     ) {
-        return new ListView<@NonNull T>(id) {
+        return new ListView<@NonNull T>(
+            id,
+            new PropertyModel(baseModel, id)
+        ) {
             @Override
             protected void populateItem(ListItem<@NonNull T> li) {
                 populate.populateItem(li);
@@ -96,12 +105,25 @@ public final class Components {
         ListItem<?> item,
         ListViewPopulator<T> populate
     ) {
-        return new ListView<@NonNull T>(id,
-            new PropertyModel<>(item.getModelObject(), id
+        return new ListView<@NonNull T>(
+            id,
+            new PropertyModel<>(item.getModel(), id
         )) {
             @Override
             protected void populateItem(ListItem<@NonNull T> li) {
                 populate.populateItem(li);
+            }
+        };
+    }
+
+    public static Link link(
+        String id,
+        LinkAction action
+    ) {
+        return new Link(id, Model.of()) {
+            @Override
+            public void onClick() {
+                action.onClick();
             }
         };
     }

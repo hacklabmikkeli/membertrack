@@ -2,6 +2,7 @@
     "elements": {
         "wicket:remove": {},
         "wicket:child": {},
+        "wicket:panel": {},
         "wicket:extend": {}
     },
     "attributes": {

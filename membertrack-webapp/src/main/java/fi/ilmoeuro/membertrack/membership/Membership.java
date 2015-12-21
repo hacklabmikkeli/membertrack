@@ -20,6 +20,7 @@ import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Value;
 
@@ -33,4 +34,11 @@ implements
     Person person;
     List<PhoneNumber> phoneNumbers;
     List<Subscription> subscriptions;
+
+    public static Membership empty() {
+        return new Membership(
+            new Person("", ""),
+            new ArrayList<>(),
+            new ArrayList<>());
+    }
 }

@@ -26,6 +26,7 @@ import fi.ilmoeuro.membertrack.session.SessionJoinable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @RequiredArgsConstructor
 public final class
@@ -48,6 +49,10 @@ implements
     @Setter
     private int pageNumber = 0;
 
+    @Getter
+    @Setter
+    private @Nullable Membership currentMembership = null;
+
     @Override
     public void join(SessionToken<SessionTokenType> token) {
         MembershipRepository repo = mrf.create(token);
@@ -61,5 +66,6 @@ implements
         is.defaultReadObject();
         memberships = Collections.emptyList();
         numPages = 0;
+        currentMembership = null;
     }
 }
