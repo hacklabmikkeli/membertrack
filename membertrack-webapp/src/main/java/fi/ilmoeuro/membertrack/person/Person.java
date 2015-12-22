@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.person;
 
 import fi.ilmoeuro.membertrack.schema.tables.pojos.PersonBase;
+import java.util.Locale;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -47,7 +48,7 @@ public final class Person extends PersonBase {
     public String getGravatarUrl() {
         return String.format(
             "//gravatar.com/avatar/%s",
-            DigestUtils.md5Hex(getEmail().toLowerCase().trim()));
+            DigestUtils.md5Hex(getEmail().toLowerCase(Locale.ROOT).trim()));
     }
 
 }

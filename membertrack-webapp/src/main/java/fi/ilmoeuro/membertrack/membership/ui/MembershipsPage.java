@@ -21,28 +21,32 @@ import org.apache.wicket.markup.html.list.ListItem;
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
+import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
-import fi.ilmoeuro.membertrack.ui.Components;
-import fi.ilmoeuro.membertrack.ui.MembertrackPage;
+import fi.ilmoeuro.membertrack.ui.MtLabel;
+import fi.ilmoeuro.membertrack.ui.MtListView;
+import fi.ilmoeuro.membertrack.ui.MtModel;
+import fi.ilmoeuro.membertrack.ui.MtPage;
 import org.apache.wicket.model.IModel;
 
-public final class MembershipsPage extends MembertrackPage {
+public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 0l;
 
     private final IModel<MembershipsModel<DSLContext>> model;
 
     public MembershipsPage() {
-        model = Components.model(
+        model = new MtModel<>(
             new MembershipsModel<>(
                 new DbMembershipRepositoryFactory()));
-        setDefaultModel(model);
     }
 
     @Override
     protected void onInitialize() {
+        setDefaultModel(model);
         super.onInitialize();
-        add(Components.label("currentMembership.person.fullName", model));
-        add(Components.<Membership>listView(
+        add(new Pager("pager", model));
+        add(new MtLabel("currentMembership.person.fullName", model));
+        add(new MtListView<>(
             "memberships",
             model,
             (ListItem<Membership> item) -> {
@@ -50,7 +54,7 @@ public final class MembershipsPage extends MembertrackPage {
                     "personInfo",
                     item.getModel(),
                     model));
-                item.add(Components.<Subscription>listView(
+                item.add(new MtListView<>(
                     "subscriptions",
                     item,
                     (ListItem<Subscription> subItem) -> {

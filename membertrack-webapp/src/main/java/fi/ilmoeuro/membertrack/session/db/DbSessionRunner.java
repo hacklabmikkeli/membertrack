@@ -34,6 +34,8 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 public final class DbSessionRunner implements SessionRunner<DSLContext> {
+    private final static long serialVersionUID = 0l;
+    
     public static final @Data class Config {
         private String dataSourceJndiName = "jdbc/membertrack";
         private String sqlDialect = "H2";
@@ -55,7 +57,8 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup(config.getDataSourceJndiName());
             DSLContext jooq = DSL.using(ds, SQLDialect.valueOf(config.getSqlDialect()));
-            AtomicReference<@NonNull R> resultRef = new AtomicReference<>();
+            @NonNull AtomicReference<@NonNull R>
+                resultRef = new AtomicReference<>();
             jooq.transaction((Configuration conf) -> {
                 resultRef.set(func.apply(new SessionToken<>(DSL.using(conf))));
             });

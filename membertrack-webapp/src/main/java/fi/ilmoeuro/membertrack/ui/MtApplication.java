@@ -23,6 +23,7 @@ import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
@@ -34,7 +35,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.jooq.DSLContext;
 
 @Slf4j
-public final class MembertrackApplication extends WebApplication {
+public final class MtApplication extends WebApplication {
 
     @Getter
     private final ConfigProvider configProvider;
@@ -45,7 +46,7 @@ public final class MembertrackApplication extends WebApplication {
     private final DataSourceInitializer dsInitializer;
     private final DatabaseInitializer dbInitializer;
 
-    public MembertrackApplication() {
+    public MtApplication() {
         configProvider
             = new TypesafeConfigProvider();
         sessionRunner
@@ -59,7 +60,7 @@ public final class MembertrackApplication extends WebApplication {
                 new DefaultExampleData<>(uowFactory));
     }
 
-    public MembertrackApplication(
+    public MtApplication(
         ConfigProvider configProvider,
         SessionRunner<DSLContext> sessionRunner,
         UnitOfWorkFactory<DSLContext> uowFactory,
@@ -76,7 +77,9 @@ public final class MembertrackApplication extends WebApplication {
     @Override
     public void init() {
         dsInitializer.init();
-        sessionRunner.exec(dbInitializer::init);
+        sessionRunner.exec((SessionToken<DSLContext> token) -> {
+            dbInitializer.init(token);
+        });
 
         getMarkupSettings().setStripWicketTags(true);
     }
@@ -87,9 +90,9 @@ public final class MembertrackApplication extends WebApplication {
     }
 
     @SuppressWarnings("unchecked")
-    public static MembertrackApplication get() {
+    public static MtApplication get() {
         try {
-            return (MembertrackApplication) Application.get();
+            return (MtApplication) Application.get();
         } catch (ClassCastException ex) {
             String error = "Called get() from wrong app";
             log.error(error, ex);

@@ -19,7 +19,9 @@ package fi.ilmoeuro.membertrack.membership.ui;
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsModel;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import fi.ilmoeuro.membertrack.ui.Components;
+import fi.ilmoeuro.membertrack.ui.MtLabel;
+import fi.ilmoeuro.membertrack.ui.MtLink;
+import fi.ilmoeuro.membertrack.ui.MtListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -27,6 +29,7 @@ import org.apache.wicket.model.IModel;
 import org.jooq.DSLContext;
 
 public class PersonInfoPanel extends Panel {
+    private static final long serialVersionUID = 0l;
     private final IModel<Membership> model;
     private final IModel<MembershipsModel<DSLContext>> rootModel;
 
@@ -44,15 +47,15 @@ public class PersonInfoPanel extends Panel {
     protected void onInitialize() {
         super.onInitialize();
 
-        add(Components.label("person.fullName", model));
-        add(Components.label("person.email", model));
-        add(Components.<PhoneNumber>listView(
+        add(new MtLabel("person.fullName", model));
+        add(new MtLabel("person.email", model));
+        add(new MtListView<>(
             "phoneNumbers",
             model,
             (ListItem<PhoneNumber> item) -> {
-                item.add(Components.label("phoneNumber", item));
+                item.add(new MtLabel("phoneNumber", item));
             }));
-        add(Components.link("edit", () -> {
+        add(new MtLink("edit", () -> {
             rootModel.getObject().setCurrentMembership(model.getObject());
         }));
     }

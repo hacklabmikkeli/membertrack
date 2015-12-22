@@ -26,26 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
     <wicket:extend>
-        <ul class="pager pure-menu pure-menu-horizontal">
-            <li class="pure-menu-item pure-menu-selected">
-                <a class="pure-menu-link" href="#">1</a>
-            </li>
-            <li class="pure-menu-item">
-                <a class="pure-menu-link" href="#">2</a>
-            </li>
-            <li class="pure-menu-item">
-                <a class="pure-menu-link" href="#">3</a>
-            </li>
-            <li class="pure-menu-item">
-                <a class="pure-menu-link" href="#">4</a>
-            </li>
-            <li class="pure-menu-item">
-                <a class="pure-menu-link" href="#">5</a>
-            </li>
-            <li class="pure-menu-item">
-                <a class="pure-menu-link" href="#">6</a>
-            </li>
-        </ul>
+        <div wicket:id="pager">
+        </div>
         <div wicket:id="currentMembership.person.fullName">
         </div>
         <ul class="subscriber-list">

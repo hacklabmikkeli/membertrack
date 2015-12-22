@@ -23,7 +23,8 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
-public class MembertrackPage extends WebPage {
+public class MtPage extends WebPage {
+    private static final long serialVersionUID = 0l;
 
     @Override
     public void renderHead(IHeaderResponse response) {
@@ -36,7 +37,7 @@ public class MembertrackPage extends WebPage {
 
         for (String cssFile : cssFiles) {
             PackageResourceReference cssRef = 
-                new PackageResourceReference(MembertrackPage.class, cssFile);
+                new PackageResourceReference(MtPage.class, cssFile);
             CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
             response.render(pageCss);
         }

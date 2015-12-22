@@ -18,13 +18,15 @@ package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
-import fi.ilmoeuro.membertrack.ui.Components;
+import fi.ilmoeuro.membertrack.ui.MtLabel;
+import fi.ilmoeuro.membertrack.ui.MtListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 public class SubscriptionPanel extends Panel {
+    private static final long serialVersionUID = 0l;
     private final IModel<Subscription> model;
 
     public SubscriptionPanel(String id, IModel<Subscription> model) {
@@ -36,14 +38,14 @@ public class SubscriptionPanel extends Panel {
     protected void onInitialize() {
         super.onInitialize();
 
-        add(Components.label("service.title", model));
-        add(Components.<SubscriptionPeriod>listView(
+        add(new MtLabel("service.title", model));
+        add(new MtListView<>(
             "periods",
             model,
             (ListItem<SubscriptionPeriod> item) -> {
-                item.add(Components.label("startDate", item));
-                item.add(Components.label("endDate", item));
-                item.add(Components.label("paymentFormatted", item));
+                item.add(new MtLabel("startDate", item));
+                item.add(new MtLabel("endDate", item));
+                item.add(new MtLabel("paymentFormatted", item));
             }));
     }
 }

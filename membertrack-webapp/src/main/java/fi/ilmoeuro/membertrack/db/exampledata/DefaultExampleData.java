@@ -39,34 +39,40 @@ implements
     
     @Override
     public void populate(SessionToken<SessionTokenType> session) {
-        Person p = new Person("John Doe", "john.doe@example.com");
-        PhoneNumber pn = new PhoneNumber(p.getId(), "+1234567890");
         Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
-        SubscriptionPeriod pr1 = new SubscriptionPeriod(
-            s.getId(),
-            p.getId(),
-            LocalDate.of(2000, Month.MARCH, 1),
-            PeriodTimeUnit.DAY,
-            30,
-            2000,
-            true
-        );
-        SubscriptionPeriod pr2 = new SubscriptionPeriod(
-            s.getId(),
-            p.getId(),
-            LocalDate.of(2000, Month.APRIL, 1),
-            PeriodTimeUnit.DAY,
-            30,
-            2000,
-            true
-        );
-
         UnitOfWork uw = uwf.create(session);
-        uw.addEntity(p);
-        uw.addEntity(pn);
         uw.addEntity(s);
-        uw.addEntity(pr1);
-        uw.addEntity(pr2);
         uw.execute();
+        for (int i = 0; i < 100; i++) {
+            Person p = new Person(
+                "John Doe " + i,
+                "john.doe." + i + "@example.com");
+            PhoneNumber pn = new PhoneNumber(p.getId(), "+1234567890");
+            SubscriptionPeriod pr1 = new SubscriptionPeriod(
+                s.getId(),
+                p.getId(),
+                LocalDate.of(2000, Month.MARCH, 1),
+                PeriodTimeUnit.DAY,
+                30,
+                2000,
+                true
+            );
+            SubscriptionPeriod pr2 = new SubscriptionPeriod(
+                s.getId(),
+                p.getId(),
+                LocalDate.of(2000, Month.APRIL, 1),
+                PeriodTimeUnit.DAY,
+                30,
+                2000,
+                true
+            );
+
+            uw = uwf.create(session);
+            uw.addEntity(p);
+            uw.addEntity(pn);
+            uw.addEntity(pr1);
+            uw.addEntity(pr2);
+            uw.execute();
+        }
     }
 }

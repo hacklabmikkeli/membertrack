@@ -14,14 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session;
+package fi.ilmoeuro.membertrack.paging;
 
-import java.io.Serializable;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-public interface SessionRunner<SessionTokenType> extends Serializable {
-    <R> R eval(Function<SessionToken<SessionTokenType>,@NonNull R> func);
-    void exec(Consumer<SessionToken<SessionTokenType>> func);
+public interface Pageable {
+    int getNumPages();
+    int getCurrentPage();
+    void setCurrentPage(int pageNum);
 }

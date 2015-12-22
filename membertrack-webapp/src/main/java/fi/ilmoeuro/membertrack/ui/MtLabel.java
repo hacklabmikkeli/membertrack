@@ -16,27 +16,20 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 
-public class Pager extends Panel {
-    private final IModel<?> model;
-    private final String currentPageProperty;
-    private final String numPagesProperty;
+public class MtLabel extends Label {
+    private static final long serialVersionUID = 0l;
 
-    public Pager(String id,
-                 IModel<?> model,
-                 String currentPageProperty,
-                 String numPagesProperty) {
-        super(id, new CompoundPropertyModel<>(model));
-        this.model = model;
-        this.currentPageProperty = currentPageProperty;
-        this.numPagesProperty = numPagesProperty;
+    public MtLabel(String id, IModel<?> baseModel) {
+        super(id, new PropertyModel(baseModel, id));
     }
 
-    @Override
-    protected void onInitialize() {
-        super.onInitialize();
+    public MtLabel(String id, ListItem<?> item) {
+        super(id, new PropertyModel(item.getModel(), id));
     }
+    
 }

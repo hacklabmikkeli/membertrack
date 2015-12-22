@@ -25,13 +25,13 @@ import org.apache.wicket.protocol.http.WicketFilter;
     initParams = {
         @WebInitParam(
             name = "applicationClassName",
-            value = "fi.ilmoeuro.membertrack.ui.MembertrackApplication"),
+            value = "fi.ilmoeuro.membertrack.ui.MtApplication"),
         @WebInitParam(
             name = "filterMappingUrlPattern",
             value = "/*"
         )
     }
 )
-public class MembertrackWicketFilter extends WicketFilter {
+public class MtWicketFilter extends WicketFilter {
     
 }

@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
+import fi.ilmoeuro.membertrack.paging.Pageable;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,8 @@ public final class
     MembershipsModel<SessionTokenType>
 implements
     Serializable,
-    SessionJoinable<SessionTokenType>
+    SessionJoinable<SessionTokenType>,
+    Pageable
 {
     private static final long serialVersionUID = 0l;
         
@@ -42,12 +44,12 @@ implements
     @Getter
     private transient List<Membership> memberships = Collections.emptyList();
 
-    @Getter
+    @Getter(onMethod = @__({@Override}))
     private transient int numPages = 0;
 
-    @Getter
-    @Setter
-    private int pageNumber = 0;
+    @Getter(onMethod = @__({@Override}))
+    @Setter(onMethod = @__({@Override}))
+    private int currentPage = 0;
 
     @Getter
     @Setter
@@ -56,7 +58,7 @@ implements
     @Override
     public void join(SessionToken<SessionTokenType> token) {
         MembershipRepository repo = mrf.create(token);
-        memberships = repo.listMembershipsPage(pageNumber);
+        memberships = repo.listMembershipsPage(currentPage);
         numPages = repo.numMembershipsPages();
     }
 

@@ -14,14 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session;
+package fi.ilmoeuro.membertrack.ui;
 
 import java.io.Serializable;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 
-public interface SessionRunner<SessionTokenType> extends Serializable {
-    <R> R eval(Function<SessionToken<SessionTokenType>,@NonNull R> func);
-    void exec(Consumer<SessionToken<SessionTokenType>> func);
+public class MtLink extends Link<Serializable> {
+    private static final long serialVersionUID = 0l;
+
+    @FunctionalInterface
+    public interface Action extends Serializable {
+        void onClick();
+    }
+
+    private final Action action;
+
+    public MtLink(String id, Action action) {
+        super(id, Model.of());
+        this.action = action;
+    }
+
+    @Override
+    public void onClick() {
+        action.onClick();
+    }
 }
