@@ -97,6 +97,7 @@
                                 <arg>-Xbootclasspath/p:${annotatedJdk8}</arg>
                                 <arg>-J-Xbootclasspath/p:${typeAnnotationsJavac}</arg>
                                 <arg>-AprintErrorStack</arg>
+                                <arg>-Xlint:unchecked</arg>
                                 <arg>-Xstdout</arg>
                                 <arg>javac.out</arg>
                             </compilerArgs>

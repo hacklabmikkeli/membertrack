@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.db.exampledata;
 
 import fi.ilmoeuro.membertrack.db.ExampleData;
+import fi.ilmoeuro.membertrack.person.Account;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
@@ -39,9 +40,17 @@ implements
     
     @Override
     public void populate(SessionToken<SessionTokenType> session) {
-        Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
         UnitOfWork uw = uwf.create(session);
+
+        Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
         uw.addEntity(s);
+
+        Person admin = new Person("Mr. Admin", "admin@example.com");
+        Account adminAccount = Account.create(admin, "admin");
+
+        uw.addEntity(admin);
+        uw.addEntity(adminAccount);
+
         uw.execute();
         for (int i = 0; i < 100; i++) {
             Person p = new Person(

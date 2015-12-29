@@ -14,27 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.auth.db;
+package fi.ilmoeuro.membertrack.ui;
 
-import fi.ilmoeuro.membertrack.auth.Authenticator;
-import fi.ilmoeuro.membertrack.auth.Authorizer;
-import fi.ilmoeuro.membertrack.auth.Permission;
-import lombok.RequiredArgsConstructor;
+import java.io.Serializable;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.StatelessForm;
 
-@RequiredArgsConstructor
-public final class DbAuthorizer implements Authorizer {
+/**
+ *
+ * @author Ilmo Euro <ilmo.euro@gmail.com>
+ */
+public class MtActionButton extends Form<Object> {
+    private static final long serialVersionUID = 0l;
 
-    private final Authenticator authenticator;
+    public interface ButtonAction extends Serializable {
+        void onSubmit();
+    }
 
-    @Override
-    public boolean isAuthorized(Permission permission) {
-        return permission == Permission.GUEST ||
-               authenticator.getActiveAccount().isPresent();
+    private final ButtonAction action;
+    
+    public MtActionButton(String id, ButtonAction action) {
+        super(id);
+        this.action = action;
     }
 
     @Override
-    public boolean isAuthorized(Permission permission, Object context) {
-        return permission == Permission.GUEST ||
-               authenticator.getActiveAccount().isPresent();
+    public void onSubmit() {
+        action.onSubmit();
     }
 }

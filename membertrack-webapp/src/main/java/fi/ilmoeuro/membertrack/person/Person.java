@@ -50,5 +50,4 @@ public final class Person extends PersonBase {
             "//gravatar.com/avatar/%s",
             DigestUtils.md5Hex(getEmail().toLowerCase(Locale.ROOT).trim()));
     }
-
 }

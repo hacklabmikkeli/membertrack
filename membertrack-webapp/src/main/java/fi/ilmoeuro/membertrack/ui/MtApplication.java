@@ -79,17 +79,13 @@ public final class MtApplication extends AuthenticatedWebApplication {
 
     @Override
     public void init() {
+        super.init();
         dsInitializer.init();
         sessionRunner.exec((SessionToken<DSLContext> token) -> {
             dbInitializer.init(token);
         });
 
         getMarkupSettings().setStripWicketTags(true);
-    }
-
-    @Override
-    public Class<? extends Page> getHomePage() {
-        return MembershipsPage.class;
     }
 
     @SuppressWarnings("unchecked")
@@ -101,6 +97,11 @@ public final class MtApplication extends AuthenticatedWebApplication {
             log.error(error, ex);
             throw new RuntimeException(error, ex);
         }
+    }
+
+    @Override
+    public Class<? extends Page> getHomePage() {
+        return MembershipsPage.class;
     }
 
     @Override

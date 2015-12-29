@@ -17,22 +17,20 @@
 package fi.ilmoeuro.membertrack.auth.db;
 
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
-import fi.ilmoeuro.membertrack.auth.Account;
 import fi.ilmoeuro.membertrack.auth.Authenticator;
-import fi.ilmoeuro.membertrack.auth.InvalidAuthenticationException;
-import java.io.Serializable;
+import fi.ilmoeuro.membertrack.person.Account;
+import fi.ilmoeuro.membertrack.session.SessionRunner;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
@@ -43,79 +41,39 @@ import org.jooq.DSLContext;
 @Slf4j
 @RequiredArgsConstructor
 public final class DbAuthenticator implements Authenticator {
-
-    public static @Data class Session implements Serializable {
-        private static final long serialVersionUID = 0l;
-        @Nullable UUID currentAccountId;
-    }
-
-    private final DSLContext jooq;
-    private final Session session;
-
-    private String hash(String candidate, String salt) {
-        try {
-            SecretKeyFactory skf = SecretKeyFactory.getInstance(
-                "PBKDF2WithHmacSHA1");
-            KeySpec ks = new PBEKeySpec(
-                candidate.toCharArray(),
-                salt.getBytes(Charsets.US_ASCII),
-                1024,
-                128);
-            SecretKey sk = skf.generateSecret(ks);
-            Key k = new SecretKeySpec(sk.getEncoded(), "AES");
-            return Hex.encodeHexString(k.getEncoded());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            throw new RuntimeException("Error while hashing", ex);
-        }
-    }
+    private static final long serialVersionUID = 0l;
+    
+    private final SessionRunner<DSLContext> sessionRunner;
 
     @Override
-    public void startSession(
+    public boolean authenticate(
         String email,
         String password
-    ) throws InvalidAuthenticationException {
-        @Nullable String salt = jooq
-            .select(ACCOUNT.SALT)
-            .from(PERSON)
-            .innerJoin(ACCOUNT)
-                .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
-            .where(PERSON.EMAIL.eq(email.toLowerCase(Locale.ROOT)))
-            .fetchAny(ACCOUNT.SALT);
-        if (salt != null) {
-            String hashed = hash(password, salt);
-            @Nullable UUID personId =
-                jooq.select(PERSON.ID)
-                    .from(PERSON)
-                    .innerJoin(ACCOUNT)
-                        .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
-                    .where(ACCOUNT.HASH.eq(hashed))
-                    .fetchAny(PERSON.ID);
-            if (personId != null) {
-                session.setCurrentAccountId(personId);
-                return;
-            }
-        }
-
-        throw new InvalidAuthenticationException();
-    }
-
-    @Override
-    public Optional<Account> getActiveAccount() {
-        UUID accountId = session.getCurrentAccountId();
-        if (accountId != null) {
-            String email = jooq
-                .select(PERSON.EMAIL)
+    ) {
+        return sessionRunner.<Boolean>eval((SessionToken<DSLContext> token) -> {
+            DSLContext jooq = token.getValue();
+            @Nullable String salt = jooq
+                .select(ACCOUNT.SALT)
                 .from(PERSON)
-                .where(PERSON.ID.eq(accountId))
-                .fetchAny(PERSON.EMAIL);
-            return Optional.ofNullable(email).map(Account::new);
-        } else {
-            return Optional.empty();
-        }
-    }
+                .innerJoin(ACCOUNT)
+                    .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
+                .where(PERSON.EMAIL.eq(email.trim().toLowerCase(Locale.ROOT)))
+                .fetchAny(ACCOUNT.SALT);
+            if (salt != null) {
+                String hashed = Account.hash(password, salt);
+                @Nullable UUID personId =
+                    jooq.select(PERSON.ID)
+                        .from(PERSON)
+                        .innerJoin(ACCOUNT)
+                            .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
+                        .where(ACCOUNT.HASH.eq(hashed))
+                        .fetchAny(PERSON.ID);
+                if (personId != null) {
+                    return true;
+                }
+            }
 
-    @Override
-    public void endSession() {
-        session.setCurrentAccountId(null);
+            return false;
+        });
     }
 }

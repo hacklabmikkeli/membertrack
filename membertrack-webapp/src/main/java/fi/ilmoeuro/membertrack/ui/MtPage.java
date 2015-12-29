@@ -27,28 +27,32 @@ public class MtPage extends WebPage {
     private static final long serialVersionUID = 0l;
 
     @Override
-    public void onConfigure() {
+    protected void onConfigure() {
         super.onConfigure();
 
-        if (!MtSession.get().isSignedIn()) {
+        if (MtSession.get().isTemporary() ||
+            !MtSession.get().isSignedIn()) {
             MtApplication.get().restartResponseAtSignInPage();
         }
     }
 
     @Override
+    protected void onInitialize() {
+        super.onInitialize();
+
+        add(new MtActionButton("logoutButton", () -> {
+            MtSession.get().invalidate();
+            setResponsePage(MtApplication.get().getHomePage());
+        }));
+    }
+
+    @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        List<String> cssFiles = Arrays.asList(
-            "pure.css",
-            "pure-theme.css",
-            "membertrack.css"
-        );
 
-        for (String cssFile : cssFiles) {
-            PackageResourceReference cssRef = 
-                new PackageResourceReference(MtPage.class, cssFile);
-            CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
-            response.render(pageCss);
-        }
+        PackageResourceReference cssRef = 
+            new PackageResourceReference(MtPage.class, "MtPage.css");
+        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
+        response.render(pageCss);
     }
 }

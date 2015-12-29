@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.Value;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -33,9 +34,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class Pager extends Panel {
+public class Pager<T extends WebPage> extends Panel {
     private static final long serialVersionUID = 1l;
 
     private static @Value class Page implements Serializable {
@@ -47,10 +49,10 @@ public class Pager extends Panel {
         }
     }
 
-    private static @Value class LinkTarget implements Serializable {
+    private static @Value class LinkTarget<T> implements Serializable {
         private static final long serialVersionUID = 1l;
 
-        Class<?> page;
+        Class<T> page;
         PageParameters params;
         String pageNumParam;
     }
@@ -70,7 +72,7 @@ public class Pager extends Panel {
     public Pager(
         String id,
         IModel<? extends Pageable> model,
-        Class<?> targetPage,
+        Class<T> targetPage,
         PageParameters targetParams,
         String pageNumParam
     ) {
@@ -118,7 +120,7 @@ public class Pager extends Panel {
             params.set(
                 statelessTarget.getPageNumParam(),
                 item.getModelObject().getUiPageNum());
-            BookmarkablePageLink link = new BookmarkablePageLink(
+            BookmarkablePageLink<T> link = new BookmarkablePageLink<>(
                 "setPage",
                 statelessTarget.getPage(),
                 params);

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package fi.ilmoeuro.membertrack.ui;
+import fi.ilmoeuro.membertrack.auth.Authenticator;
+import fi.ilmoeuro.membertrack.auth.db.DbAuthenticator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -22,15 +24,27 @@ import org.apache.wicket.request.Request;
 
 @Slf4j
 public final class MtSession extends AuthenticatedWebSession {
+    private static final long serialVersionUID = 0l;
+
+    private final Authenticator authenticator;
 
     public MtSession(Request req) {
         super(req);
+
+        this.authenticator = new DbAuthenticator(
+            MtApplication.get().getSessionRunner()
+        );
+    }
+
+    public MtSession(Request req, Authenticator authenticator) {
+        super(req);
+
+        this.authenticator = authenticator;
     }
 
     @Override
-    protected boolean authenticate(String username, String pw) {
-        return "admin@example.com".equals(username)
-            && "admin".equals(pw);
+    protected boolean authenticate(String email, String pw) {
+        return authenticator.authenticate(email, pw);
     }
 
     @Override
@@ -49,5 +63,3 @@ public final class MtSession extends AuthenticatedWebSession {
         }
     }
 }
-
-

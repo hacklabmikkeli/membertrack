@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.session.db;
 
+import fi.ilmoeuro.membertrack.person.Account;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
@@ -40,6 +41,8 @@ public final class DbUnitOfWork implements UnitOfWork {
             addEntity(PERSON, o);
         } else if (o instanceof PhoneNumber) {
             addEntity(PHONE_NUMBER, o);
+        } else if (o instanceof Account) {
+            addEntity(ACCOUNT, o);
         } else if (o instanceof Service) {
             addEntity(SERVICE, o);
         } else if (o instanceof SubscriptionPeriod) {

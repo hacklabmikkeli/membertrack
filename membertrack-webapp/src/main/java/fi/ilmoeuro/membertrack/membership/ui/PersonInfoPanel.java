@@ -17,7 +17,7 @@
 package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.membership.Membership;
-import fi.ilmoeuro.membertrack.membership.MembershipsModel;
+import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
@@ -31,12 +31,12 @@ import org.jooq.DSLContext;
 public class PersonInfoPanel extends Panel {
     private static final long serialVersionUID = 0l;
     private final IModel<Membership> model;
-    private final IModel<MembershipsModel<DSLContext>> rootModel;
+    private final IModel<MembershipsPageModel<DSLContext>> rootModel;
 
     public PersonInfoPanel(
         String id,
         IModel<Membership> model,
-        IModel<MembershipsModel<DSLContext>> rootModel
+        IModel<MembershipsPageModel<DSLContext>> rootModel
     ) {
         super(id, new CompoundPropertyModel<>(model));
         this.model = model;

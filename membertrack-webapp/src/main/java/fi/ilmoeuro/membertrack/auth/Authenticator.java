@@ -16,15 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.auth;
 
-import java.util.Optional;
+import java.io.Serializable;
 
-public interface Authenticator {
-
-    void startSession(String email, String password)
-        throws InvalidAuthenticationException;
-
-    Optional<Account> getActiveAccount();
-
-    void endSession();
-    
+public interface Authenticator extends Serializable {
+    boolean authenticate(String email, String password);
 }

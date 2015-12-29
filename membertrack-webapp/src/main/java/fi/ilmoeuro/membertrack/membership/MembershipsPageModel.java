@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 @RequiredArgsConstructor
 public final class
-    MembershipsModel<SessionTokenType>
+    MembershipsPageModel<SessionTokenType>
 implements
     Serializable,
     Refreshable,

@@ -19,21 +19,23 @@ package fi.ilmoeuro.membertrack.membership.ui;
 import org.jooq.DSLContext;
 import org.apache.wicket.markup.html.list.ListItem;
 import fi.ilmoeuro.membertrack.membership.Membership;
-import fi.ilmoeuro.membertrack.membership.MembershipsModel;
+import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
 import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
+import fi.ilmoeuro.membertrack.ui.MtActionButton;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtModel;
 import fi.ilmoeuro.membertrack.ui.MtPage;
+import fi.ilmoeuro.membertrack.ui.MtSession;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 0l;
 
-    private final IModel<MembershipsModel<DSLContext>> model;
+    private final IModel<MembershipsPageModel<DSLContext>> model;
 
     public MembershipsPage(PageParameters params) {
         this();
@@ -43,7 +45,7 @@ public final class MembershipsPage extends MtPage {
 
     public MembershipsPage() {
         model = new MtModel<>(
-            new MembershipsModel<>(
+            new MembershipsPageModel<>(
                 new DbMembershipRepositoryFactory(),
                 MtApplication.get().getSessionRunner()));
     }
