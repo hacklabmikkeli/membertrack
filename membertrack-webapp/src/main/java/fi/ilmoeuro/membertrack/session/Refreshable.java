@@ -16,8 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.session;
 
-public interface SessionJoinable<T> {
+public interface Refreshable {
 
-    void join(SessionToken<T> token);
+    void refresh();
     
 }

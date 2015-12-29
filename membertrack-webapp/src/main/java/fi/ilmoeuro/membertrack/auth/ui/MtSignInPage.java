@@ -14,44 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.auth.ui;
 
-import fi.ilmoeuro.membertrack.session.Refreshable;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.apache.wicket.authroles.authentication.pages.SignInPage;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-public class
-    MtModel<T extends Refreshable>
-extends
-    CompoundPropertyModel<T>
-{
+// DO NOT extend MtPage, because it contains the redirect logic to here
+public final class MtSignInPage extends WebPage {
     private static final long serialVersionUID = 0l;
+    public MtSignInPage(PageParameters params) {
+        this();
+    }
 
-    private boolean dirty;
-
-    public MtModel(@NonNull T model) {
-        super(model);
-        this.dirty = true;
+    public MtSignInPage() {
+        super();
     }
 
     @Override
-    public T getObject() {
-        T obj = super.getObject();
-        if (dirty) {
-            obj.refresh();
-            dirty = false;
-        }
-        return super.getObject();
-    }
-
-    @Override
-    public void setObject(T object) {
-        super.setObject(object);
-    }
-
-    @Override
-    public void detach() {
-        super.detach();
-        dirty = true;
+    protected void onInitialize() {
     }
 }

@@ -23,29 +23,41 @@ import fi.ilmoeuro.membertrack.membership.MembershipsModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
 import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
-import fi.ilmoeuro.membertrack.ui.MtLabel;
+import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtModel;
 import fi.ilmoeuro.membertrack.ui.MtPage;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 0l;
 
     private final IModel<MembershipsModel<DSLContext>> model;
 
+    public MembershipsPage(PageParameters params) {
+        this();
+
+        model.getObject().setCurrentPage(params.get("page").toInt(1) - 1);
+    }
+
     public MembershipsPage() {
         model = new MtModel<>(
             new MembershipsModel<>(
-                new DbMembershipRepositoryFactory()));
+                new DbMembershipRepositoryFactory(),
+                MtApplication.get().getSessionRunner()));
     }
 
     @Override
     protected void onInitialize() {
         setDefaultModel(model);
         super.onInitialize();
-        add(new Pager("pager", model));
-        add(new MtLabel("currentMembership.person.fullName", model));
+        add(new Pager(
+            "pager",
+            model,
+            MembershipsPage.class,
+            getPageParameters(),
+            "page"));
         add(new MtListView<>(
             "memberships",
             model,

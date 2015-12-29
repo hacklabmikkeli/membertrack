@@ -28,7 +28,7 @@ public class MtRefreshingView<T> extends RefreshingView<@NonNull T>{
 
     @FunctionalInterface
     public interface Populator<T> extends Serializable {
-        void populateItem(Item<T> item);
+        void populateItem(Item<@NonNull T> item);
     }
 
     @FunctionalInterface

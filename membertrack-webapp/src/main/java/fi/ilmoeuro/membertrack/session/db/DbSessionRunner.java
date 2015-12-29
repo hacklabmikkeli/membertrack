@@ -19,6 +19,7 @@ package fi.ilmoeuro.membertrack.session.db;
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -36,7 +37,8 @@ import org.jooq.impl.DSL;
 public final class DbSessionRunner implements SessionRunner<DSLContext> {
     private final static long serialVersionUID = 0l;
     
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
+        private final static long serialVersionUID = 0l;
         private String dataSourceJndiName = "jdbc/membertrack";
         private String sqlDialect = "H2";
     }

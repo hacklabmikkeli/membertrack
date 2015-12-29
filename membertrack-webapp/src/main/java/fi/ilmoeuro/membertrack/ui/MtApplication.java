@@ -31,11 +31,14 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
-import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.authroles.authentication.pages.SignInPage;
+import org.apache.wicket.markup.html.WebPage;
 import org.jooq.DSLContext;
 
 @Slf4j
-public final class MtApplication extends WebApplication {
+public final class MtApplication extends AuthenticatedWebApplication {
 
     @Getter
     private final ConfigProvider configProvider;
@@ -44,7 +47,7 @@ public final class MtApplication extends WebApplication {
 
     private final UnitOfWorkFactory<DSLContext> uowFactory;
     private final DataSourceInitializer dsInitializer;
-    private final DatabaseInitializer dbInitializer;
+    private final DatabaseInitializer<DSLContext> dbInitializer;
 
     public MtApplication() {
         configProvider
@@ -56,7 +59,7 @@ public final class MtApplication extends WebApplication {
         dsInitializer
             = new DataSourceInitializer(configProvider);
         dbInitializer
-            = new DatabaseInitializer(configProvider,
+            = new DatabaseInitializer<>(configProvider,
                 new DefaultExampleData<>(uowFactory));
     }
 
@@ -65,7 +68,7 @@ public final class MtApplication extends WebApplication {
         SessionRunner<DSLContext> sessionRunner,
         UnitOfWorkFactory<DSLContext> uowFactory,
         DataSourceInitializer dsInitializer,
-        DatabaseInitializer dbInitializer
+        DatabaseInitializer<DSLContext> dbInitializer
     ) {
         this.configProvider = configProvider;
         this.sessionRunner = sessionRunner;
@@ -98,5 +101,15 @@ public final class MtApplication extends WebApplication {
             log.error(error, ex);
             throw new RuntimeException(error, ex);
         }
+    }
+
+    @Override
+    protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass() {
+        return MtSession.class;
+    }
+
+    @Override
+    protected Class<? extends WebPage> getSignInPageClass() {
+        return SignInPage.class;
     }
 }

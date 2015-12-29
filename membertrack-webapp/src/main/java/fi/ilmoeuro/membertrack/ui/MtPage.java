@@ -27,6 +27,15 @@ public class MtPage extends WebPage {
     private static final long serialVersionUID = 0l;
 
     @Override
+    public void onConfigure() {
+        super.onConfigure();
+
+        if (!MtSession.get().isSignedIn()) {
+            MtApplication.get().restartResponseAtSignInPage();
+        }
+    }
+
+    @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
         List<String> cssFiles = Arrays.asList(

@@ -17,13 +17,14 @@
 package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.paging.Pageable;
+import fi.ilmoeuro.membertrack.session.Refreshable;
+import fi.ilmoeuro.membertrack.session.SessionRunner;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import fi.ilmoeuro.membertrack.session.SessionToken;
-import fi.ilmoeuro.membertrack.session.SessionJoinable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,13 @@ public final class
     MembershipsModel<SessionTokenType>
 implements
     Serializable,
-    SessionJoinable<SessionTokenType>,
+    Refreshable,
     Pageable
 {
     private static final long serialVersionUID = 0l;
         
     private final MembershipRepositoryFactory<SessionTokenType> mrf;
+    private final SessionRunner<SessionTokenType> sessionRunner;
 
     @Getter
     private transient List<Membership> memberships = Collections.emptyList();
@@ -48,19 +50,17 @@ implements
     private transient int numPages = 0;
 
     @Getter(onMethod = @__({@Override}))
-    @Setter(onMethod = @__({@Override}))
     private int currentPage = 0;
+
+    @Override
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+        refresh();
+    }
 
     @Getter
     @Setter
     private @Nullable Membership currentMembership = null;
-
-    @Override
-    public void join(SessionToken<SessionTokenType> token) {
-        MembershipRepository repo = mrf.create(token);
-        memberships = repo.listMembershipsPage(currentPage);
-        numPages = repo.numMembershipsPages();
-    }
 
     private void readObject(ObjectInputStream is)
         throws IOException, ClassNotFoundException
@@ -68,6 +68,14 @@ implements
         is.defaultReadObject();
         memberships = Collections.emptyList();
         numPages = 0;
-        currentMembership = null;
+    }
+
+    @Override
+    public void refresh() {
+        sessionRunner.exec((SessionToken<SessionTokenType> token) -> {
+            MembershipRepository mr = mrf.create(token);
+            memberships = mr.listMembershipsPage(getCurrentPage());
+            numPages = mr.numMembershipsPages();
+        });
     }
 }

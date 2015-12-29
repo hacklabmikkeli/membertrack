@@ -21,31 +21,42 @@ import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtRefreshingView;
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.Value;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class Pager extends Panel {
-    private static final long serialVersionUID = 0l;
+    private static final long serialVersionUID = 1l;
 
     private static @Value class Page implements Serializable {
         private static final long serialVersionUID = 0l;
         int pageNum;
 
         public int getUiPageNum() {
-            return pageNum + 1;
+            return this.pageNum + 1;
         }
     }
 
-    public interface ClickAction extends Serializable {
-        void onClick(int pageNum);
+    private static @Value class LinkTarget implements Serializable {
+        private static final long serialVersionUID = 1l;
+
+        Class<?> page;
+        PageParameters params;
+        String pageNumParam;
     }
 
     private final IModel<? extends Pageable> model;
+    private final @Nullable LinkTarget statelessTarget;
 
     public Pager(
         String id,
@@ -53,27 +64,86 @@ public class Pager extends Panel {
     ) {
         super(id, new PropertyModel<>(model, id));
         this.model = model;
+        this.statelessTarget = null;
+    }
+
+    public Pager(
+        String id,
+        IModel<? extends Pageable> model,
+        Class<?> targetPage,
+        PageParameters targetParams,
+        String pageNumParam
+    ) {
+        super(id, new PropertyModel<>(model, id));
+        this.model = model;
+        this.statelessTarget = new LinkTarget(
+            targetPage,
+            targetParams,
+            pageNumParam);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
+        if (statelessTarget != null) {
+            add(
+                new MtRefreshingView<Page>(
+                    "items",
+                    this::statelessPopulatePageItem,
+                    this::pageStream));
+        } else {
+            add(
+                new MtRefreshingView<Page>(
+                    "items",
+                    this::populatePageItem,
+                    this::pageStream));
+        }
+    }
 
-        add(new MtRefreshingView<>("items",
-            (Item<Page> item) -> {
-                MtLink link = new MtLink("setPage", () -> {
-                    model.getObject().setCurrentPage(
-                        item.getModelObject().getPageNum());});
-                link.add(new MtLabel("uiPageNum", item.getModel()));
-                item.add(link);
-            },
-            () -> {
-                return IntStream
-                    .range(0, model.getObject().getNumPages())
-                    .mapToObj(Page::new)
-                    .map(Model::<Page>of)
-                    .map((Model<Page> x) -> (IModel<Page>)x)
-                    .iterator();
-            }));
+    private void populatePageItem(Item<Page> item) {
+        setSelectedClass(item);
+        MtLink link = new MtLink("setPage", () -> {
+            model.getObject().setCurrentPage(
+                item.getModelObject().getPageNum());
+        });
+        link.add(new MtLabel("uiPageNum", item.getModel()));
+        item.add(link);
+    }
+
+    private void statelessPopulatePageItem(Item<Page> item) {
+        if (statelessTarget != null) {
+            setSelectedClass(item);
+            PageParameters params = new PageParameters(
+                statelessTarget.getParams());
+            params.set(
+                statelessTarget.getPageNumParam(),
+                item.getModelObject().getUiPageNum());
+            BookmarkablePageLink link = new BookmarkablePageLink(
+                "setPage",
+                statelessTarget.getPage(),
+                params);
+            link.add(new MtLabel("uiPageNum", item.getModel()));
+            item.add(link);
+        }
+    }
+
+    private void setSelectedClass(Item<Page> item) {
+        if (item.getModelObject().getPageNum() == model.getObject().getCurrentPage()) {
+            item.add(
+                AttributeModifier.append(
+                    "class",
+                    " pure-menu-selected"));
+        }
+    }
+
+    private Iterator<IModel<Page>> pageStream() {
+        return IntStream
+            .range(0, model.getObject().getNumPages())
+            .mapToObj(this::buildPageModel)
+            .iterator();
+    }
+
+    private IModel<Page> buildPageModel(int pageNum) {
+        return Model.<Page>of(new Page(pageNum));
     }
 }
