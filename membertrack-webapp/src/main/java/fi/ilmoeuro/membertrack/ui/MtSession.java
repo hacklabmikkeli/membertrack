@@ -34,6 +34,8 @@ public final class MtSession extends AuthenticatedWebSession {
         this.authenticator = new DbAuthenticator(
             MtApplication.get().getSessionRunner()
         );
+
+        bind();
     }
 
     public MtSession(Request req, Authenticator authenticator) {

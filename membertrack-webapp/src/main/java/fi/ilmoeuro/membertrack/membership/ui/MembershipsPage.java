@@ -23,44 +23,35 @@ import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
 import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
-import fi.ilmoeuro.membertrack.ui.MtActionButton;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtModel;
 import fi.ilmoeuro.membertrack.ui.MtPage;
-import fi.ilmoeuro.membertrack.ui.MtSession;
+import org.apache.wicket.model.ComponentPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public final class MembershipsPage extends MtPage {
-    private static final long serialVersionUID = 0l;
+    private static final long serialVersionUID = 1l;
 
     private final IModel<MembershipsPageModel<DSLContext>> model;
+    private final Pager pager;
+    private final MtListView<Membership> memberships;
+    private final PersonInfoEditor personInfoEditor;
 
     public MembershipsPage(PageParameters params) {
-        this();
-
-        model.getObject().setCurrentPage(params.get("page").toInt(1) - 1);
-    }
-
-    public MembershipsPage() {
         model = new MtModel<>(
             new MembershipsPageModel<>(
                 new DbMembershipRepositoryFactory(),
                 MtApplication.get().getSessionRunner()));
-    }
-
-    @Override
-    protected void onInitialize() {
-        setDefaultModel(model);
-        super.onInitialize();
-        add(new Pager(
+        pager = new Pager(
             "pager",
             model,
             MembershipsPage.class,
-            getPageParameters(),
-            "page"));
-        add(new MtListView<>(
+            params,
+            "page");
+        memberships = new MtListView<>(
             "memberships",
             model,
             (ListItem<Membership> item) -> {
@@ -78,6 +69,36 @@ public final class MembershipsPage extends MtPage {
                                 subItem.getModel()));
                     }
                 ));
-        }));
+        });
+        personInfoEditor = new PersonInfoEditor(
+            "personInfoEditor",
+            new PropertyModel<>(model, "currentMembership"),
+            model);
+
+        model.getObject().setCurrentPage(params.get("page").toInt(1) - 1);
+    }
+
+    public MembershipsPage() {
+        this(new PageParameters());
+    }
+
+    @Override
+    protected void onInitialize() {
+        setDefaultModel(model);
+        super.onInitialize();
+        add(pager);
+        add(memberships);
+        add(personInfoEditor);
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+
+        if (model.getObject().getCurrentMembership() == null) {
+            personInfoEditor.setVisible(false);
+        } else {
+            personInfoEditor.setVisible(true);
+        }
     }
 }

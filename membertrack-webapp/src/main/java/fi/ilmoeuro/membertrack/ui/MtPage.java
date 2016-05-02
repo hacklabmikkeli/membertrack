@@ -16,8 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
-import java.util.Arrays;
-import java.util.List;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;

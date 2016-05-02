@@ -95,5 +95,9 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.indent-shift-width>
         <org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.spaces-per-tab>
         <org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.x-json.CodeStyle.project.expand-tabs>
+        <org-netbeans-modules-editor-indent.text.css.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.text.css.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.text.css.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.text.css.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.text.css.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.text.css.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.text.css.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.text.css.CodeStyle.project.expand-tabs>
     </properties>
 </project-shared-configuration>
