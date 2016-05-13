@@ -16,13 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.PersonBase;
 import java.util.Locale;
 import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class Person extends PersonBase {
+public final class Person extends PersonBase implements Persistable {
     private static final long serialVersionUID = 0l;
 
     @SuppressWarnings("nullness") // Interface with autogen code
@@ -43,6 +45,11 @@ public final class Person extends PersonBase {
         String email
     ) {
         this(null, UUID.randomUUID(), false, fullName, email);
+    }
+
+    @Override
+    public boolean isNew() {
+        return getPk() == null;
     }
 
     public String getGravatarUrl() {

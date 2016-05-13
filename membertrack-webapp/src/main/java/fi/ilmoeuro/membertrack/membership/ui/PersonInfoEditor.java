@@ -18,20 +18,21 @@ package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
-import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import fi.ilmoeuro.membertrack.ui.MtLabel;
-import fi.ilmoeuro.membertrack.ui.MtListView;
-import org.apache.wicket.markup.html.list.ListItem;
+import fi.ilmoeuro.membertrack.ui.MtForm;
+import fi.ilmoeuro.membertrack.ui.MtTextField;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.jooq.DSLContext;
 
+@Slf4j
 public class PersonInfoEditor extends Panel {
-    private static final long serialVersionUID = 0l;
+    private static final long serialVersionUID = 1l;
+    private final MtForm personEditor; 
     private final IModel<Membership> model;
     private final IModel<MembershipsPageModel<DSLContext>> rootModel;
 
+    @SuppressWarnings("methodref.receiver.bound.invalid")
     public PersonInfoEditor(
         String id,
         IModel<Membership> model,
@@ -40,19 +41,25 @@ public class PersonInfoEditor extends Panel {
         super(id, model);
         this.model = model;
         this.rootModel = rootModel;
+        // this.rootModel is already set, it's OK to register this::save
+        this.personEditor = new MtForm("personEditor", this::save);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
 
-        add(new MtLabel("person.fullName", model));
-        add(new MtLabel("person.email", model));
-        add(new MtListView<>(
-            "phoneNumbers",
-            model,
-            (ListItem<PhoneNumber> item) -> {
-                item.add(new MtLabel("phoneNumber", item));
-            }));
+        this.personEditor.add(new MtTextField<String>("person.fullName", model));
+        this.personEditor.add(new MtTextField<String>("person.email", model));
+        this.add(this.personEditor);
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.rootModel.getObject().getCurrentMembership() != null;
+    }
+
+    private void save() {
+        this.rootModel.getObject().saveCurrent();
     }
 }

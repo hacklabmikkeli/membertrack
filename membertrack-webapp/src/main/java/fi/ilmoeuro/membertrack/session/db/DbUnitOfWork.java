@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.session.db;
 
+import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.person.Account;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import fi.ilmoeuro.membertrack.person.Person;
@@ -29,14 +30,21 @@ import org.jooq.DSLContext;
 import org.jooq.Table;
 import org.jooq.UpdatableRecord;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
+import lombok.Value;
 
 @RequiredArgsConstructor
 public final class DbUnitOfWork implements UnitOfWork {
+
+    private static @Value class MaybeNewRecord {
+        UpdatableRecord updatableRecord;
+        boolean isNew;
+    }
+    
     private final DSLContext jooq;
-    private final List<UpdatableRecord> records = new ArrayList<>();
+    private final List<MaybeNewRecord> records = new ArrayList<>();
 
     @Override
-    public void addEntity(Object o) {
+    public void addEntity(Persistable o) {
         if (o instanceof Person) {
             addEntity(PERSON, o);
         } else if (o instanceof PhoneNumber) {
@@ -59,17 +67,20 @@ public final class DbUnitOfWork implements UnitOfWork {
 
     @Override
     public void execute() {
-        for (UpdatableRecord record : records) {
-            record.store();
+        for (MaybeNewRecord record : records) {
+            if (record.isNew()) {
+                record.getUpdatableRecord().store();
+            } else {
+                record.getUpdatableRecord().update();
+            }
         }
     }
 
     private <R extends UpdatableRecord> void addEntity(
         Table<R> table,
-        Object val
+        Persistable val
     ) {
         R record = jooq.newRecord(table, val);
-        records.add(record);
+        records.add(new MaybeNewRecord(record, val.isNew()));
     }
-
 }

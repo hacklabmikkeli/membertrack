@@ -16,6 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.session;
 
-public interface UnitOfWorkFactory<SessionTokenType> {
+import java.io.Serializable;
+
+public interface UnitOfWorkFactory<SessionTokenType> extends Serializable {
     UnitOfWork create(SessionToken<SessionTokenType> token);
 }

@@ -17,6 +17,9 @@
 package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.paging.Pageable;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.service.Subscription;
+import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import java.io.Serializable;
@@ -24,7 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import fi.ilmoeuro.membertrack.session.SessionToken;
+import fi.ilmoeuro.membertrack.session.UnitOfWork;
+import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +45,7 @@ implements
     private static final long serialVersionUID = 0l;
         
     private final MembershipRepositoryFactory<SessionTokenType> mrf;
+    private final UnitOfWorkFactory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
 
     @Getter
@@ -72,10 +77,31 @@ implements
 
     @Override
     public void refresh() {
-        sessionRunner.exec((SessionToken<SessionTokenType> token) -> {
+        sessionRunner.exec(token -> {
             MembershipRepository mr = mrf.create(token);
             memberships = mr.listMembershipsPage(getCurrentPage());
             numPages = mr.numMembershipsPages();
         });
+    }
+
+    public void saveCurrent() {
+        if (currentMembership != null) {
+            // Make sure `membership` can't be mutated
+            final Membership membership = currentMembership;
+            sessionRunner.exec(token -> {
+                UnitOfWork uow = uowFactory.create(token);
+                uow.addEntity(membership.getPerson());
+                for (PhoneNumber pn : membership.getPhoneNumbers()) {
+                    uow.addEntity(pn);
+                }
+                for (Subscription sub : membership.getSubscriptions()) {
+                    for (SubscriptionPeriod period : sub.getPeriods()) {
+                        uow.addEntity(period);
+                    }
+                }
+                uow.execute();
+            });
+        }
+        refresh();
     }
 }

@@ -14,18 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session.db;
+package fi.ilmoeuro.membertrack.ui;
 
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
-import fi.ilmoeuro.membertrack.session.SessionToken;
-import fi.ilmoeuro.membertrack.session.UnitOfWork;
-import org.jooq.DSLContext;
+import java.io.Serializable;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.wicket.markup.html.form.Form;
 
-public class DbUnitOfWorkFactory implements UnitOfWorkFactory<DSLContext> {
-    private final static long serialVersionUID = 0l;
-    
+@Slf4j
+public class MtForm extends Form<Object> {
+    private static final long serialVersionUID = 0l;
+    private final Action action;
+
+    @FunctionalInterface
+    public interface Action extends Serializable {
+        void onClick();
+    }
+
+    public MtForm(String id, Action action) {
+        super(id);
+        this.action = action;
+    }
+
     @Override
-    public UnitOfWork create(SessionToken<DSLContext> token) {
-        return new DbUnitOfWork(token.getValue());
+    protected void onSubmit() {
+        action.onClick();
+    }
+
+    @Override
+    protected void onError() {
+        log.debug("onError() @" + getId());
     }
 }

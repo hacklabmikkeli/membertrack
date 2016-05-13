@@ -22,21 +22,19 @@ import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtRefreshingView;
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.Value;
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.apache.wicket.request.resource.PackageResourceReference;
 
-public class Pager<T extends WebPage> extends Panel {
+public class Pager extends Panel {
     private static final long serialVersionUID = 1l;
 
     private static @Value class Page implements Serializable {
@@ -48,16 +46,7 @@ public class Pager<T extends WebPage> extends Panel {
         }
     }
 
-    private static @Value class LinkTarget<T> implements Serializable {
-        private static final long serialVersionUID = 1l;
-
-        Class<T> page;
-        PageParameters params;
-        String pageNumParam;
-    }
-
     private final IModel<? extends Pageable> model;
-    private final @Nullable LinkTarget statelessTarget;
 
     public Pager(
         String id,
@@ -65,40 +54,16 @@ public class Pager<T extends WebPage> extends Panel {
     ) {
         super(id, new PropertyModel<>(model, id));
         this.model = model;
-        this.statelessTarget = null;
-    }
-
-    public Pager(
-        String id,
-        IModel<? extends Pageable> model,
-        Class<T> targetPage,
-        PageParameters targetParams,
-        String pageNumParam
-    ) {
-        super(id, new PropertyModel<>(model, id));
-        this.model = model;
-        this.statelessTarget = new LinkTarget(
-            targetPage,
-            targetParams,
-            pageNumParam);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        if (statelessTarget != null) {
-            add(
-                new MtRefreshingView<Page>(
-                    "items",
-                    this::statelessPopulatePageItem,
-                    this::pageStream));
-        } else {
-            add(
-                new MtRefreshingView<Page>(
-                    "items",
-                    this::populatePageItem,
-                    this::pageStream));
-        }
+        add(
+            new MtRefreshingView<>(
+                "items",
+                this::populatePageItem,
+                this::pageStream));
     }
 
     private void populatePageItem(Item<Page> item) {
@@ -109,23 +74,6 @@ public class Pager<T extends WebPage> extends Panel {
         });
         link.add(new MtLabel("uiPageNum", item.getModel()));
         item.add(link);
-    }
-
-    private void statelessPopulatePageItem(Item<Page> item) {
-        if (statelessTarget != null) {
-            setSelectedClass(item);
-            PageParameters params = new PageParameters(
-                statelessTarget.getParams());
-            params.set(
-                statelessTarget.getPageNumParam(),
-                item.getModelObject().getUiPageNum());
-            BookmarkablePageLink<T> link = new BookmarkablePageLink<>(
-                "setPage",
-                statelessTarget.getPage(),
-                params);
-            link.add(new MtLabel("uiPageNum", item.getModel()));
-            item.add(link);
-        }
     }
 
     private void setSelectedClass(Item<Page> item) {
@@ -146,5 +94,15 @@ public class Pager<T extends WebPage> extends Panel {
 
     private IModel<Page> buildPageModel(int pageNum) {
         return Model.<Page>of(new Page(pageNum));
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+
+        PackageResourceReference cssRef = 
+            new PackageResourceReference(Pager.class, "Pager.css");
+        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
+        response.render(pageCss);
     }
 }

@@ -14,18 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session.db;
+package fi.ilmoeuro.membertrack.ui;
 
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
-import fi.ilmoeuro.membertrack.session.SessionToken;
-import fi.ilmoeuro.membertrack.session.UnitOfWork;
-import org.jooq.DSLContext;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class DbUnitOfWorkFactory implements UnitOfWorkFactory<DSLContext> {
-    private final static long serialVersionUID = 0l;
-    
-    @Override
-    public UnitOfWork create(SessionToken<DSLContext> token) {
-        return new DbUnitOfWork(token.getValue());
+public class MtTextField<T> extends TextField<@NonNull T> {
+    private static final long serialVersionUID = 0l;
+
+    public MtTextField(String id, IModel<?> baseModel) {
+        super(id, new PropertyModel<@NonNull T>(baseModel, id));
+    }
+
+    public MtTextField(String id, ListItem<?> item) {
+        super(id, new PropertyModel<@NonNull T>(item.getModel(), id));
     }
 }

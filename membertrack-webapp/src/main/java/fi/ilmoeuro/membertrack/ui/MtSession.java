@@ -28,6 +28,7 @@ public final class MtSession extends AuthenticatedWebSession {
 
     private final Authenticator authenticator;
 
+    @SuppressWarnings("method.invocation.invalid")
     public MtSession(Request req) {
         super(req);
 

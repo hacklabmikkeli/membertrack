@@ -60,8 +60,8 @@ implements
             String lastName = faker.name().lastName();
             Person p = new Person(
                 firstName + " " + lastName,
-                firstName.toLowerCase() + "." +
-                lastName.toLowerCase() + "@example.com");
+                firstName.toLowerCase(Locale.ROOT) + "." +
+                lastName.toLowerCase(Locale.ROOT) + "@example.com");
             PhoneNumber pn = new PhoneNumber(
                 p.getId(), faker.phoneNumber().phoneNumber());
             SubscriptionPeriod pr1 = new SubscriptionPeriod(

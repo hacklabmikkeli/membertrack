@@ -16,11 +16,12 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
+import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.PhoneNumberBase;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class PhoneNumber extends PhoneNumberBase {
+public final class PhoneNumber extends PhoneNumberBase implements Persistable {
     private static final long serialVersionUID = 0l;
     
     @SuppressWarnings("nullness") // Interface with autogen code
@@ -42,4 +43,10 @@ public final class PhoneNumber extends PhoneNumberBase {
     ) {
         this(null, UUID.randomUUID(), false, personId, phoneNumber);
     }
+
+    @Override
+    public boolean isNew() {
+        return getPk() == null;
+    }
+
 }

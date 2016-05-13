@@ -16,7 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.session;
 
+import fi.ilmoeuro.membertrack.db.Persistable;
+
 public interface UnitOfWork {
-    void addEntity(Object o);
+    void addEntity(Persistable o);
     void execute();
 }

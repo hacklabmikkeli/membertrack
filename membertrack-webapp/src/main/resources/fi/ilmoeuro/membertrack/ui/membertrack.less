@@ -60,11 +60,6 @@ a.button {
     display: inline-block;
 }
 
-.pager {
-    padding-left: 0px;
-    margin-bottom: 2em;
-}
-
 .message-box {
     border: 1px solid #fdd;
     background-color: #fee;
@@ -106,90 +101,6 @@ a.button {
     }
 }
 
-
-ul.subscriber-list, .subscriber-list ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.subscriber-list > li {
-    .display(flex);
-
-    margin-bottom: 4em;
-    
-    .person {
-        .flex-basis(50%);
-        font-size: 0.75rem;
-        padding-right: 2em;
-        .display(flex);
-        .flex-direction(row);
-
-        .pic {
-            margin-right: 1em;
-            img {
-                width: 80px;
-                border-radius: 50%;
-            }
-        }
-        
-        .email {
-            font-style: italic;
-            font-size: 0.6rem;
-            margin-bottom: 0.5em;
-
-            max-width: 20em;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            &:hover {
-                overflow: visible;
-                background: white;
-            }
-
-            &:after {
-                // clearfix
-                content: "";
-                display: table;
-                clear: both;
-            }
-        }
-    }
-
-    .subscriptions {
-        font-size: 0.8rem;
-        .flex-grow(1);
-        
-        ul {
-            .display(flex);
-            margin-bottom: 0.5em;
-        }
-
-        .service {
-            font-weight: bold;
-        }
-
-        & > li:not(.service) {
-            margin-left: 2em;
-        }
-
-        li + li.service {
-            margin-top: 2em;
-        }
-
-        .date {
-            width: 6em;
-        }
-        
-        .date + .date {
-            width: 9em;
-            &::before {
-                content: "–";
-                margin-right: 1em;
-            }
-        }
-    }
-}
 
 .logout-badge {
     padding: 1em;

@@ -23,14 +23,16 @@ import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
 import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
+import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtModel;
 import fi.ilmoeuro.membertrack.ui.MtPage;
-import org.apache.wicket.model.ComponentPropertyModel;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.PackageResourceReference;
 
 public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 1l;
@@ -40,17 +42,15 @@ public final class MembershipsPage extends MtPage {
     private final MtListView<Membership> memberships;
     private final PersonInfoEditor personInfoEditor;
 
-    public MembershipsPage(PageParameters params) {
+    public MembershipsPage() {
         model = new MtModel<>(
             new MembershipsPageModel<>(
                 new DbMembershipRepositoryFactory(),
+                new DbUnitOfWorkFactory(),
                 MtApplication.get().getSessionRunner()));
         pager = new Pager(
             "pager",
-            model,
-            MembershipsPage.class,
-            params,
-            "page");
+            model);
         memberships = new MtListView<>(
             "memberships",
             model,
@@ -74,12 +74,6 @@ public final class MembershipsPage extends MtPage {
             "personInfoEditor",
             new PropertyModel<>(model, "currentMembership"),
             model);
-
-        model.getObject().setCurrentPage(params.get("page").toInt(1) - 1);
-    }
-
-    public MembershipsPage() {
-        this(new PageParameters());
     }
 
     @Override
@@ -94,11 +88,15 @@ public final class MembershipsPage extends MtPage {
     @Override
     protected void onConfigure() {
         super.onConfigure();
+    }
 
-        if (model.getObject().getCurrentMembership() == null) {
-            personInfoEditor.setVisible(false);
-        } else {
-            personInfoEditor.setVisible(true);
-        }
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+
+        PackageResourceReference cssRef = 
+            new PackageResourceReference(Pager.class, "Pager.css");
+        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
+        response.render(pageCss);
     }
 }

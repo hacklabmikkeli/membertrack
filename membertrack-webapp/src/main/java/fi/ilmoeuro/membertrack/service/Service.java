@@ -16,11 +16,12 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
+import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.ServiceBase;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class Service extends ServiceBase {
+public final class Service extends ServiceBase implements Persistable {
     private static final long serialVersionUID = 0l;
     
     @SuppressWarnings("nullness") // Interface with autogen code
@@ -41,5 +42,11 @@ public final class Service extends ServiceBase {
         String description
     ) {
         this(null, UUID.randomUUID(), false, title, description);
+    }
+
+
+    @Override
+    public boolean isNew() {
+        return getPk() == null;
     }
 }

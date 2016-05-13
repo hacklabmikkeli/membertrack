@@ -17,13 +17,14 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import java.io.Serializable;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.StatelessForm;
 
 /**
  *
  * @author Ilmo Euro <ilmo.euro@gmail.com>
  */
+@Slf4j
 public class MtActionButton extends Form<Object> {
     private static final long serialVersionUID = 0l;
 
@@ -41,5 +42,10 @@ public class MtActionButton extends Form<Object> {
     @Override
     public void onSubmit() {
         action.onSubmit();
+    }
+
+    @Override
+    protected void onError() {
+        log.debug("onError() @" + getId());
     }
 }

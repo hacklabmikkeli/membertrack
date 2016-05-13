@@ -54,12 +54,13 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
     }
 
     @Override
+    @SuppressWarnings("method.invocation.invalid")
     public <R> R eval(Function<SessionToken<DSLContext>,@NonNull R> func) {
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup(config.getDataSourceJndiName());
             DSLContext jooq = DSL.using(ds, SQLDialect.valueOf(config.getSqlDialect()));
-            @NonNull AtomicReference<@NonNull R>
+            final @NonNull AtomicReference<@NonNull R>
                 resultRef = new AtomicReference<>();
             jooq.transaction((Configuration conf) -> {
                 resultRef.set(func.apply(new SessionToken<>(DSL.using(conf))));

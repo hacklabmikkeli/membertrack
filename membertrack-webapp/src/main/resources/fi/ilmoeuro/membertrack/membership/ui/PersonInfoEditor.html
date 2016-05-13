@@ -26,29 +26,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
     <wicket:panel>
-        <ul class="person">
-            <li class="pic">
-                <img src="?"
+        <div class="personInfoEditor">
+            <div class="pic">
+                <img src="data:"
                      width="80"
                      height="80"
                      alt="Avatar" />
-            </li>
-            <li class="info">
-                <ul>
-                    <li wicket:id="person.fullName"
-                        class="fullname">
-                    </li>
-                    <li wicket:id="person.email"
-                        class="email">
-                    </li>
-                    <li wicket:id="phoneNumbers"
-                        class="phone-number">
-                        <span wicket:id="phoneNumber">
-                        </span>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+            </div>
+            <form wicket:id="personEditor">
+                <input wicket:id="person.fullName"
+                    class="fullname"
+                    />
+                <input wicket:id="person.email"
+                    class="email"
+                    />
+                <button type="submit">Save</button>
+            </form>
+        </div>
     </wicket:panel>
-</body>
+    </body>
 </html>

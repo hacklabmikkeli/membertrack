@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session.db;
+package fi.ilmoeuro.membertrack.db;
 
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
-import fi.ilmoeuro.membertrack.session.SessionToken;
-import fi.ilmoeuro.membertrack.session.UnitOfWork;
-import org.jooq.DSLContext;
-
-public class DbUnitOfWorkFactory implements UnitOfWorkFactory<DSLContext> {
-    private final static long serialVersionUID = 0l;
-    
-    @Override
-    public UnitOfWork create(SessionToken<DSLContext> token) {
-        return new DbUnitOfWork(token.getValue());
-    }
+public interface Persistable {
+    boolean isNew();
 }

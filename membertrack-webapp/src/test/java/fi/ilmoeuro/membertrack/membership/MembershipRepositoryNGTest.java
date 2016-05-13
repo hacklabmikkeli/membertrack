@@ -23,6 +23,7 @@ import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
 import fi.ilmoeuro.membertrack.service.Service;
+import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import java.time.LocalDate;
@@ -76,6 +77,16 @@ public class MembershipRepositoryNGTest extends TestBase {
 
         log.info(memberships.toString());
 
-        assertThat(memberships, not(empty()));
+        assertThat(memberships, hasSize(1));
+        Membership membership = memberships.get(0);
+        assertThat(membership.getPerson(), equalTo(p));
+        assertThat(membership.getPhoneNumbers(), hasSize(1));
+        assertThat(membership.getPhoneNumbers(), contains(pn));
+        assertThat(membership.getSubscriptions(), hasSize(1));
+        Subscription sub = membership.getSubscriptions().get(0);
+        assertThat(sub.getService(), equalTo(s));
+        assertThat(sub.getPeriods(), hasSize(2));
+        assertThat(sub.getPeriods(), contains(pr1));
+        assertThat(sub.getPeriods(), contains(pr2));
     }
 }

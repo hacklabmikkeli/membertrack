@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
+import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.AccountBase;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -31,7 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Hex;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class Account extends AccountBase {
+public final class Account extends AccountBase implements Persistable {
     private static final long serialVersionUID = 0l;
     private static final Random random = new Random();
 
@@ -55,6 +56,11 @@ public final class Account extends AccountBase {
         String salt
     ) {
         this(null, UUID.randomUUID(), false, person.getId(), hash, salt);
+    }
+
+    @Override
+    public boolean isNew() {
+        return getPk() == null;
     }
 
     public static Account create(

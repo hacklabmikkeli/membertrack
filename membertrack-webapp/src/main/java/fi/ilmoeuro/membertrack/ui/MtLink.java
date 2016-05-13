@@ -38,5 +38,6 @@ public class MtLink extends Link<Serializable> {
     @Override
     public void onClick() {
         action.onClick();
+        addStateChange();
     }
 }

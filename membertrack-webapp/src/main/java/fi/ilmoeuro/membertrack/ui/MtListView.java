@@ -38,7 +38,7 @@ public class MtListView<T> extends ListView<@NonNull T>{
         IModel<?> baseModel,
         ListViewPopulator<@NonNull T> populate
     ) {
-        super(id, new PropertyModel(baseModel, id));
+        super(id, new PropertyModel<>(baseModel, id));
         this.populate = populate;
     }
 
