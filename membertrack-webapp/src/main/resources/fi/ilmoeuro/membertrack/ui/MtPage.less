@@ -1,3 +1,158 @@
 @import "pure.less";
 @import "pure-theme.less";
-@import "membertrack.less";
+@import "lesshat.less";
+@import "membertrack-config.less";
+
+html {
+    overflow-y: scroll;
+    background-color: @main-bg;
+    color: @main-fg;
+}
+
+* {
+    .box-sizing(border-box);
+}
+
+fieldset {
+    border: none;
+}
+
+.l-page {
+    .display(flex);
+
+    .l-main-area {
+        .flex-grow(1);
+        
+        margin-top: 2em;
+
+        .l-content {
+            width: @fat-width - @sidebar-width;
+            margin: 0px auto;
+        }
+    }
+
+    .l-sidebar {
+        .flex-grow(0);
+        width: @sidebar-width;
+        color: @sidebar-fg;
+        background-color: @sidebar-bg;
+        
+        @media screen and (min-width: @full-width) {
+            min-height: 100vh;
+        }
+    }
+
+    @media screen and (max-width: @full-width) {
+        .flex-direction(column-reverse);
+
+        .l-main-area .l-content, .l-sidebar {
+            width: 100%;
+        }
+    }
+    
+    @media screen and (max-width: @fat-width) {
+        .l-main-area .l-content {
+            width: @full-width - @sidebar-width;
+            
+            & > :first-child:not(:only-child) {
+                display: none;
+            }
+            
+            & > :last-child {
+                width: @full-width - @sidebar-width;
+            }
+        }
+    }   
+}
+
+a.button {
+    display: inline-block;
+}
+
+.message-box {
+    border: 1px solid #fdd;
+    background-color: #fee;
+    .border-radius(6px);
+    padding: 1em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.popup {
+    .display(flex);
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    .justify-content(center);
+    .align-items(center);
+
+    & > * {
+        overflow-y: auto;
+        max-height: 90vh;
+
+        margin-top: 4em;
+        margin-bottom: 4em;
+        padding: 2em;
+        background-color: @main-bg;
+
+        .border-radius(1em);
+
+        @media screen and (min-width: @full-width) {
+            width: @full-width;
+        }
+        @media screen and (max-width: @full-width) {
+            width: 100%;
+        }
+    }
+}
+
+
+.logout-badge {
+    padding: 1em;
+    font-size: 0.7rem;
+    .display(flex);
+    .flex-direction(row);
+
+    .pic {
+        img {
+            border-radius: 50%;
+            margin-right: 0.5em;
+        }
+    }
+
+    .personal {
+        .email {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 8em;
+        }
+
+        form {
+            button {
+                margin-top: 0.5em;
+                margin-left: 0.5em;
+                padding: 0.3em;
+                background: mix(@sidebar-bg, @sidebar-fg, 70%);
+            }
+        }
+    }
+}
+
+.main-nav {
+    li a {
+        color: white;
+    }
+    
+    li.selected a {
+        color: black;
+        background-color: white;
+    }
+    
+    li:not(.selected):hover a {
+        background-color: mix(@sidebar-bg, @main-bg, 10%);
+    }
+}

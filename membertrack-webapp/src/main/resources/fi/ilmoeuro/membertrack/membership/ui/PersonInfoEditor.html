@@ -26,21 +26,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
     <wicket:panel>
-        <div class="personInfoEditor">
-            <div class="pic">
-                <img src="data:"
-                     width="80"
-                     height="80"
-                     alt="Avatar" />
+        <div class="PersonInfoEditor">
+            <div class="close-button">
+                <a href="?" wicket:id="closeLink">X</a>
             </div>
-            <form wicket:id="personEditor">
-                <input wicket:id="person.fullName"
-                    class="fullname"
-                    />
-                <input wicket:id="person.email"
-                    class="email"
-                    />
-                <button type="submit">Save</button>
+            <div wicket:id="feedbackPanel">
+            </div>
+            <form class="pure-form pure-form-stacked" wicket:id="personEditor">
+                <fieldset>
+                    <label>Full name
+                        <input
+                            wicket:id="person.fullName"
+                            style="width: 100%"
+                            />
+                    </label>
+                    <label>E-mail
+                        <input
+                            wicket:id="person.email"
+                            style="width: 100%"
+                            />
+                    </label>
+                    <div wicket:id="phoneNumbers">
+                        <label>Tel. 
+                            <input
+                                wicket:id="phoneNumber"
+                                style="width: 100%"
+                                />
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset class="for-buttons">
+                    <button class="pure-button" type="submit">Save</button>
+                </fieldset>
             </form>
         </div>
     </wicket:panel>

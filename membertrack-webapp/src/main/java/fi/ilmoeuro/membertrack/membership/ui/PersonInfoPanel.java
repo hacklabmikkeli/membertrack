@@ -22,10 +22,14 @@ import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtListView;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.jooq.DSLContext;
 
 public class PersonInfoPanel extends Panel {
@@ -58,5 +62,26 @@ public class PersonInfoPanel extends Panel {
         add(new MtLink("edit", () -> {
             rootModel.getObject().setCurrentMembership(model.getObject());
         }));
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        if (rootModel.getObject() != null
+            && rootModel.getObject().getCurrentMembership() != null
+            && model.getObject() != null
+            && rootModel.getObject().getCurrentMembership().equals(model.getObject())) {
+            add(AttributeModifier.append("class", " selected-person"));
+        }
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+
+        PackageResourceReference cssRef = 
+            new PackageResourceReference(PersonInfoPanel.class, "PersonInfoPanel.css");
+        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
+        response.render(pageCss);
     }
 }

@@ -18,11 +18,19 @@ package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
+import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.ui.MtForm;
+import fi.ilmoeuro.membertrack.ui.MtLink;
+import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtTextField;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.jooq.DSLContext;
 
 @Slf4j
@@ -31,6 +39,8 @@ public class PersonInfoEditor extends Panel {
     private final MtForm personEditor; 
     private final IModel<Membership> model;
     private final IModel<MembershipsPageModel<DSLContext>> rootModel;
+    private final MtLink closeLink;
+    private final FeedbackPanel feedbackPanel;
 
     @SuppressWarnings("methodref.receiver.bound.invalid")
     public PersonInfoEditor(
@@ -43,23 +53,51 @@ public class PersonInfoEditor extends Panel {
         this.rootModel = rootModel;
         // this.rootModel is already set, it's OK to register this::save
         this.personEditor = new MtForm("personEditor", this::save);
+        this.closeLink = new MtLink("closeLink", () -> {
+            rootModel.getObject().setCurrentMembership(null);
+        });
+        this.feedbackPanel = new FeedbackPanel("feedbackPanel");
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
 
-        this.personEditor.add(new MtTextField<String>("person.fullName", model));
-        this.personEditor.add(new MtTextField<String>("person.email", model));
-        this.add(this.personEditor);
+        personEditor.add(new MtTextField<String>("person.fullName", model));
+        personEditor.add(new MtTextField<String>("person.email", model));
+        personEditor.add(new MtListView<>(
+            "phoneNumbers",
+            model,
+            (ListItem<PhoneNumber> item) -> {
+                item.add(new MtTextField<String>("phoneNumber", item.getModel()));
+            }));
+        add(personEditor);
+        add(closeLink);
+        add(feedbackPanel);
     }
 
     @Override
-    public boolean isVisible() {
-        return this.rootModel.getObject().getCurrentMembership() != null;
+    public void onConfigure() {
+        super.onConfigure();
+
+        setVisible(rootModel.getObject().getCurrentMembership() != null);
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+
+        PackageResourceReference cssRef = 
+            new PackageResourceReference(PersonInfoEditor.class, "PersonInfoEditor.css");
+        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
+        response.render(pageCss);
     }
 
     private void save() {
-        this.rootModel.getObject().saveCurrent();
+        try {
+            this.rootModel.getObject().saveCurrent();
+        } catch (MembershipsPageModel.NonUniqueEmailException ex) {
+            error("Email is already in use");
+        }
     }
 }

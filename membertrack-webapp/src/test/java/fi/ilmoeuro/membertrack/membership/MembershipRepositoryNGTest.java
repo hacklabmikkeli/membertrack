@@ -75,18 +75,13 @@ public class MembershipRepositoryNGTest extends TestBase {
         MembershipRepository repo = new DbMembershipRepository(jooq());
         List<Membership> memberships = repo.listMembershipsPage(0);
 
-        log.info(memberships.toString());
-
         assertThat(memberships, hasSize(1));
         Membership membership = memberships.get(0);
         assertThat(membership.getPerson(), equalTo(p));
-        assertThat(membership.getPhoneNumbers(), hasSize(1));
         assertThat(membership.getPhoneNumbers(), contains(pn));
         assertThat(membership.getSubscriptions(), hasSize(1));
         Subscription sub = membership.getSubscriptions().get(0);
         assertThat(sub.getService(), equalTo(s));
-        assertThat(sub.getPeriods(), hasSize(2));
-        assertThat(sub.getPeriods(), contains(pr1));
-        assertThat(sub.getPeriods(), contains(pr2));
+        assertThat(sub.getPeriods(), containsInAnyOrder(pr1, pr2));
     }
 }

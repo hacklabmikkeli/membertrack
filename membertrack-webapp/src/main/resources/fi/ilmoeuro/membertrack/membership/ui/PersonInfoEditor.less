@@ -1,0 +1,25 @@
+@import "../../ui/lesshat.less";
+
+.PersonInfoEditor {
+    font-size: 0.75rem;
+    padding: 1.5em;
+    
+    .close-button {
+        text-align: right;
+        
+        a, a:link, a:visited {
+            display: inline-block;
+            padding: 0.1em 0.2em 0em 0.2em;
+            font-size: 1.2rem;
+            color: grey;
+            background-color: silver;
+            text-decoration: none;
+        }
+    }
+    
+    fieldset {
+        * + * {
+            margin-top: 1em !important;
+        }
+    }
+}

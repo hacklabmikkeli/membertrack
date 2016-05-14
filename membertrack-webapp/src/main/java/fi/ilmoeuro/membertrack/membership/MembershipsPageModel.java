@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
+import fi.ilmoeuro.membertrack.db.ErrorCode;
 import fi.ilmoeuro.membertrack.paging.Pageable;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.Subscription;
@@ -32,9 +33,12 @@ import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jooq.exception.DataAccessException;
 
 @RequiredArgsConstructor
+@Slf4j
 public final class
     MembershipsPageModel<SessionTokenType>
 implements
@@ -42,6 +46,8 @@ implements
     Refreshable,
     Pageable
 {
+    public static class NonUniqueEmailException extends Exception {}
+    
     private static final long serialVersionUID = 0l;
         
     private final MembershipRepositoryFactory<SessionTokenType> mrf;
@@ -84,24 +90,36 @@ implements
         });
     }
 
-    public void saveCurrent() {
-        if (currentMembership != null) {
-            // Make sure `membership` can't be mutated
-            final Membership membership = currentMembership;
-            sessionRunner.exec(token -> {
-                UnitOfWork uow = uowFactory.create(token);
-                uow.addEntity(membership.getPerson());
-                for (PhoneNumber pn : membership.getPhoneNumbers()) {
-                    uow.addEntity(pn);
-                }
-                for (Subscription sub : membership.getSubscriptions()) {
-                    for (SubscriptionPeriod period : sub.getPeriods()) {
-                        uow.addEntity(period);
+    public void
+        saveCurrent()
+    throws
+        NonUniqueEmailException
+    {
+        try {
+            if (currentMembership != null) {
+                // Make sure `membership` can't be mutated
+                final Membership membership = currentMembership;
+                sessionRunner.exec(token -> {
+                    UnitOfWork uow = uowFactory.create(token);
+                    uow.addEntity(membership.getPerson());
+                    for (PhoneNumber pn : membership.getPhoneNumbers()) {
+                        uow.addEntity(pn);
                     }
-                }
-                uow.execute();
-            });
+                    for (Subscription sub : membership.getSubscriptions()) {
+                        for (SubscriptionPeriod period : sub.getPeriods()) {
+                            uow.addEntity(period);
+                        }
+                    }
+                    uow.execute();
+                });
+            }
+            refresh();
+        } catch (DataAccessException ex) {
+            @Nullable ErrorCode ec = ErrorCode.fromThrowable(ex);
+
+            if (ec == ErrorCode.DUPLICATE_KEY) {
+                throw new NonUniqueEmailException();
+            }
         }
-        refresh();
     }
 }

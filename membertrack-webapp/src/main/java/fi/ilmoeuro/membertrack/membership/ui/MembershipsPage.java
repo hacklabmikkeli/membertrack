@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.membership.ui;
 
+import java.util.Objects;
 import org.jooq.DSLContext;
 import org.apache.wicket.markup.html.list.ListItem;
 import fi.ilmoeuro.membertrack.membership.Membership;
@@ -25,6 +26,7 @@ import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
+import fi.ilmoeuro.membertrack.ui.MtHighlighter;
 import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtModel;
 import fi.ilmoeuro.membertrack.ui.MtPage;
@@ -32,6 +34,7 @@ import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 public final class MembershipsPage extends MtPage {
@@ -42,7 +45,7 @@ public final class MembershipsPage extends MtPage {
     private final MtListView<Membership> memberships;
     private final PersonInfoEditor personInfoEditor;
 
-    public MembershipsPage() {
+    public MembershipsPage(PageParameters params) {
         model = new MtModel<>(
             new MembershipsPageModel<>(
                 new DbMembershipRepositoryFactory(),
@@ -50,11 +53,18 @@ public final class MembershipsPage extends MtPage {
                 MtApplication.get().getSessionRunner()));
         pager = new Pager(
             "pager",
-            model);
+            model,
+            MembershipsPage.class,
+            params,
+            "page");
         memberships = new MtListView<>(
             "memberships",
             model,
             (ListItem<Membership> item) -> {
+                item.add(new MtHighlighter(() ->
+                        Objects.equals(
+                            model.getObject().getCurrentMembership(),
+                            item.getModel().getObject())));
                 item.add(new PersonInfoPanel(
                     "personInfo",
                     item.getModel(),
@@ -66,14 +76,17 @@ public final class MembershipsPage extends MtPage {
                         subItem.add(
                             new SubscriptionPanel(
                                 "subscription",
-                                subItem.getModel()));
-                    }
-                ));
-        });
+                                subItem.getModel()));}));});
         personInfoEditor = new PersonInfoEditor(
             "personInfoEditor",
             new PropertyModel<>(model, "currentMembership"),
             model);
+
+        model.getObject().setCurrentPage(params.get("page").toInt(1) - 1);
+    }
+
+    public MembershipsPage() {
+        this(new PageParameters());
     }
 
     @Override
@@ -95,7 +108,7 @@ public final class MembershipsPage extends MtPage {
         super.renderHead(response);
 
         PackageResourceReference cssRef = 
-            new PackageResourceReference(Pager.class, "Pager.css");
+            new PackageResourceReference(MembershipsPage.class, "MembershipsPage.css");
         CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
         response.render(pageCss);
     }

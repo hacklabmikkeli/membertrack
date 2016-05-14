@@ -26,20 +26,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
     <wicket:extend>
-        <div wicket:id="pager">
-        </div>
-        <div wicket:id="personInfoEditor">
-        </div>
-        <ul class="subscriber-list">
-            <li wicket:id="memberships">
-                <div wicket:id="personInfo">
-                </div>
-                <div wicket:id="subscriptions">
-                    <div wicket:id="subscription">
+        <div class="membership-browser">
+            <div wicket:id="pager">
+            </div>
+            <ul class="subscriber-list">
+                <li wicket:id="memberships">
+                    <div wicket:id="personInfo">
                     </div>
-                </div>
-            </li>
-        </ul>
+                    <div wicket:id="subscriptions">
+                        <div wicket:id="subscription">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="membership-editor" wicket:id="personInfoEditor">
+        </div>
     </wicket:extend>
 </body>
 </html>

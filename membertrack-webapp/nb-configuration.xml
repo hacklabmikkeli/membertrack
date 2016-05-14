@@ -50,7 +50,7 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-css-prep.sass_2e_compiler_2e_options/>
         <org-netbeans-modules-css-prep.sass_2e_mappings>/scss:/css</org-netbeans-modules-css-prep.sass_2e_mappings>
         <org-netbeans-spi-editor-hints-projects.text.x-java.org_2e_netbeans_2e_modules_2e_java_2e_hints_2e_jdk_2e_mapreduce_2e_ForLoopToFunctionalHint.enabled>false</org-netbeans-spi-editor-hints-projects.text.x-java.org_2e_netbeans_2e_modules_2e_java_2e_hints_2e_jdk_2e_mapreduce_2e_ForLoopToFunctionalHint.enabled>
-        <org-netbeans-modules-css-prep.less_2e_mappings>/static/less:/static/css</org-netbeans-modules-css-prep.less_2e_mappings>
+        <org-netbeans-modules-css-prep.less_2e_mappings>/:/</org-netbeans-modules-css-prep.less_2e_mappings>
         <org-netbeans-modules-css-prep.less_2e_enabled>true</org-netbeans-modules-css-prep.less_2e_enabled>
         <org-netbeans-modules-css-prep.less_2e_configured>true</org-netbeans-modules-css-prep.less_2e_configured>
         <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
