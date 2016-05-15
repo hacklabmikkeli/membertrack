@@ -22,7 +22,6 @@ import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtRefreshingView;
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.Value;
 import org.apache.wicket.AttributeModifier;
@@ -48,16 +47,16 @@ public class Pager<T extends WebPage> extends Panel {
         }
     }
 
-    private static @Value class LinkTarget<T> implements Serializable {
+    private static @Value class LinkTarget<U> implements Serializable {
         private static final long serialVersionUID = 1l;
 
-        Class<T> page;
+        Class<U> page;
         PageParameters params;
         String pageNumParam;
     }
 
     private final IModel<? extends Pageable> model;
-    private final @Nullable LinkTarget statelessTarget;
+    private final @Nullable LinkTarget<T> statelessTarget;
 
     public Pager(
         String id,
@@ -77,13 +76,14 @@ public class Pager<T extends WebPage> extends Panel {
     ) {
         super(id, new PropertyModel<>(model, id));
         this.model = model;
-        this.statelessTarget = new LinkTarget(
+        this.statelessTarget = new LinkTarget<>(
             targetPage,
             targetParams,
             pageNumParam);
     }
 
     @Override
+    @SuppressWarnings("methodref.inference.unimplemented")
     protected void onInitialize() {
         super.onInitialize();
         if (statelessTarget != null) {

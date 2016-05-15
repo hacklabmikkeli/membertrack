@@ -20,6 +20,8 @@ import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodBase;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -80,11 +82,6 @@ public final class SubscriptionPeriod
         );
     }
 
-    @Override
-    public boolean isNew() {
-        return getPk() == null;
-    }
-
     public LocalDate getEndDate() {
         switch (getLengthUnit()) {
             case DAY:
@@ -103,5 +100,9 @@ public final class SubscriptionPeriod
     public String getPaymentFormatted() {
         int payment = getPayment();
         return String.format("%d,%02d €", payment / 100, payment % 100);
+    }
+
+    public List<PeriodTimeUnit> getPossibleLengthUnits() {
+        return Arrays.asList(PeriodTimeUnit.values());
     }
 }

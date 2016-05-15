@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../ui/pure.css" />
+        <link rel="stylesheet" href="../../ui/pure-theme.css" />
+        <link rel="stylesheet" href="../../ui/membertrack.css" />
+    </head>
+    <body>
+    <wicket:panel>
+        <div class="PersonInfoEditor">
+            <div class="close-button">
+                <a href="?" wicket:id="closeLink">X</a>
+            </div>
+            <div wicket:id="feedbackPanel">
+            </div>
+            <form class="pure-form pure-form-stacked" wicket:id="personEditor">
+                <fieldset>
+                    <legend>Personal details</legend>
+                    <label>Full name
+                        <input
+                            wicket:id="person.fullName"
+                            style="width: 100%"
+                            />
+                    </label>
+                    <label>E-mail
+                        <input
+                            wicket:id="person.email"
+                            style="width: 100%"
+                            />
+                    </label>
+                </fieldset>
+                <fieldset class="pure-control-group">
+                    <legend>Phone numbers</legend>
+                    <div wicket:id="phoneNumbers">
+                        <input
+                            wicket:id="phoneNumber"
+                            style="display: inline; width: 20em;"
+                            />
+                        <button
+                            wicket:id="deleteNumber"
+                            class="pure-button"
+                            style="display: inline; margin: 2px 3px 4px 3px;"
+                            type="submit"
+                            >Remove</button>
+                    </div>
+                    <button
+                        wicket:id="addNumber"
+                        style="margin-top: 0.5em"
+                        class="pure-button"
+                        type="submit"
+                        >Add number</button>
+                </fieldset>
+                <wicket:container wicket:id="subscriptions">
+                    <fieldset class="pure-control-group">
+                        <legend wicket:id="service.title">Service</legend>
+                        <div wicket:id="periods">
+                        <!--
+                            <input
+                                wicket:id="startDate"
+                                style="display: inline; width: 10em;"
+                                />
+                        -->
+                            <input
+                                wicket:id="length"
+                                style="display: inline; width: 3em;"
+                                />
+                            <input
+                                wicket:id="payment"
+                                style="display: inline; width: 3em;"
+                                />
+                            <button
+                                wicket:id="deletePeriod"
+                                class="pure-button"
+                                style="display: inline; margin: 2px 3px 4px 3px;"
+                                type="submit"
+                                >Remove</button>
+                        </div>
+                        <button
+                            wicket:id="addPeriod"
+                            style="margin-top: 0.5em"
+                            class="pure-button"
+                            type="submit"
+                            >Add period</button>
+                    </fieldset>
+                </wicket:container>
+                <fieldset class="pure-control-group for-buttons">
+                    <button
+                        class="pure-button"
+                        wicket:id="saveButton"
+                        type="submit">Save</button>
+                </fieldset>
+            </form>
+        </div>
+    </wicket:panel>
+    </body>
+</html>

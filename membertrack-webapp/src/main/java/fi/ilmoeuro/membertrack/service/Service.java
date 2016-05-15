@@ -43,10 +43,4 @@ public final class Service extends ServiceBase implements Persistable {
     ) {
         this(null, UUID.randomUUID(), false, title, description);
     }
-
-
-    @Override
-    public boolean isNew() {
-        return getPk() == null;
-    }
 }

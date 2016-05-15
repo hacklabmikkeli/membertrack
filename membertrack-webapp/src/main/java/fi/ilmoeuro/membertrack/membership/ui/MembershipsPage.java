@@ -41,17 +41,19 @@ public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 1l;
 
     private final IModel<MembershipsPageModel<DSLContext>> model;
-    private final Pager pager;
+    private final Pager<MembershipsPage> pager;
     private final MtListView<Membership> memberships;
-    private final PersonInfoEditor personInfoEditor;
+    private final MembershipEditor personInfoEditor;
 
+    // OK to register callbacks on methods, they're not called right away
+    @SuppressWarnings("initialization")
     public MembershipsPage(PageParameters params) {
         model = new MtModel<>(
             new MembershipsPageModel<>(
                 new DbMembershipRepositoryFactory(),
                 new DbUnitOfWorkFactory(),
                 MtApplication.get().getSessionRunner()));
-        pager = new Pager(
+        pager = new Pager<MembershipsPage>(
             "pager",
             model,
             MembershipsPage.class,
@@ -61,10 +63,7 @@ public final class MembershipsPage extends MtPage {
             "memberships",
             model,
             (ListItem<Membership> item) -> {
-                item.add(new MtHighlighter(() ->
-                        Objects.equals(
-                            model.getObject().getCurrentMembership(),
-                            item.getModel().getObject())));
+                item.add(new MtHighlighter(() -> isCurrentPerson(item)));
                 item.add(new PersonInfoPanel(
                     "personInfo",
                     item.getModel(),
@@ -77,7 +76,7 @@ public final class MembershipsPage extends MtPage {
                             new SubscriptionPanel(
                                 "subscription",
                                 subItem.getModel()));}));});
-        personInfoEditor = new PersonInfoEditor(
+        personInfoEditor = new MembershipEditor(
             "personInfoEditor",
             new PropertyModel<>(model, "currentMembership"),
             model);
@@ -111,5 +110,17 @@ public final class MembershipsPage extends MtPage {
             new PackageResourceReference(MembershipsPage.class, "MembershipsPage.css");
         CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
         response.render(pageCss);
+    }
+
+    private boolean isCurrentPerson(ListItem<Membership> listItem) {
+        Membership currentMembership = 
+            model.getObject().getCurrentMembership();
+        if (currentMembership != null) {
+            if (Objects.equals(currentMembership.getPerson(),
+                               listItem.getModelObject().getPerson())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

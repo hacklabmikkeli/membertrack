@@ -22,13 +22,14 @@ import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtListView;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.jooq.DSLContext;
 
@@ -51,6 +52,8 @@ public class PersonInfoPanel extends Panel {
     protected void onInitialize() {
         super.onInitialize();
 
+        add(new ContextImage("avatar",
+                             new PropertyModel<>(model, "person.gravatarUrl")));
         add(new MtLabel("person.fullName", model));
         add(new MtLabel("person.email", model));
         add(new MtListView<>(
@@ -59,20 +62,7 @@ public class PersonInfoPanel extends Panel {
             (ListItem<PhoneNumber> item) -> {
                 item.add(new MtLabel("phoneNumber", item));
             }));
-        add(new MtLink("edit", () -> {
-            rootModel.getObject().setCurrentMembership(model.getObject());
-        }));
-    }
-
-    @Override
-    protected void onConfigure() {
-        super.onConfigure();
-        if (rootModel.getObject() != null
-            && rootModel.getObject().getCurrentMembership() != null
-            && model.getObject() != null
-            && rootModel.getObject().getCurrentMembership().equals(model.getObject())) {
-            add(AttributeModifier.append("class", " selected-person"));
-        }
+        add(new MtLink("edit", this::selectForEditing));
     }
 
     @Override
@@ -83,5 +73,9 @@ public class PersonInfoPanel extends Panel {
             new PackageResourceReference(PersonInfoPanel.class, "PersonInfoPanel.css");
         CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
         response.render(pageCss);
+    }
+
+    private void selectForEditing() {
+        rootModel.getObject().setCurrentMembership(model.getObject());
     }
 }

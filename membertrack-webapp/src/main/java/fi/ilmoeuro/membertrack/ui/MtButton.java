@@ -18,10 +18,10 @@ package fi.ilmoeuro.membertrack.ui;
 
 import java.io.Serializable;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.Button;
 
 @Slf4j
-public class MtForm extends Form<Object> {
+public class MtButton extends Button {
     private static final long serialVersionUID = 0l;
     private final Action action;
 
@@ -30,18 +30,13 @@ public class MtForm extends Form<Object> {
         void onClick();
     }
 
-    public MtForm(String id, Action action) {
+    public MtButton(String id, Action action) {
         super(id);
         this.action = action;
     }
 
     @Override
-    protected void onSubmit() {
+    public void onSubmit() {
         action.onClick();
-    }
-
-    @Override
-    protected void onError() {
-        log.debug("onError() @" + getId());
     }
 }

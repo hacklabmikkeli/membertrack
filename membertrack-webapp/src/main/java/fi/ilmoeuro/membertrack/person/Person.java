@@ -16,7 +16,6 @@
  */
 package fi.ilmoeuro.membertrack.person;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.PersonBase;
 import java.util.Locale;
@@ -47,14 +46,9 @@ public final class Person extends PersonBase implements Persistable {
         this(null, UUID.randomUUID(), false, fullName, email);
     }
 
-    @Override
-    public boolean isNew() {
-        return getPk() == null;
-    }
-
     public String getGravatarUrl() {
         return String.format(
-            "//gravatar.com/avatar/%s",
+            "//gravatar.com/avatar/%s?d=mm",
             DigestUtils.md5Hex(getEmail().toLowerCase(Locale.ROOT).trim()));
     }
 }

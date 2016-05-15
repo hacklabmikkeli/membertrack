@@ -58,11 +58,6 @@ public final class Account extends AccountBase implements Persistable {
         this(null, UUID.randomUUID(), false, person.getId(), hash, salt);
     }
 
-    @Override
-    public boolean isNew() {
-        return getPk() == null;
-    }
-
     public static Account create(
         Person person,
         String password
@@ -93,5 +88,4 @@ public final class Account extends AccountBase implements Persistable {
             throw new RuntimeException("Error while hashing", ex);
         }
     }
-
 }

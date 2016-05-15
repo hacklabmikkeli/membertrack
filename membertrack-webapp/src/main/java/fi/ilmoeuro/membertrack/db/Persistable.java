@@ -16,6 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 public interface Persistable {
-    boolean isNew();
+    @Nullable Integer getPk();
+    void setPk(@Nullable Integer pk);
 }

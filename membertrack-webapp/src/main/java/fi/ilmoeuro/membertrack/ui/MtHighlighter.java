@@ -25,6 +25,7 @@ import org.apache.wicket.model.IModel;
  * @author Ilmo Euro <ilmo.euro@gmail.com>
  */
 public class MtHighlighter extends AttributeAppender {
+    private static final long serialVersionUID = 0l;
 
     @FunctionalInterface
     public interface HighlightPredicate extends Serializable {

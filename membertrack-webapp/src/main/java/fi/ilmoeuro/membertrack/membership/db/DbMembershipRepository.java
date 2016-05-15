@@ -43,6 +43,7 @@ import fi.ilmoeuro.membertrack.membership.MembershipRepository;
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.ArrayUtils;
 
 @RequiredArgsConstructor
 public final class
@@ -123,18 +124,18 @@ implements
                 PhoneNumberRecord pnr = r.into(PHONE_NUMBER);
                 ServiceRecord sr = r.into(SERVICE);
                 SubscriptionPeriodRecord spr = r.into(SUBSCRIPTION_PERIOD);
-                if (pr.getId() != null) {
+                if (pr.getId() != null && !pr.getDeleted()) {
                     Person p = pr.into(Person.class);
                     mapper.root(p);
-                    if (sr.getId() != null) {
+                    if (sr.getId() != null && !sr.getDeleted()) {
                         Service s = sr.into(Service.class);
                         mapper.relate_1(p, s);
-                        if (spr.getId() != null) {
+                        if (spr.getId() != null && !spr.getDeleted()) {
                             SubscriptionPeriod sp = spr.into(SubscriptionPeriod.class);
                             mapper.relate_1_1(p, s, sp);
                         }
                     }
-                    if (pnr.getId() != null) {
+                    if (pnr.getId() != null && !pnr.getDeleted()) {
                         PhoneNumber pn = pnr.into(PhoneNumber.class);
                         mapper.relate_2(p, pn);
                     }

@@ -43,10 +43,4 @@ public final class PhoneNumber extends PhoneNumberBase implements Persistable {
     ) {
         this(null, UUID.randomUUID(), false, personId, phoneNumber);
     }
-
-    @Override
-    public boolean isNew() {
-        return getPk() == null;
-    }
-
 }

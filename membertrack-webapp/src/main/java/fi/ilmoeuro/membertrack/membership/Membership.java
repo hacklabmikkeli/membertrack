@@ -41,4 +41,10 @@ implements
             new ArrayList<>(),
             new ArrayList<>());
     }
+
+    public void addPhoneNumber() {
+        phoneNumbers.add(
+            new PhoneNumber(person.getId(), "")
+        );
+    }
 }

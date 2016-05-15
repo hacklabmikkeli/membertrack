@@ -35,13 +35,13 @@ import lombok.Value;
 @RequiredArgsConstructor
 public final class DbUnitOfWork implements UnitOfWork {
 
-    private static @Value class MaybeNewRecord {
+    private static @Value class PersistableRecord {
         UpdatableRecord updatableRecord;
-        boolean isNew;
+        Persistable persistable;
     }
     
     private final DSLContext jooq;
-    private final List<MaybeNewRecord> records = new ArrayList<>();
+    private final List<PersistableRecord> records = new ArrayList<>();
 
     @Override
     public void addEntity(Persistable o) {
@@ -67,9 +67,11 @@ public final class DbUnitOfWork implements UnitOfWork {
 
     @Override
     public void execute() {
-        for (MaybeNewRecord record : records) {
-            if (record.isNew()) {
+        for (PersistableRecord record : records) {
+            if (record.getPersistable().getPk() == null) {
                 record.getUpdatableRecord().store();
+                record.getPersistable().setPk(
+                    record.getUpdatableRecord().getValue("pk", Integer.class));
             } else {
                 record.getUpdatableRecord().update();
             }
@@ -81,6 +83,6 @@ public final class DbUnitOfWork implements UnitOfWork {
         Persistable val
     ) {
         R record = jooq.newRecord(table, val);
-        records.add(new MaybeNewRecord(record, val.isNew()));
+        records.add(new PersistableRecord(record, val));
     }
 }

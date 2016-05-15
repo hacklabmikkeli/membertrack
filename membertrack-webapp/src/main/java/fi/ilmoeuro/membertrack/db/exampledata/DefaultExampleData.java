@@ -30,6 +30,7 @@ import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Locale;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -44,6 +45,7 @@ implements
     public void populate(SessionToken<SessionTokenType> session) {
         Faker faker = new Faker(Locale.forLanguageTag("fi"));
         UnitOfWork uw = uwf.create(session);
+        Random random = new Random();
 
         Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
         uw.addEntity(s);
@@ -60,8 +62,10 @@ implements
             String lastName = faker.name().lastName();
             Person p = new Person(
                 firstName + " " + lastName,
-                firstName.toLowerCase(Locale.ROOT) + "." +
-                lastName.toLowerCase(Locale.ROOT) + "@example.com");
+                String.format("%s.%s.%d@example.com",
+                    firstName.toLowerCase(Locale.ROOT),
+                    lastName.toLowerCase(Locale.ROOT),
+                    random.nextInt(10000)));
             PhoneNumber pn = new PhoneNumber(
                 p.getId(), faker.phoneNumber().phoneNumber());
             SubscriptionPeriod pr1 = new SubscriptionPeriod(
