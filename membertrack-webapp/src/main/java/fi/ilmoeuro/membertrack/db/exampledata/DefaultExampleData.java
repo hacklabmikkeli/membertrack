@@ -16,21 +16,13 @@
  */
 package fi.ilmoeuro.membertrack.db.exampledata;
 
-import com.github.javafaker.Faker;
 import fi.ilmoeuro.membertrack.db.ExampleData;
 import fi.ilmoeuro.membertrack.person.Account;
 import fi.ilmoeuro.membertrack.person.Person;
-import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
 import fi.ilmoeuro.membertrack.service.Service;
-import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Locale;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -43,9 +35,7 @@ implements
     
     @Override
     public void populate(SessionToken<SessionTokenType> session) {
-        Faker faker = new Faker(Locale.forLanguageTag("fi"));
         UnitOfWork uw = uwf.create(session);
-        Random random = new Random();
 
         Service s1 = new Service("Subscription (tilankäyttö)", "Subscription fees");
         Service s2 = new Service("Membership (jäsenyys)", "Membership fees");

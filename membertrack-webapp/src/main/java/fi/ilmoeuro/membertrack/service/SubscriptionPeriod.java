@@ -113,19 +113,16 @@ public final class SubscriptionPeriod
     public void setPaymentFormatted(String paymentFormatted) {
         Matcher m = PAYMENT_FORMATTER_PATTERN.matcher(paymentFormatted);
         if (m.matches()) {
-            if (m.group(1) != null) {
-                @NonNull String m1 = m.group(1);
-                if (m.group(2) != null) {
-                    @NonNull String m2 = m.group(2);
+            String m1 = m.group(1);
+            String m2 = m.group(2);
 
-                    int whole = Integer.parseInt(m1, 10);
-                    int decim = Integer.parseInt(m2, 10);
-                    setPayment(whole * 100 + decim);
-                    return;
-                }
+            if (m1 != null && m2 != null) {
+                int whole = Integer.parseInt(m1, 10);
+                int decim = Integer.parseInt(m2, 10);
+                setPayment(whole * 100 + decim);
+            } else {
+                throw new IllegalArgumentException();
             }
-
-            throw new IllegalArgumentException();
         }
     }
 

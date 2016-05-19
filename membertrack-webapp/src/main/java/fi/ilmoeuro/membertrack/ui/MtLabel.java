@@ -24,6 +24,10 @@ import org.apache.wicket.model.PropertyModel;
 public class MtLabel extends Label {
     private static final long serialVersionUID = 0l;
 
+    public MtLabel(String id) {
+        super(id);
+    }
+
     public MtLabel(String id, IModel<?> baseModel) {
         super(id, new PropertyModel(baseModel, id));
     }

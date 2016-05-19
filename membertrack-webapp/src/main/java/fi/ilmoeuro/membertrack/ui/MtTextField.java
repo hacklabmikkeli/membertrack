@@ -25,6 +25,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class MtTextField<T> extends TextField<@NonNull T> {
     private static final long serialVersionUID = 0l;
 
+    public MtTextField(String id) {
+        super(id);
+    }
+
     public MtTextField(String id, IModel<?> baseModel) {
         super(id, new PropertyModel<@NonNull T>(baseModel, id));
     }

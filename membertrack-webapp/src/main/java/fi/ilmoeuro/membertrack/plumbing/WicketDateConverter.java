@@ -27,6 +27,7 @@ import org.apache.wicket.util.convert.IConverter;
  * @author Ilmo Euro <ilmo.euro@gmail.com>
  */
 public class WicketDateConverter implements IConverter<LocalDate> {
+    private static final long serialVersionUID = 0l;
 
     @Override
     public LocalDate convertToObject(String val, Locale loc) throws ConversionException {

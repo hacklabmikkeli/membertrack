@@ -35,6 +35,26 @@ public class SubscriptionPanel extends Panel {
         this.model = model;
     }
 
+    private static final class ApprovedMarkupContainer extends MarkupContainer {
+        private static final long serialVersionUID = 0l;
+        private final ListItem<SubscriptionPeriod> item;
+
+        public ApprovedMarkupContainer(
+            String id,
+            ListItem<SubscriptionPeriod> item
+        ) {
+            super(id);
+            this.item = item;
+        }
+        
+        @Override
+        protected void onConfigure() {
+            super.onConfigure();
+
+            setVisible(item.getModelObject().getApproved());
+        }
+    }
+
     @Override
     protected void onInitialize() {
         super.onInitialize();
@@ -47,14 +67,7 @@ public class SubscriptionPanel extends Panel {
                 item.add(new MtLabel("startDate", item));
                 item.add(new MtLabel("endDate", item));
                 item.add(new MtLabel("paymentFormatted", item));
-                item.add(new MarkupContainer("approved") {
-                    @Override
-                    protected void onConfigure() {
-                        super.onConfigure();
-
-                        setVisible(item.getModelObject().getApproved());
-                    }
-                });
+                item.add(new ApprovedMarkupContainer("approved", item));
             }));
     }
 }

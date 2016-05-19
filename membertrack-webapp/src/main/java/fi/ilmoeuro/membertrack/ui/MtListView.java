@@ -35,6 +35,14 @@ public class MtListView<T> extends ListView<@NonNull T>{
 
     public MtListView(
         String id,
+        ListViewPopulator<@NonNull T> populate
+    ) {
+        super(id);
+        this.populate = populate;
+    }
+
+    public MtListView(
+        String id,
         IModel<?> baseModel,
         ListViewPopulator<@NonNull T> populate
     ) {

@@ -49,7 +49,8 @@ import org.jooq.DSLContext;
 public class MembershipEditor extends Panel {
     private static final long serialVersionUID = 3l;
 
-    private final IModel<Membership> model;
+    @SuppressWarnings("nullness")
+    private final IModel<@Nullable Membership> model;
     private final IModel<MembershipsPageModel<DSLContext>> rootModel;
 
     private final MtLink closeLink;
@@ -73,7 +74,7 @@ public class MembershipEditor extends Panel {
     @SuppressWarnings("initialization")
     public MembershipEditor(
         String id,
-        IModel<Membership> model,
+        IModel<@Nullable Membership> model,
         IModel<MembershipsPageModel<DSLContext>> rootModel
     ) {
         super(id, model);
@@ -201,8 +202,8 @@ public class MembershipEditor extends Panel {
     public void onConfigure() {
         super.onConfigure();
 
-        if (model.getObject() != null
-            && !model.getObject().isDeleted()) {
+        Membership m = model.getObject();
+        if (m != null && !m.isDeleted()) {
             setVisible(true);
         } else {
             setVisible(false);
@@ -228,11 +229,17 @@ public class MembershipEditor extends Panel {
     }
 
     private void delete() {
-        model.getObject().delete();
+        Membership m = model.getObject();
+        if (m != null) {
+            m.delete();
+        }
     }
 
     private void newPhoneNumber() {
-        model.getObject().addPhoneNumber();
+        Membership m = model.getObject();
+        if (m != null) {
+            m.addPhoneNumber();
+        }
     }
 
     private void newSubscriptionPeriod(ListItem<Subscription> li) {
