@@ -21,20 +21,10 @@ import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.person.Account;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Locale;
 import java.util.UUID;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.Charsets;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.DSLContext;
 
@@ -57,7 +47,9 @@ public final class DbAuthenticator implements Authenticator {
                 .from(PERSON)
                 .innerJoin(ACCOUNT)
                     .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
-                .where(PERSON.EMAIL.eq(email.trim().toLowerCase(Locale.ROOT)))
+                .where(
+                    PERSON.EMAIL.eq(email.trim().toLowerCase(Locale.ROOT))
+                        .and(PERSON.DELETED.eq(false)))
                 .fetchAny(ACCOUNT.SALT);
             if (salt != null) {
                 String hashed = Account.hash(password, salt);
