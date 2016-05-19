@@ -44,7 +44,19 @@ implements
 
     public void addPhoneNumber() {
         phoneNumbers.add(
-            new PhoneNumber(person.getId(), "")
+            new PhoneNumber(person, "")
         );
+    }
+
+    public void delete() {
+        person.delete();
+    }
+
+    public void unDelete() {
+        person.setDeleted(false);
+    }
+
+    public boolean isDeleted() {
+        return person.getDeleted();
     }
 }

@@ -28,29 +28,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <wicket:panel>
         <div class="PersonInfoEditor">
             <div class="close-button">
-                <a href="?" wicket:id="closeLink">X</a>
+                <a class='button pure-button'
+                   href="?"
+                   wicket:id="closeLink">X</a>
             </div>
             <div wicket:id="feedbackPanel">
             </div>
             <form class="pure-form pure-form-stacked" wicket:id="personEditor">
                 <fieldset>
                     <legend>Personal details</legend>
-                    <label>Full name
+                    <div class="pure-control-group">
+                        <label wicket:id="person.fullName.label">Full name</label>
                         <input
                             wicket:id="person.fullName"
                             style="width: 100%"
                             />
-                    </label>
-                    <label>E-mail
+                    </div>
+                    <div class="pure-control-group">
+                        <label wicket:id="person.email.label">E-mail</label>
                         <input
                             wicket:id="person.email"
                             style="width: 100%"
                             />
-                    </label>
+                    </div>
                 </fieldset>
-                <fieldset class="pure-control-group">
+                <fieldset>
                     <legend>Phone numbers</legend>
-                    <div wicket:id="phoneNumbers">
+                    <div class="pure-control-group" wicket:id="phoneNumbers">
                         <input
                             wicket:id="phoneNumber"
                             style="display: inline; width: 20em;"
@@ -70,22 +74,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         >Add number</button>
                 </fieldset>
                 <wicket:container wicket:id="subscriptions">
-                    <fieldset class="pure-control-group">
+                    <fieldset>
                         <legend wicket:id="service.title">Service</legend>
-                        <div wicket:id="periods">
-                        <!--
+                        <div
+                            style="margin-left: 0.25em;"
+                            class="pure-control-group">
+                            <span
+                                style="display: inline-block; width: 8em;"
+                                >Start date</span>
+                            <span
+                                style="display: inline-block; width: 9em;"
+                                >Length</span>
+                            <span
+                                style="display: inline-block; width: 5em;"
+                                >Payment</span>
+                            <span
+                                style="display: inline-block; width: 5em;"
+                                >Approved?</span>
+                        </div>
+                        <div class="pure-control-group" wicket:id="periods">
                             <input
                                 wicket:id="startDate"
-                                style="display: inline; width: 10em;"
+                                class="use-datepicker"
+                                style="display: inline; width: 8em;"
                                 />
-                        -->
                             <input
                                 wicket:id="length"
                                 style="display: inline; width: 3em;"
                                 />
+                            <select
+                                wicket:id="lengthUnit"
+                                style="display: inline; width: 6em;">
+                            </select>
                             <input
-                                wicket:id="payment"
-                                style="display: inline; width: 3em;"
+                                wicket:id="paymentFormatted"
+                                style="display: inline; width: 5em;"
+                                />
+                            <input
+                                wicket:id="approved"
+                                style="display: inline; width: 2.5em;"
+                                class="pure-checkbox"
+                                type="checkbox"
                                 />
                             <button
                                 wicket:id="deletePeriod"
@@ -102,11 +131,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             >Add period</button>
                     </fieldset>
                 </wicket:container>
-                <fieldset class="pure-control-group for-buttons">
-                    <button
-                        class="pure-button"
-                        wicket:id="saveButton"
-                        type="submit">Save</button>
+                <fieldset>
+                    <div class="pure-control-group for-buttons">
+                        <button
+                            class="pure-button"
+                            wicket:id="saveButton"
+                            type="submit">Save</button>
+                        <button
+                            class="pure-button"
+                            wicket:id="deleteButton"
+                            type="submit">Delete</button>
+                    </div>
                 </fieldset>
             </form>
         </div>

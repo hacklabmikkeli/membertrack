@@ -20,6 +20,7 @@ import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtListView;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -46,6 +47,14 @@ public class SubscriptionPanel extends Panel {
                 item.add(new MtLabel("startDate", item));
                 item.add(new MtLabel("endDate", item));
                 item.add(new MtLabel("paymentFormatted", item));
+                item.add(new MarkupContainer("approved") {
+                    @Override
+                    protected void onConfigure() {
+                        super.onConfigure();
+
+                        setVisible(item.getModelObject().getApproved());
+                    }
+                });
             }));
     }
 }

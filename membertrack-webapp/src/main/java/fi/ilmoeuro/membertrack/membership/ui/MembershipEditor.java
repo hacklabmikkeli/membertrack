@@ -20,10 +20,10 @@ import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
-import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.ui.MtButton;
+import fi.ilmoeuro.membertrack.ui.MtForm;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtListView;
@@ -33,17 +33,21 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.DSLContext;
 
 @Slf4j
 public class MembershipEditor extends Panel {
-    private static final long serialVersionUID = 2l;
+    private static final long serialVersionUID = 3l;
 
     private final IModel<Membership> model;
     private final IModel<MembershipsPageModel<DSLContext>> rootModel;
@@ -51,9 +55,11 @@ public class MembershipEditor extends Panel {
     private final MtLink closeLink;
     private final FeedbackPanel feedbackPanel;
 
-    private final Form<Object> personEditor; 
+    private final MtForm<Membership> personEditor; 
     private final MtTextField<String> personFullNameField;
+    private final FormComponentLabel personFullNameLabel;
     private final MtTextField<String> personEmailField;
+    private final FormComponentLabel personEmailLabel;
 
     private final MtListView<PhoneNumber> numbersSection;
     private final MtButton addNumber;
@@ -61,8 +67,7 @@ public class MembershipEditor extends Panel {
     private final MtListView<Subscription> subscriptionsSection;
 
     private final MtButton saveButton;
-
-
+    private final MtButton deleteButton;
 
     // OK to register callbacks on methods, they're not called right away
     @SuppressWarnings("initialization")
@@ -76,19 +81,26 @@ public class MembershipEditor extends Panel {
         this.model = model;
         this.rootModel = rootModel;
 
-        this.feedbackPanel = new FeedbackPanel("feedbackPanel");
-        this.closeLink = new MtLink("closeLink", this::close);
+        feedbackPanel = new FeedbackPanel("feedbackPanel");
+        closeLink = new MtLink("closeLink", this::close);
 
-        this.personEditor = new Form<>("personEditor");
-        this.personFullNameField = new MtTextField<>("person.fullName", model);
-        this.personEmailField = new MtTextField<>("person.email", model);
+        personEditor = new MtForm<>("personEditor", model);
+        personFullNameField = new MtTextField<>("person.fullName", model);
+        personFullNameField.setRequired(true);
+        personFullNameLabel = new FormComponentLabel("person.fullName.label",
+                                                     personFullNameField);
+        personEmailField = new MtTextField<>("person.email", model);
+        personEmailField.setRequired(true);
+        personEmailLabel = new FormComponentLabel("person.email.label",
+                                                  personEmailField);
 
-        this.numbersSection = new MtListView<>(
+        numbersSection = new MtListView<>(
             "phoneNumbers",
             model,
             (ListItem<PhoneNumber> item) -> {
                 MtTextField<String> numberField
                     = new MtTextField<>("phoneNumber", item);
+                numberField.setRequired(true);
                 MtButton deleteNumber = new MtButton("deleteNumber", () ->
                     deletePhoneNumber(item));
                 if (item.getModelObject().getDeleted()) {
@@ -97,9 +109,9 @@ public class MembershipEditor extends Panel {
                 item.add(numberField);
                 item.add(deleteNumber);
             });
-        this.addNumber = new MtButton("addNumber", this::newPhoneNumber);
+        addNumber = new MtButton("addNumber", this::newPhoneNumber);
 
-        this.subscriptionsSection = new MtListView<>(
+        subscriptionsSection = new MtListView<>(
             "subscriptions",
             model,
             (ListItem<Subscription> subItem) -> {
@@ -111,23 +123,43 @@ public class MembershipEditor extends Panel {
                         if (prdItem.getModelObject().getDeleted()) {
                             prdItem.setVisible(false);
                         }
-                        /*
                         MtTextField<LocalDate> startDateField =
                             new MtTextField<>("startDate", prdItem);
-                        */
                         MtTextField<Integer> lengthField =
                             new MtTextField<>("length", prdItem);
-                        MtTextField<Integer> paymentField =
-                            new MtTextField<>("payment", prdItem);
-                        MtButton deleteButton =
+                        MtTextField<Double> paymentField =
+                            new MtTextField<>("paymentFormatted", prdItem);
+                        DropDownChoice<PeriodTimeUnit> lengthUnitField =
+                            new DropDownChoice<PeriodTimeUnit>(
+                                "lengthUnit",
+                                new PropertyModel<PeriodTimeUnit>(
+                                    prdItem.getModel(),
+                                    "lengthUnit"),
+                                new PropertyModel<List<PeriodTimeUnit>>(
+                                    prdItem.getModel(),
+                                    "possibleLengthUnits"));
+                        CheckBox approvedField = new CheckBox(
+                                "approved",
+                                new PropertyModel<>(
+                                    prdItem.getModel(),
+                                    "approved"));
+
+                        MtButton deletePeriod =
                             new MtButton(
                                 "deletePeriod", 
                                 () -> deleteSubscriptionPeriod(prdItem));
 
-                        //prdItem.add(startDateField);
+                        startDateField.setRequired(true);
+                        lengthField.setRequired(true);
+                        paymentField.setRequired(true);
+                        lengthUnitField.setRequired(true);
+                        approvedField.setRequired(true);
+                        prdItem.add(startDateField);
                         prdItem.add(lengthField);
                         prdItem.add(paymentField);
-                        prdItem.add(deleteButton);
+                        prdItem.add(lengthUnitField);
+                        prdItem.add(approvedField);
+                        prdItem.add(deletePeriod);
                     });
                 MtButton addPeriod = new MtButton(
                     "addPeriod",
@@ -137,7 +169,8 @@ public class MembershipEditor extends Panel {
                 subItem.add(addPeriod);
             });
 
-        this.saveButton = new MtButton("saveButton", this::save);
+        saveButton = new MtButton("saveButton", this::save);
+        deleteButton = new MtButton("deleteButton", this::delete);
     }
 
     @Override
@@ -145,7 +178,9 @@ public class MembershipEditor extends Panel {
         super.onInitialize();
 
         personEditor.add(personFullNameField);
+        personEditor.add(personFullNameLabel);
         personEditor.add(personEmailField);
+        personEditor.add(personEmailLabel);
 
         personEditor.add(numbersSection);
         personEditor.add(addNumber);
@@ -154,6 +189,8 @@ public class MembershipEditor extends Panel {
 
         personEditor.add(saveButton);
         personEditor.setDefaultButton(saveButton);
+
+        personEditor.add(deleteButton);
 
         add(personEditor);
         add(closeLink);
@@ -164,7 +201,12 @@ public class MembershipEditor extends Panel {
     public void onConfigure() {
         super.onConfigure();
 
-        setVisible(rootModel.getObject().getCurrentMembership() != null);
+        if (model.getObject() != null
+            && !model.getObject().isDeleted()) {
+            setVisible(true);
+        } else {
+            setVisible(false);
+        }
     }
 
     @Override
@@ -185,32 +227,27 @@ public class MembershipEditor extends Panel {
         }
     }
 
+    private void delete() {
+        model.getObject().delete();
+    }
+
     private void newPhoneNumber() {
         model.getObject().addPhoneNumber();
     }
 
     private void newSubscriptionPeriod(ListItem<Subscription> li) {
-        Subscription sub = li.getModelObject();
-        sub.getPeriods().add(
-            new SubscriptionPeriod(
-                sub.getService().getId(),
-                model.getObject().getPerson().getId(),
-                LocalDate.now(),
-                PeriodTimeUnit.DAY,
-                0,
-                0,
-                false));
+        li.getModelObject().addPeriod();
     }
 
     private void deleteSubscriptionPeriod(ListItem<SubscriptionPeriod> li) {
-        li.getModelObject().setDeleted(true);
+        li.getModelObject().delete();
     }
 
     private void close() {
-        rootModel.getObject().setCurrentMembership(null);
+        model.setObject(null);
     }
 
     private void deletePhoneNumber(ListItem<PhoneNumber> li) {
-        li.getModelObject().setDeleted(true);
+        li.getModelObject().delete();
     }
 }

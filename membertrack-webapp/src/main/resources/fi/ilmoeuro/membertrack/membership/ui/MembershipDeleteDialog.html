@@ -25,35 +25,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="../../ui/membertrack.css" />
     </head>
     <body>
-    <wicket:extend>
-        <div class="membership-browser">
-            <div>
-                <form wicket:id="newMembership">
-                    <button
-                        class="pure-button"
-                        type="submit"
-                        >Add new membership...</button>
-                </form>
+    <wicket:panel>
+        <div class="MembershipDeleteDialog">
+            <div class="close-button">
+                <a href="?" wicket:id="closeLink">X</a>
             </div>
-            <div wicket:id="pager">
-            </div>
-            <ul class="subscriber-list">
-                <li wicket:id="memberships">
-                    <div wicket:id="personInfo">
+            <p class="delete-warning">
+                You're about to delete a membership. Proceed?
+            </p>
+            <form class="pure-form pure-form-stacked" wicket:id="deleteForm">
+                <fieldset>
+                    <div class="pure-control-group for-buttons">
+                        <button
+                            class="pure-button"
+                            wicket:id="confirmButton"
+                            type="submit">Confirm</button>
+                        <button
+                            class="pure-button"
+                            wicket:id="cancelButton"
+                            type="submit">Cancel</button>
                     </div>
-                    <div class="subscriptions">
-                        <wicket:container wicket:id="subscriptions">
-                            <div wicket:id="subscription">
-                            </div>
-                        </wicket:container>
-                    </div>
-                </li>
-            </ul>
+                </fieldset>
+            </form>
         </div>
-        <div class="membership-editor" wicket:id="membershipEditor">
-        </div>
-        <div class="membership-delete-dialog" wicket:id="membershipDeleteDialog">
-        </div>
-    </wicket:extend>
-</body>
+    </wicket:panel>
+    </body>
 </html>

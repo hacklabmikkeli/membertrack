@@ -17,18 +17,26 @@
 package fi.ilmoeuro.membertrack.service;
 
 import fi.ilmoeuro.membertrack.db.Persistable;
+import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodBase;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class SubscriptionPeriod
         extends SubscriptionPeriodBase
         implements Persistable {
     private static final long serialVersionUID = 0l;
+
+    private static final Pattern PAYMENT_FORMATTER_PATTERN = 
+        Pattern.compile("(\\d+)[.,](\\d{2})");
     
     @SuppressWarnings("nullness") // Interface with autogen code
     @Deprecated
@@ -60,8 +68,8 @@ public final class SubscriptionPeriod
 
     @SuppressWarnings("deprecation")
     public SubscriptionPeriod(
-        UUID serviceId,
-        UUID personId,
+        Service service,
+        Person person,
         LocalDate startDate,
         PeriodTimeUnit lengthUnit,
         long length,
@@ -72,8 +80,8 @@ public final class SubscriptionPeriod
             null,
             UUID.randomUUID(),
             false,
-            serviceId,
-            personId,
+            service.getId(),
+            person.getId(),
             startDate,
             lengthUnit,
             length,
@@ -99,10 +107,42 @@ public final class SubscriptionPeriod
 
     public String getPaymentFormatted() {
         int payment = getPayment();
-        return String.format("%d,%02d €", payment / 100, payment % 100);
+        return String.format("%d,%02d", payment / 100, payment % 100);
+    }
+
+    public void setPaymentFormatted(String paymentFormatted) {
+        Matcher m = PAYMENT_FORMATTER_PATTERN.matcher(paymentFormatted);
+        if (m.matches()) {
+            if (m.group(1) != null) {
+                @NonNull String m1 = m.group(1);
+                if (m.group(2) != null) {
+                    @NonNull String m2 = m.group(2);
+
+                    int whole = Integer.parseInt(m1, 10);
+                    int decim = Integer.parseInt(m2, 10);
+                    setPayment(whole * 100 + decim);
+                    return;
+                }
+            }
+
+            throw new IllegalArgumentException();
+        }
     }
 
     public List<PeriodTimeUnit> getPossibleLengthUnits() {
         return Arrays.asList(PeriodTimeUnit.values());
+    }
+
+    public String getStartDateIso() {
+        return getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    public void setStartDateIso(String startDateIso) {
+        setStartDate(DateTimeFormatter.ISO_LOCAL_DATE.parse(startDateIso,
+                                                            LocalDate::from));
+    }
+
+    public void delete() {
+        setDeleted(true);
     }
 }

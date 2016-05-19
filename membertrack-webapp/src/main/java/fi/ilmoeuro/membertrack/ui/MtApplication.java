@@ -16,20 +16,26 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
+import de.agilecoders.wicket.webjars.WicketWebjars;
+import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import fi.ilmoeuro.membertrack.config.TypesafeConfigProvider;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
+import fi.ilmoeuro.membertrack.plumbing.WicketDateConverter;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.Application;
+import org.apache.wicket.ConverterLocator;
+import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
@@ -85,6 +91,9 @@ public final class MtApplication extends AuthenticatedWebApplication {
             dbInitializer.init(token);
         });
 
+        WebjarsSettings webjarsSettings = new WebjarsSettings();
+        WicketWebjars.install(this, webjarsSettings);
+
         getMarkupSettings().setStripWicketTags(true);
     }
 
@@ -97,6 +106,13 @@ public final class MtApplication extends AuthenticatedWebApplication {
             log.error(error, ex);
             throw new RuntimeException(error, ex);
         }
+    }
+
+    @Override
+    protected IConverterLocator newConverterLocator() {
+        ConverterLocator locator = new ConverterLocator();
+        locator.set(LocalDate.class, new WicketDateConverter());
+        return locator;
     }
 
     @Override

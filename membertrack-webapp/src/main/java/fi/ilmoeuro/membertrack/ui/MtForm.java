@@ -14,37 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.person;
+package fi.ilmoeuro.membertrack.ui;
 
-import fi.ilmoeuro.membertrack.db.Persistable;
-import fi.ilmoeuro.membertrack.schema.tables.pojos.PhoneNumberBase;
-import java.util.UUID;
+import java.util.Objects;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class PhoneNumber extends PhoneNumberBase implements Persistable {
+public class MtForm<T> extends Form<@NonNull T> {
     private static final long serialVersionUID = 0l;
-    
-    @SuppressWarnings("nullness") // Interface with autogen code
-    @Deprecated
-    public PhoneNumber(
-        @Nullable Integer pk,
-        UUID id,
-        boolean deleted,
-        UUID personId,
-        String phoneNumber
-    ) {
-        super(pk, id, deleted, personId, phoneNumber);
+    private @Nullable T oldModelObject = null;
+
+    public MtForm(String id) {
+        super(id);
     }
 
-    @SuppressWarnings("deprecation")
-    public PhoneNumber(
-        Person person,
-        String phoneNumber
-    ) {
-        this(null, UUID.randomUUID(), false, person.getId(), phoneNumber);
+    public MtForm(String id, IModel<@NonNull T> model) {
+        super(id, model);
     }
 
-    public void delete() {
-        setDeleted(true);
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        @Nullable T modelObject = getModelObject();
+
+        if (!Objects.equals(oldModelObject, modelObject)) {
+            clearInput();
+            oldModelObject = modelObject;
+        }
     }
 }

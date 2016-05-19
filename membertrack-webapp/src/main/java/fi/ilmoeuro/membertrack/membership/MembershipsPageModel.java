@@ -18,7 +18,11 @@ package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.db.ErrorCode;
 import fi.ilmoeuro.membertrack.paging.Pageable;
+import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.service.Service;
+import fi.ilmoeuro.membertrack.service.ServiceRepository;
+import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.Refreshable;
@@ -32,8 +36,11 @@ import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.exception.DataAccessException;
 
@@ -51,6 +58,7 @@ implements
     private static final long serialVersionUID = 0l;
         
     private final MembershipRepositoryFactory<SessionTokenType> mrf;
+    private final ServiceRepositoryFactory<SessionTokenType> srf;
     private final UnitOfWorkFactory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
 
@@ -101,12 +109,16 @@ implements
                 final Membership membership = currentMembership;
                 sessionRunner.exec(token -> {
                     UnitOfWork uow = uowFactory.create(token);
+                    log.debug(membership.getPerson().getId().toString());
                     uow.addEntity(membership.getPerson());
+                    uow.execute();
                     for (PhoneNumber pn : membership.getPhoneNumbers()) {
+                        log.debug(pn.getPersonId().toString());
                         uow.addEntity(pn);
                     }
                     for (Subscription sub : membership.getSubscriptions()) {
                         for (SubscriptionPeriod period : sub.getPeriods()) {
+                            log.debug(period.getPersonId().toString());
                             uow.addEntity(period);
                         }
                     }
@@ -121,5 +133,22 @@ implements
                 throw new NonUniqueEmailException();
             }
         }
+    }
+
+    public void newMembership() {
+        sessionRunner.exec(token -> {
+            final ServiceRepository sr = srf.create(token);
+            final Person person = new Person("", "");
+            final List<Service> services = sr.listServices();
+            final List<Subscription> subs = services
+                .stream()
+                .map(serv -> new Subscription(person, serv, new ArrayList<>()))
+                .collect(Collectors.<@NonNull Subscription>toList());
+
+            setCurrentMembership(new Membership(
+                person,
+                new ArrayList<>(),
+                subs));
+        });
     }
 }

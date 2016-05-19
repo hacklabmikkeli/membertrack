@@ -43,11 +43,11 @@ public class MembershipRepositoryNGTest extends TestBase {
     @Test
     public void testListMemberships() {
         Person p = new Person("John Doe", "john.doe@example.com");
-        PhoneNumber pn = new PhoneNumber(p.getId(), "+1234567890");
+        PhoneNumber pn = new PhoneNumber(p, "+1234567890");
         Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
         SubscriptionPeriod pr1 = new SubscriptionPeriod(
-            s.getId(),
-            p.getId(),
+            s,
+            p,
             LocalDate.of(2000, Month.MARCH, 1),
             PeriodTimeUnit.DAY,
             30,
@@ -55,8 +55,8 @@ public class MembershipRepositoryNGTest extends TestBase {
             true
         );
         SubscriptionPeriod pr2 = new SubscriptionPeriod(
-            s.getId(),
-            p.getId(),
+            s,
+            p,
             LocalDate.of(2000, Month.APRIL, 1),
             PeriodTimeUnit.DAY,
             30,

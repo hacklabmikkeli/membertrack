@@ -51,4 +51,8 @@ public final class Person extends PersonBase implements Persistable {
             "//gravatar.com/avatar/%s?d=mm",
             DigestUtils.md5Hex(getEmail().toLowerCase(Locale.ROOT).trim()));
     }
+
+    public void delete() {
+        setDeleted(true);
+    }
 }

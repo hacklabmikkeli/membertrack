@@ -24,7 +24,9 @@ import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepositoryFactory;
 import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
+import fi.ilmoeuro.membertrack.service.db.DbServiceRepositoryFactory;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
+import fi.ilmoeuro.membertrack.ui.MtActionButton;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtHighlighter;
 import fi.ilmoeuro.membertrack.ui.MtListView;
@@ -41,9 +43,11 @@ public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 1l;
 
     private final IModel<MembershipsPageModel<DSLContext>> model;
+    private final MtActionButton newMembership;
     private final Pager<MembershipsPage> pager;
     private final MtListView<Membership> memberships;
-    private final MembershipEditor personInfoEditor;
+    private final MembershipEditor membershipEditor;
+    private final MembershipDeleteDialog membershipDeleteDialog;
 
     // OK to register callbacks on methods, they're not called right away
     @SuppressWarnings("initialization")
@@ -51,8 +55,10 @@ public final class MembershipsPage extends MtPage {
         model = new MtModel<>(
             new MembershipsPageModel<>(
                 new DbMembershipRepositoryFactory(),
+                new DbServiceRepositoryFactory(),
                 new DbUnitOfWorkFactory(),
                 MtApplication.get().getSessionRunner()));
+        newMembership = new MtActionButton("newMembership", this::newMembership);
         pager = new Pager<MembershipsPage>(
             "pager",
             model,
@@ -76,8 +82,12 @@ public final class MembershipsPage extends MtPage {
                             new SubscriptionPanel(
                                 "subscription",
                                 subItem.getModel()));}));});
-        personInfoEditor = new MembershipEditor(
-            "personInfoEditor",
+        membershipEditor = new MembershipEditor(
+            "membershipEditor",
+            new PropertyModel<>(model, "currentMembership"),
+            model);
+        membershipDeleteDialog = new MembershipDeleteDialog(
+            "membershipDeleteDialog",
             new PropertyModel<>(model, "currentMembership"),
             model);
 
@@ -92,9 +102,11 @@ public final class MembershipsPage extends MtPage {
     protected void onInitialize() {
         setDefaultModel(model);
         super.onInitialize();
+        add(newMembership);
         add(pager);
         add(memberships);
-        add(personInfoEditor);
+        add(membershipEditor);
+        add(membershipDeleteDialog);
     }
 
     @Override
@@ -122,5 +134,9 @@ public final class MembershipsPage extends MtPage {
             }
         }
         return false;
+    }
+
+    private void newMembership() {
+        model.getObject().newMembership();
     }
 }

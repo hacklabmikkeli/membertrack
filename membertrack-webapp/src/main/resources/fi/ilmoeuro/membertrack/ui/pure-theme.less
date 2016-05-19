@@ -19,6 +19,16 @@
                     #eee 100%));
         }
     }
+    
+    select {
+        vertical-align: top;
+        height: 28px;
+    }
+    
+    input[type='checkbox'] {
+        vertical-align: middle;
+        height: 16px;
+    }
 
     fieldset + fieldset {
         margin-top: 2em;
@@ -26,13 +36,13 @@
 
     .pure-control-group.for-buttons {
         .display(flex);
+        .justify-content(flex-end);
         margin-top: 1.5em;
         margin-right: 2.5em;
-        .justify-content(flex-end);
 
         button, .button {
             margin-left: 1em;
-        }
+        } 
     }
     
 }

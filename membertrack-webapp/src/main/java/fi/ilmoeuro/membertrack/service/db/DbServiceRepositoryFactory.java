@@ -14,46 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.service.db;
 
-import fi.ilmoeuro.membertrack.session.Refreshable;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import fi.ilmoeuro.membertrack.service.ServiceRepository;
+import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import org.jooq.DSLContext;
 
-public class
-    MtModel<T extends Refreshable>
-extends
-    CompoundPropertyModel<T>
+public final class DbServiceRepositoryFactory
+implements
+    ServiceRepositoryFactory<DSLContext>
 {
     private static final long serialVersionUID = 0l;
 
-    private boolean dirty;
-
-    public MtModel(@NonNull T model) {
-        super(model);
-        this.dirty = true;
-    }
-
     @Override
-    public T getObject() {
-        T obj = super.getObject();
-        if (dirty) {
-            obj.refresh();
-            dirty = false;
-        }
-        return super.getObject();
+    public ServiceRepository create(SessionToken<DSLContext> token) {
+        return new DbServiceRepository(token.getValue());
     }
-
-    @Override
-    public void setObject(T object) {
-        super.setObject(object);
-    }
-
-    @Override
-    public void detach() {
-        super.detach();
-        dirty = true;
-    }
-
-    
 }

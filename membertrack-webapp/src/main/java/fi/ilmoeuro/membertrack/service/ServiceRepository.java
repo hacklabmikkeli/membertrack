@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,32 +16,10 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
-import fi.ilmoeuro.membertrack.person.Person;
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
-import lombok.Value;
 
-public final @Value class
-    Subscription
-implements
-    Serializable 
-{
-    private static final long serialVersionUID = 0l;
+public interface ServiceRepository {
 
-    Person person;
-    Service service;
-    List<SubscriptionPeriod> periods;
-
-    public void addPeriod() {
-        periods.add(
-            new SubscriptionPeriod(
-                service,
-                person,
-                LocalDate.now(),
-                PeriodTimeUnit.DAY,
-                0,
-                0,
-                false));
-    }
+    public List<Service> listServices();
+    
 }

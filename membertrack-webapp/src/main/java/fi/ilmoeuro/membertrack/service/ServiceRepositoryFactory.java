@@ -16,32 +16,13 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
-import fi.ilmoeuro.membertrack.person.Person;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
-import lombok.Value;
 
-public final @Value class
-    Subscription
-implements
-    Serializable 
+public interface
+    ServiceRepositoryFactory<SessionTokenType>
+extends
+    Serializable
 {
-    private static final long serialVersionUID = 0l;
-
-    Person person;
-    Service service;
-    List<SubscriptionPeriod> periods;
-
-    public void addPeriod() {
-        periods.add(
-            new SubscriptionPeriod(
-                service,
-                person,
-                LocalDate.now(),
-                PeriodTimeUnit.DAY,
-                0,
-                0,
-                false));
-    }
+    public ServiceRepository create(SessionToken<SessionTokenType> token);
 }

@@ -39,4 +39,9 @@ public class MtButton extends Button {
     public void onSubmit() {
         action.onClick();
     }
+
+    @Override
+    public void onError() {
+        error("Error!");
+    }
 }

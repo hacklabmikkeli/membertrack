@@ -43,7 +43,6 @@ import fi.ilmoeuro.membertrack.membership.MembershipRepository;
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.ArrayUtils;
 
 @RequiredArgsConstructor
 public final class
@@ -157,6 +156,7 @@ implements
         ) {
             subscriptions.add(
                 new Subscription(
+                    person,
                     entry.getKey(),
                     new ArrayList<>(entry.getValue())));
         }
