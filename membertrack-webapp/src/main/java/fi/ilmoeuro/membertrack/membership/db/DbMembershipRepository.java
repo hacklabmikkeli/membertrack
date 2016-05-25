@@ -68,14 +68,14 @@ implements
             .select(PERSON.FULL_NAME)
             .from(PERSON)
             .orderBy(PERSON.FULL_NAME)
-            .limit(pageNum * PAGE_SIZE, 1)
+            .limit((pageNum - 1)* PAGE_SIZE, 1)
             .fetchAny(this::getFullName);
 
         @Nullable String end = jooq
             .select(PERSON.FULL_NAME)
             .from(PERSON)
             .orderBy(PERSON.FULL_NAME)
-            .limit((pageNum + 1) * PAGE_SIZE, 1)
+            .limit(pageNum * PAGE_SIZE, 1)
             .fetchAny(this::getFullName);
 
         if (start != null) {

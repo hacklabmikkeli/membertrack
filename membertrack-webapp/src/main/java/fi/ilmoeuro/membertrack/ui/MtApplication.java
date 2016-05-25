@@ -22,6 +22,7 @@ import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import fi.ilmoeuro.membertrack.config.TypesafeConfigProvider;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
+import fi.ilmoeuro.membertrack.db.DebugServer;
 import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
 import fi.ilmoeuro.membertrack.plumbing.WicketDateConverter;
@@ -54,6 +55,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
     private final UnitOfWorkFactory<DSLContext> uowFactory;
     private final DataSourceInitializer dsInitializer;
     private final DatabaseInitializer<DSLContext> dbInitializer;
+    private final DebugServer debugServer;
 
     public MtApplication() {
         configProvider
@@ -67,6 +69,8 @@ public final class MtApplication extends AuthenticatedWebApplication {
         dbInitializer
             = new DatabaseInitializer<>(configProvider,
                 new DefaultExampleData<>(uowFactory));
+        debugServer
+            = new DebugServer(configProvider);
     }
 
     public MtApplication(
@@ -74,13 +78,15 @@ public final class MtApplication extends AuthenticatedWebApplication {
         SessionRunner<DSLContext> sessionRunner,
         UnitOfWorkFactory<DSLContext> uowFactory,
         DataSourceInitializer dsInitializer,
-        DatabaseInitializer<DSLContext> dbInitializer
+        DatabaseInitializer<DSLContext> dbInitializer,
+        DebugServer debugServer
     ) {
         this.configProvider = configProvider;
         this.sessionRunner = sessionRunner;
         this.uowFactory = uowFactory;
         this.dsInitializer = dsInitializer;
         this.dbInitializer = dbInitializer;
+        this.debugServer = debugServer;
     }
 
     @Override
@@ -90,11 +96,19 @@ public final class MtApplication extends AuthenticatedWebApplication {
         sessionRunner.exec((SessionToken<DSLContext> token) -> {
             dbInitializer.init(token);
         });
+        debugServer.start();
 
         WebjarsSettings webjarsSettings = new WebjarsSettings();
         WicketWebjars.install(this, webjarsSettings);
 
         getMarkupSettings().setStripWicketTags(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        debugServer.stop();
     }
 
     @SuppressWarnings("unchecked")

@@ -106,6 +106,7 @@ public class Pager<T extends WebPage> extends Panel {
         MtLink link = new MtLink("setPage", () -> {
             model.getObject().setCurrentPage(
                 item.getModelObject().getPageNum());
+            addStateChange();
         });
         link.add(new MtLabel("uiPageNum", item.getModel()));
         item.add(link);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,139 +16,85 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
-import fi.ilmoeuro.membertrack.db.ErrorCode;
 import fi.ilmoeuro.membertrack.paging.Pageable;
-import fi.ilmoeuro.membertrack.person.Person;
-import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import fi.ilmoeuro.membertrack.service.Service;
-import fi.ilmoeuro.membertrack.service.ServiceRepository;
 import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
-import fi.ilmoeuro.membertrack.service.Subscription;
-import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
-import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+import java.io.Serializable;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jooq.exception.DataAccessException;
 
-@RequiredArgsConstructor
 @Slf4j
-public final class
+public class
     MembershipsPageModel<SessionTokenType>
 implements
-    Serializable,
     Refreshable,
-    Pageable
+    Pageable,
+    Serializable
 {
-    public static class NonUniqueEmailException extends Exception {}
-    
-    private static final long serialVersionUID = 0l;
-        
-    private final MembershipRepositoryFactory<SessionTokenType> mrf;
-    private final ServiceRepositoryFactory<SessionTokenType> srf;
-    private final UnitOfWorkFactory<SessionTokenType> uowFactory;
-    private final SessionRunner<SessionTokenType> sessionRunner;
+    @Getter
+    private final MembershipBrowser<SessionTokenType> membershipBrowser;
 
     @Getter
-    private transient List<Membership> memberships = Collections.emptyList();
+    private final MembershipEditor<SessionTokenType> membershipEditor;
 
-    @Getter(onMethod = @__({@Override}))
-    private transient int numPages = 0;
+    // OK to register callbacks not called until later
+    @SuppressWarnings("initialization")
+    public MembershipsPageModel(
+        MembershipRepositoryFactory<SessionTokenType> mrf,
+        ServiceRepositoryFactory<SessionTokenType> srf,
+        UnitOfWorkFactory<SessionTokenType> uowFactory,
+        SessionRunner<SessionTokenType> sessionRunner
+    ) {
+        membershipEditor = new MembershipEditor<SessionTokenType>(
+            srf,
+            uowFactory,
+            sessionRunner
+        ) {
+            @Override
+            protected void refreshOthers() {
+                MembershipsPageModel.this.refresh();
+            }
+        };
 
-    @Getter(onMethod = @__({@Override}))
-    private int currentPage = 0;
+        membershipBrowser = new MembershipBrowser<SessionTokenType>(
+            mrf,
+            sessionRunner
+        ) {
+            @Override
+            public Membership getSelectedMembership() {
+                return membershipEditor.getMembership();
+            }
 
-    @Override
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-        refresh();
-    }
-
-    @Getter
-    @Setter
-    private @Nullable Membership currentMembership = null;
-
-    private void readObject(ObjectInputStream is)
-        throws IOException, ClassNotFoundException
-    {
-        is.defaultReadObject();
-        memberships = Collections.emptyList();
-        numPages = 0;
+            @Override
+            public void setSelectedMembership(Membership membership) {
+                membershipEditor.setMembership(membership);
+            }
+        };
     }
 
     @Override
     public void refresh() {
-        sessionRunner.exec(token -> {
-            MembershipRepository mr = mrf.create(token);
-            memberships = mr.listMembershipsPage(getCurrentPage());
-            numPages = mr.numMembershipsPages();
-        });
+        membershipBrowser.refresh();
     }
 
-    public void
-        saveCurrent()
-    throws
-        NonUniqueEmailException
-    {
-        try {
-            if (currentMembership != null) {
-                // Make sure `membership` can't be mutated
-                final Membership membership = currentMembership;
-                sessionRunner.exec(token -> {
-                    UnitOfWork uow = uowFactory.create(token);
-                    log.debug(membership.getPerson().getId().toString());
-                    uow.addEntity(membership.getPerson());
-                    uow.execute();
-                    for (PhoneNumber pn : membership.getPhoneNumbers()) {
-                        log.debug(pn.getPersonId().toString());
-                        uow.addEntity(pn);
-                    }
-                    for (Subscription sub : membership.getSubscriptions()) {
-                        for (SubscriptionPeriod period : sub.getPeriods()) {
-                            log.debug(period.getPersonId().toString());
-                            uow.addEntity(period);
-                        }
-                    }
-                    uow.execute();
-                });
-            }
-            refresh();
-        } catch (DataAccessException ex) {
-            @Nullable ErrorCode ec = ErrorCode.fromThrowable(ex);
-
-            if (ec == ErrorCode.DUPLICATE_KEY) {
-                throw new NonUniqueEmailException();
-            }
-        }
+    @Override
+    public int getNumPages() {
+        return membershipBrowser.getNumPages();
     }
 
-    public void newMembership() {
-        sessionRunner.exec(token -> {
-            final ServiceRepository sr = srf.create(token);
-            final Person person = new Person("", "");
-            final List<Service> services = sr.listServices();
-            final List<Subscription> subs = services
-                .stream()
-                .map(serv -> new Subscription(person, serv, new ArrayList<>()))
-                .collect(Collectors.<@NonNull Subscription>toList());
+    @Override
+    public int getCurrentPage() {
+        return membershipBrowser.getCurrentPage();
+    }
 
-            setCurrentMembership(new Membership(
-                person,
-                new ArrayList<>(),
-                subs));
-        });
+    @Override
+    public void setCurrentPage(int pageNum) {
+        membershipBrowser.setCurrentPage(pageNum);
+    }
+
+    public void createNewMembership() {
+        membershipEditor.initNew();
     }
 }

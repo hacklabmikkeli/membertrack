@@ -22,22 +22,16 @@ import org.apache.wicket.model.Model;
 
 public class MtLink extends Link<Serializable> {
     private static final long serialVersionUID = 0l;
+    private final SerializableAction action;
 
-    @FunctionalInterface
-    public interface Action extends Serializable {
-        void onClick();
-    }
-
-    private final Action action;
-
-    public MtLink(String id, Action action) {
+    public MtLink(String id, SerializableAction action) {
         super(id, Model.of());
         this.action = action;
     }
 
     @Override
     public void onClick() {
-        action.onClick();
+        action.execute();
         addStateChange();
     }
 }

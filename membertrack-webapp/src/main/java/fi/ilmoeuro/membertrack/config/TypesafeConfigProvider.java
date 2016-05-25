@@ -51,6 +51,7 @@ public final class TypesafeConfigProvider implements ConfigProvider {
         config = userConfig.withFallback(ConfigFactory.parseURL(url));
     }
 
+    @Override
     public <T extends @NonNull Object> T getConfig(String path, Class<T> clazz) {
         return ConfigBeanFactory.create(config.getConfig(path), clazz);
     }

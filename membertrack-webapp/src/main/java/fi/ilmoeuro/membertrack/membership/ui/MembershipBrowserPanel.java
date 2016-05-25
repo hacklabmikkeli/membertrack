@@ -17,51 +17,55 @@
 package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.membership.Membership;
-import fi.ilmoeuro.membertrack.person.PhoneNumber;
-import fi.ilmoeuro.membertrack.ui.MtLabel;
-import fi.ilmoeuro.membertrack.ui.MtLink;
+import fi.ilmoeuro.membertrack.membership.MembershipBrowser;
+import fi.ilmoeuro.membertrack.service.Subscription;
+import fi.ilmoeuro.membertrack.ui.MtHighlighter;
 import fi.ilmoeuro.membertrack.ui.MtListView;
-import fi.ilmoeuro.membertrack.ui.SerializableConsumer;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
+import org.jooq.DSLContext;
 
-public class PersonInfoPanel extends Panel {
+public class MembershipBrowserPanel extends Panel {
     private static final long serialVersionUID = 1l;
-    private final IModel<Membership> model;
-    private final SerializableConsumer<Membership> onSelect;
+    private final MtListView<Membership> memberships;
+    private final IModel<MembershipBrowser<DSLContext>> model;
 
-    public PersonInfoPanel(
+    public MembershipBrowserPanel(
         String id,
-        IModel<Membership> model,
-        SerializableConsumer<Membership> onSelect
+        IModel<MembershipBrowser<DSLContext>> model
     ) {
         super(id, new CompoundPropertyModel<>(model));
         this.model = model;
-        this.onSelect = onSelect;
+
+        memberships = new MtListView<>(
+            "memberships",
+            model,
+            (ListItem<Membership> item) -> {
+                item.add(new MtHighlighter(() -> isCurrentPerson(item)));
+                item.add(new PersonInfoPanel(
+                    "personInfo",
+                    item.getModel(),
+                    this::selectMembership));
+                item.add(new MtListView<>(
+                    "subscriptions",
+                    item,
+                    (ListItem<Subscription> subItem) -> {
+                        subItem.add(
+                            new SubscriptionPanel(
+                                "subscription",
+                                subItem.getModel()));}));});
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
 
-        add(new ContextImage("avatar",
-                             new PropertyModel<>(model, "person.gravatarUrl")));
-        add(new MtLabel("person.fullName", model));
-        add(new MtLabel("person.email", model));
-        add(new MtListView<>(
-            "phoneNumbers",
-            model,
-            (ListItem<PhoneNumber> item) -> {
-                item.add(new MtLabel("phoneNumber", item));
-            }));
-        add(new MtLink("edit", this::selectForEditing));
+        add(memberships);
     }
 
     @Override
@@ -69,12 +73,18 @@ public class PersonInfoPanel extends Panel {
         super.renderHead(response);
 
         PackageResourceReference cssRef = 
-            new PackageResourceReference(PersonInfoPanel.class, "PersonInfoPanel.css");
+            new PackageResourceReference(
+                MembershipBrowserPanel.class,
+                "MembershipBrowserPanel.css");
         CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
         response.render(pageCss);
     }
 
-    private void selectForEditing() {
-        onSelect.consume(model.getObject());
+    private void selectMembership(Membership membership) {
+        model.getObject().setSelectedMembership(membership);
+    }
+
+    private boolean isCurrentPerson(ListItem<Membership> item) {
+        return model.getObject().checkIfMembershipSelected(item.getModelObject());
     }
 }

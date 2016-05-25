@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,8 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import java.io.Serializable;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.wicket.markup.html.form.Form;
 
-/**
- *
- * @author Ilmo Euro <ilmo.euro@gmail.com>
- */
-@Slf4j
-public class MtActionButton extends Form<Object> {
-    private static final long serialVersionUID = 0l;
-    private final SerializableAction action;
-    
-    public MtActionButton(String id, SerializableAction action) {
-        super(id);
-        this.action = action;
-    }
-
-    @Override
-    public void onSubmit() {
-        action.execute();
-    }
-
-    @Override
-    protected void onError() {
-        log.debug("onError() @" + getId());
-    }
+@FunctionalInterface
+public interface SerializableAction extends Serializable {
+    void execute();
 }

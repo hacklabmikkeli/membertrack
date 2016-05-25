@@ -32,9 +32,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                    href="?"
                    wicket:id="closeLink">X</a>
             </div>
+
             <div wicket:id="feedbackPanel">
             </div>
-            <form class="pure-form pure-form-stacked" wicket:id="personEditor">
+
+            <form class="pure-form pure-form-stacked" wicket:id="deleteForm">
+                <p>You're about to delete
+                    <span wicket:id="person.fullName"></span>.
+                   Proceed?
+                </p>
+                <div class="pure-control-group for-buttons">
+                    <button
+                        class="pure-button"
+                        wicket:id="confirmButton"
+                        type="submit">Confirm</button>
+                    <button
+                        class="pure-button"
+                        wicket:id="cancelButton"
+                        type="submit">Cancel</button>
+                </div>
+            </form>
+
+            <form class="pure-form pure-form-stacked" wicket:id="editorForm">
                 <fieldset>
                     <legend>Personal details</legend>
                     <div class="pure-control-group">
