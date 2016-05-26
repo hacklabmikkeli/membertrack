@@ -141,6 +141,6 @@ public final class MtApplication extends AuthenticatedWebApplication {
 
     @Override
     protected Class<? extends WebPage> getSignInPageClass() {
-        return SignInPage.class;
+        return MtSignInPage.class;
     }
 }

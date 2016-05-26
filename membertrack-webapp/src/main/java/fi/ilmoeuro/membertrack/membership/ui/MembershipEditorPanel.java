@@ -203,8 +203,8 @@ public class MembershipEditorPanel extends Panel {
         editorForm.add(personFullNameField);
         editorForm.add(personFullNameLabel);
         editorForm.add(personEmailField);
-        editorForm.add(personEmailLabel);
-        editorForm.add(numbersSection);
+        editorForm.add(personEmailLabel)
+;        editorForm.add(numbersSection);
         editorForm.add(addNumber);
         editorForm.add(subscriptionsSection);
         editorForm.add(saveButton);
@@ -219,7 +219,7 @@ public class MembershipEditorPanel extends Panel {
 
     @Override
     protected void onConfigure() {
-        super.onConfigure(); //To change body of generated methods, choose Tools | Templates.
+        super.onConfigure();
 
         setVisible(
             model.getObject().getMembership() != null
