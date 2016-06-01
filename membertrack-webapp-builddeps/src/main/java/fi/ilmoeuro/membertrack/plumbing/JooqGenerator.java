@@ -47,7 +47,7 @@ public class JooqGenerator extends JavaGenerator {
         out.println();
         out.tab(1).println("@Override");
         out.tab(1).println("public String toString() {");
-        out.tab(2).println("if (getDeleted()) {");
+        out.tab(2).println("if (isDeleted()) {");
         out.tab(3).println("return \"<deleted>\";");
         out.tab(2).println("} else {");
         out.tab(3).println("return String.format(");
@@ -55,6 +55,16 @@ public class JooqGenerator extends JavaGenerator {
         out.tab(4).println("getClass().getSimpleName(),");
         out.tab(4).println("getId());");
         out.tab(2).println("}");
+        out.tab(1).println("}");
+        out.println();
+        out.tab(1).println("private boolean deleted;");
+        out.println();
+        out.tab(1).println("public boolean isDeleted() {");
+        out.tab(2).println("return deleted;");
+        out.tab(1).println("}");
+        out.println();
+        out.tab(1).println("public void setDeleted(boolean deleted) {");
+        out.tab(2).println("this.deleted = deleted;");
         out.tab(1).println("}");
 
     }

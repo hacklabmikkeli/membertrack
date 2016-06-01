@@ -17,8 +17,10 @@
 package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.paging.Pageable;
-import fi.ilmoeuro.membertrack.session.Refreshable;
+import fi.ilmoeuro.membertrack.util.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
+import fi.ilmoeuro.membertrack.util.SerializableConsumer;
+import fi.ilmoeuro.membertrack.util.SerializableProducer;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -26,26 +28,40 @@ import lombok.Getter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Objects;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Slf4j
-public abstract class
+public final class
     MembershipBrowser<SessionTokenType>
 implements
     Serializable,
     Refreshable,
     Pageable
 {
-    private static final long serialVersionUID = 1l;
 
     public static class NonUniqueEmailException extends Exception {}
+
+    private static final long serialVersionUID = 1l;
         
     private final MembershipRepositoryFactory<SessionTokenType> mrf;
     private final SessionRunner<SessionTokenType> sessionRunner;
+    private final SerializableConsumer<@Nullable Membership>
+        setSelectedMembership;
+    private final SerializableProducer<@Nullable Membership>
+        getSelectedMembership;
+
+    public MembershipBrowser(
+        MembershipRepositoryFactory<SessionTokenType> mrf,
+        SessionRunner<SessionTokenType> sessionRunner,
+        SerializableConsumer<@Nullable Membership> setSelectedMembership,
+        SerializableProducer<@Nullable Membership> getSelectedMembership
+    ) {
+        this.mrf = mrf;
+        this.sessionRunner = sessionRunner;
+        this.setSelectedMembership = setSelectedMembership;
+        this.getSelectedMembership = getSelectedMembership;
+    }
 
     @Getter
     private transient List<Membership> memberships = Collections.emptyList();
@@ -90,6 +106,10 @@ implements
         }
     }
 
-    public abstract @Nullable Membership getSelectedMembership();
-    public abstract void setSelectedMembership(@Nullable Membership membership);
+    public @Nullable Membership getSelectedMembership() {
+        return getSelectedMembership.produce();
+    }
+    public void setSelectedMembership(@Nullable Membership membership) {
+        setSelectedMembership.consume(membership);
+    }
 }

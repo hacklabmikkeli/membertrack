@@ -21,7 +21,7 @@ import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtListView;
-import fi.ilmoeuro.membertrack.ui.SerializableConsumer;
+import fi.ilmoeuro.membertrack.util.SerializableConsumer;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.image.ContextImage;

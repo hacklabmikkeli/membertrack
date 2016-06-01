@@ -28,6 +28,7 @@ import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
+import fi.ilmoeuro.membertrack.util.SerializableAction;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +44,17 @@ import org.jooq.exception.DataAccessException;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class
+public final class
     MembershipEditor<SessionTokenType>
 implements
     Serializable
 {
+    private static final long serialVersionUID = 0l;
+    
     private final ServiceRepositoryFactory<SessionTokenType> srf;
     private final UnitOfWorkFactory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
+    private final SerializableAction refreshOthers;
 
     @Getter
     @Setter
@@ -61,10 +65,10 @@ implements
     throws
         NonUniqueEmailException
     {
-        final Membership ms = membership;
-        if (ms != null) {
-            try {
-                sessionRunner.exec(token -> {
+        try {
+            sessionRunner.exec(token -> {
+                final Membership ms = membership;
+                if (ms != null) {
                     UnitOfWork uow = uowFactory.create(token);
                     uow.addEntity(ms.getPerson());
                     uow.execute();
@@ -77,14 +81,18 @@ implements
                         }
                     }
                     uow.execute();
-                });
-                refreshOthers();
-            } catch (DataAccessException ex) {
-                @Nullable ErrorCode ec = ErrorCode.fromThrowable(ex);
 
-                if (ec == ErrorCode.DUPLICATE_KEY) {
-                    throw new NonUniqueEmailException();
+                    if (ms.isDeleted()) {
+                        close();
+                    }
                 }
+            });
+            refreshOthers();
+        } catch (DataAccessException ex) {
+            @Nullable ErrorCode ec = ErrorCode.fromThrowable(ex);
+
+            if (ec == ErrorCode.DUPLICATE_KEY) {
+                throw new NonUniqueEmailException();
             }
         }
     }
@@ -137,5 +145,7 @@ implements
         membership = null;
     }
 
-    protected abstract void refreshOthers();
+    private void refreshOthers() {
+        refreshOthers.execute();
+    }
 }

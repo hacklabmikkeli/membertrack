@@ -29,11 +29,10 @@ public final class Service extends ServiceBase implements Persistable {
     public Service(
         @Nullable Integer pk,
         UUID id,
-        boolean deleted,
         String title,
         String description
     ) {
-        super(pk, id, deleted, title, description);
+        super(pk, id, title, description);
     }
 
     @SuppressWarnings("deprecation")
@@ -41,6 +40,6 @@ public final class Service extends ServiceBase implements Persistable {
         String title,
         String description
     ) {
-        this(null, UUID.randomUUID(), false, title, description);
+        this(null, UUID.randomUUID(), title, description);
     }
 }

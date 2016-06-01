@@ -123,18 +123,18 @@ implements
                 PhoneNumberRecord pnr = r.into(PHONE_NUMBER);
                 ServiceRecord sr = r.into(SERVICE);
                 SubscriptionPeriodRecord spr = r.into(SUBSCRIPTION_PERIOD);
-                if (pr.getId() != null && !pr.getDeleted()) {
+                if (pr.getId() != null) {
                     Person p = pr.into(Person.class);
                     mapper.root(p);
-                    if (sr.getId() != null && !sr.getDeleted()) {
+                    if (sr.getId() != null) {
                         Service s = sr.into(Service.class);
                         mapper.relate_1(p, s);
-                        if (spr.getId() != null && !spr.getDeleted()) {
+                        if (spr.getId() != null) {
                             SubscriptionPeriod sp = spr.into(SubscriptionPeriod.class);
                             mapper.relate_1_1(p, s, sp);
                         }
                     }
-                    if (pnr.getId() != null && !pnr.getDeleted()) {
+                    if (pnr.getId() != null) {
                         PhoneNumber pn = pnr.into(PhoneNumber.class);
                         mapper.relate_2(p, pn);
                     }

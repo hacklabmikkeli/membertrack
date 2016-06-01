@@ -21,6 +21,8 @@ import org.jooq.util.Definition;
 
 public class JooqGeneratorStrategy extends DefaultGeneratorStrategy {
 
+    
+
     @Override
     public String getJavaClassName(Definition def, Mode mode) {
         if (mode == Mode.POJO) {

@@ -23,6 +23,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 public class MtSignInPage extends WebPage {
+    private static final long serialVersionUID = 0l;
+    
     @Override
     protected void onInitialize() {
         super.onInitialize();

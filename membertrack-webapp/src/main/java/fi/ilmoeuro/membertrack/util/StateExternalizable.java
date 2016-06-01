@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.session;
+package fi.ilmoeuro.membertrack.util;
 
-public interface Refreshable {
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-    void refresh();
-    
+/**
+ *
+ * @author Ilmo Euro <ilmo.euro@gmail.com>
+ */
+public interface StateExternalizable {
+    void saveState(BiConsumer<String, String> pairConsumer);
+    void loadState(Function<String, String> getValue);
 }

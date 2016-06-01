@@ -57,6 +57,6 @@ implements
     }
 
     public boolean isDeleted() {
-        return person.getDeleted();
+        return person.isDeleted();
     }
 }

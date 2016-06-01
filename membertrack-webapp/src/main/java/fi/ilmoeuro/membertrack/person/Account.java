@@ -41,12 +41,11 @@ public final class Account extends AccountBase implements Persistable {
     public Account(
         @Nullable Integer pk,
         UUID id,
-        boolean deleted,
         UUID personId,
         String hash,
         String salt
     ) {
-        super(pk, id, deleted, personId, hash, salt);
+        super(pk, id, personId, hash, salt);
     }
 
     @SuppressWarnings("deprecation")
@@ -55,7 +54,7 @@ public final class Account extends AccountBase implements Persistable {
         String hash,
         String salt
     ) {
-        this(null, UUID.randomUUID(), false, person.getId(), hash, salt);
+        this(null, UUID.randomUUID(), person.getId(), hash, salt);
     }
 
     public static Account create(

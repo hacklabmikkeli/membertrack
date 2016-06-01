@@ -68,12 +68,18 @@ public final class DbUnitOfWork implements UnitOfWork {
     @Override
     public void execute() {
         for (PersistableRecord record : records) {
-            if (record.getPersistable().getPk() == null) {
-                record.getUpdatableRecord().store();
-                record.getPersistable().setPk(
-                    record.getUpdatableRecord().getValue("pk", Integer.class));
+            if (record.getPersistable().isDeleted()) {
+                if (record.getPersistable().getPk() != null) {
+                    record.getUpdatableRecord().delete();
+                }
             } else {
-                record.getUpdatableRecord().update();
+                if (record.getPersistable().getPk() == null) {
+                    record.getUpdatableRecord().store();
+                    record.getPersistable().setPk(
+                        record.getUpdatableRecord().getValue("pk", Integer.class));
+                } else {
+                    record.getUpdatableRecord().update();
+                }
             }
         }
     }

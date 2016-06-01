@@ -5,3 +5,24 @@
 @sidebar-bg: teal;
 @main-fg: black;
 @main-bg: white;
+
+.accent-bg() {
+    .background-image(
+        repeating-linear-gradient(
+            45deg,
+            rgba(0,0,0,0),
+            rgba(0,0,0,0) 10px,
+            rgba(0,0,0,0.3) 10px,
+            rgba(0,0,0,0.3) 20px));
+}
+
+
+.accent-bg-light() {
+    .background-image(
+        repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,0),
+            rgba(255,255,255,0) 10px,
+            rgba(255,255,255,0.3) 10px,
+            rgba(255,255,255,0.3) 20px));
+}

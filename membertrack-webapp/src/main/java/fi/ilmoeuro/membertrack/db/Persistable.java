@@ -21,4 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface Persistable {
     @Nullable Integer getPk();
     void setPk(@Nullable Integer pk);
+
+    boolean isDeleted();
+    void setDeleted(boolean deleted);
 }

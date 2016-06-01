@@ -43,7 +43,6 @@ public final class SubscriptionPeriod
     public SubscriptionPeriod(
         @Nullable Integer pk,
         UUID id,
-        boolean deleted,
         UUID serviceId,
         UUID personId,
         LocalDate startDate,
@@ -55,7 +54,6 @@ public final class SubscriptionPeriod
         super(
             pk,
             id,
-            deleted,
             serviceId,
             personId,
             startDate,
@@ -79,7 +77,6 @@ public final class SubscriptionPeriod
         this(
             null,
             UUID.randomUUID(),
-            false,
             service.getId(),
             person.getId(),
             startDate,

@@ -35,6 +35,7 @@ public class MembershipBrowserPanel extends Panel {
     private final MtListView<Membership> memberships;
     private final IModel<MembershipBrowser<DSLContext>> model;
 
+    @SuppressWarnings("initialization")
     public MembershipBrowserPanel(
         String id,
         IModel<MembershipBrowser<DSLContext>> model

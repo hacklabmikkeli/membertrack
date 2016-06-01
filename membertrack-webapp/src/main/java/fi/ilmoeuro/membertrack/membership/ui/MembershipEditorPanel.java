@@ -122,7 +122,7 @@ public class MembershipEditorPanel extends Panel {
                 numberField.setRequired(true);
                 MtButton deleteNumber = new MtButton("deleteNumber",
                     () -> deletePhoneNumber(item));
-                if (item.getModelObject().getDeleted()) {
+                if (item.getModelObject().isDeleted()) {
                     item.setVisible(false);
                 }
                 item.add(numberField);
@@ -139,7 +139,7 @@ public class MembershipEditorPanel extends Panel {
                     "periods",
                     subItem,
                     (ListItem<SubscriptionPeriod> prdItem) -> {
-                        if (prdItem.getModelObject().getDeleted()) {
+                        if (prdItem.getModelObject().isDeleted()) {
                             prdItem.setVisible(false);
                         }
                         MtTextField<LocalDate> startDateField =

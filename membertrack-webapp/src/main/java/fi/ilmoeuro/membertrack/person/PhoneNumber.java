@@ -29,11 +29,10 @@ public final class PhoneNumber extends PhoneNumberBase implements Persistable {
     public PhoneNumber(
         @Nullable Integer pk,
         UUID id,
-        boolean deleted,
         UUID personId,
         String phoneNumber
     ) {
-        super(pk, id, deleted, personId, phoneNumber);
+        super(pk, id, personId, phoneNumber);
     }
 
     @SuppressWarnings("deprecation")
@@ -41,7 +40,7 @@ public final class PhoneNumber extends PhoneNumberBase implements Persistable {
         Person person,
         String phoneNumber
     ) {
-        this(null, UUID.randomUUID(), false, person.getId(), phoneNumber);
+        this(null, UUID.randomUUID(), person.getId(), phoneNumber);
     }
 
     public void delete() {

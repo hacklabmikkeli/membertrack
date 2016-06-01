@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
+import fi.ilmoeuro.membertrack.util.SerializableAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.markup.html.form.Button;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.util;
 
-import fi.ilmoeuro.membertrack.util.SerializableAction;
 import java.io.Serializable;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.Model;
 
-public class MtLink extends Link<Serializable> {
-    private static final long serialVersionUID = 0l;
-    private final SerializableAction action;
-
-    public MtLink(String id, SerializableAction action) {
-        super(id, Model.of());
-        this.action = action;
-    }
-
-    @Override
-    public void onClick() {
-        action.execute();
-        addStateChange();
-    }
+@FunctionalInterface
+public interface SerializableAction extends Serializable {
+    void execute();
 }

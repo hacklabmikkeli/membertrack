@@ -48,8 +48,7 @@ public final class DbAuthenticator implements Authenticator {
                 .innerJoin(ACCOUNT)
                     .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
                 .where(
-                    PERSON.EMAIL.eq(email.trim().toLowerCase(Locale.ROOT))
-                        .and(PERSON.DELETED.eq(false)))
+                    PERSON.EMAIL.eq(email.trim().toLowerCase(Locale.ROOT)))
                 .fetchAny(ACCOUNT.SALT);
             if (salt != null) {
                 String hashed = Account.hash(password, salt);

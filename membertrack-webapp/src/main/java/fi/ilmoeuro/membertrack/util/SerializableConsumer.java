@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.ui;
+package fi.ilmoeuro.membertrack.util;
 
 import java.io.Serializable;
 
 @FunctionalInterface
-public interface SerializableAction extends Serializable {
-    void execute();
+public interface SerializableConsumer<T> extends Serializable {
+    void consume(T object);
 }

@@ -34,9 +34,11 @@ import org.apache.wicket.Component;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 1l;
+    private final IModel<MembershipsPageModel<?>> model;
     private final Component newMembershipButton;
     private final Component membershipEditor;
     private final Component membershipBrowser;
@@ -45,9 +47,9 @@ public final class MembershipsPage extends MtPage {
     // OK to register callbacks on methods, they're not called right away
     @SuppressWarnings("initialization")
     public MembershipsPage(
-        int pageNumber,
-        PageParameters params
     ) {
+        super();
+
         final MembershipRepositoryFactory<DSLContext> mrf
             = new DbMembershipRepositoryFactory();
         final ServiceRepositoryFactory<DSLContext> srf
@@ -56,15 +58,10 @@ public final class MembershipsPage extends MtPage {
             = new DbUnitOfWorkFactory();
         final SessionRunner<DSLContext> sr
             = MtApplication.get().getSessionRunner();
-        final IModel<MembershipsPageModel<?>> model
-            = new MtModel<>(new MembershipsPageModel<>(mrf, srf, uof, sr));
+        model = new MtModel<>(
+            new MembershipsPageModel<DSLContext>(mrf, srf, uof, sr));
 
-        pager = new Pager(
-            "pager",
-            model,
-            MembershipsPage.class,
-            params,
-            "page");
+        pager = new Pager<>("pager", model);
         newMembershipButton = new MtActionButton(
             "newMembershipButton",
             () -> model.getObject().createNewMembership());
@@ -74,16 +71,16 @@ public final class MembershipsPage extends MtPage {
         membershipEditor = new MembershipEditorPanel(
             "membershipEditor",
             new PropertyModel<>(model, "membershipEditor"));
-
-        model.getObject().setCurrentPage(pageNumber);
     }
 
-    public MembershipsPage() {
-        this(1, new PageParameters());
-    }
-
-    public MembershipsPage(PageParameters params) {
-        this(params.get("page").toInt(1), params);
+    @Override
+    public PageParameters getPageParameters() {
+        final PageParameters params = super.getPageParameters();
+        if (params != null) {
+            model.getObject().saveState(
+                (String k, String v) -> params.set(k, v));
+        }
+        return params;
     }
 
     @Override

@@ -18,12 +18,16 @@ package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.paging.Pageable;
 import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
-import fi.ilmoeuro.membertrack.session.Refreshable;
+import fi.ilmoeuro.membertrack.util.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
+import fi.ilmoeuro.membertrack.util.StateExternalizable;
 import java.io.Serializable;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.math.NumberUtils;
 
 @Slf4j
 public class
@@ -31,8 +35,11 @@ public class
 implements
     Refreshable,
     Pageable,
-    Serializable
+    Serializable,
+    StateExternalizable
 {
+    private static final long serialVersionUID = 0l;
+
     @Getter
     private final MembershipBrowser<SessionTokenType> membershipBrowser;
 
@@ -47,31 +54,17 @@ implements
         UnitOfWorkFactory<SessionTokenType> uowFactory,
         SessionRunner<SessionTokenType> sessionRunner
     ) {
-        membershipEditor = new MembershipEditor<SessionTokenType>(
+        membershipEditor = new MembershipEditor<>(
             srf,
             uowFactory,
-            sessionRunner
-        ) {
-            @Override
-            protected void refreshOthers() {
-                MembershipsPageModel.this.refresh();
-            }
-        };
+            sessionRunner,
+            () -> this.refresh());
 
-        membershipBrowser = new MembershipBrowser<SessionTokenType>(
+        membershipBrowser = new MembershipBrowser<>(
             mrf,
-            sessionRunner
-        ) {
-            @Override
-            public Membership getSelectedMembership() {
-                return membershipEditor.getMembership();
-            }
-
-            @Override
-            public void setSelectedMembership(Membership membership) {
-                membershipEditor.setMembership(membership);
-            }
-        };
+            sessionRunner,
+            (Membership x) -> membershipEditor.setMembership(x),
+            () -> membershipEditor.getMembership());
     }
 
     @Override
@@ -96,5 +89,15 @@ implements
 
     public void createNewMembership() {
         membershipEditor.initNew();
+    }
+
+    @Override
+    public void saveState(BiConsumer<String, String> pairConsumer) {
+        pairConsumer.accept("page", String.valueOf(getCurrentPage()));
+    }
+
+    @Override
+    public void loadState(Function<String, String> getValue) {
+        setCurrentPage(NumberUtils.toInt(getValue.apply("page"), 1));
     }
 }

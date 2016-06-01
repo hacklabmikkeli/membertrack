@@ -31,11 +31,10 @@ public final class Person extends PersonBase implements Persistable {
     public Person(
         @Nullable Integer pk,
         UUID id,
-        boolean deleted,
         String fullName,
         String email
     ) {
-        super(pk, id, deleted, fullName, email);
+        super(pk, id, fullName, email);
     }
 
     @SuppressWarnings("deprecation")
@@ -43,7 +42,7 @@ public final class Person extends PersonBase implements Persistable {
         String fullName,
         String email
     ) {
-        this(null, UUID.randomUUID(), false, fullName, email);
+        this(null, UUID.randomUUID(), fullName, email);
     }
 
     public String getGravatarUrl() {

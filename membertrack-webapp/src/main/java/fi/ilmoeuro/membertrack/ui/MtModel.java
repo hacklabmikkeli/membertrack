@@ -16,7 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
-import fi.ilmoeuro.membertrack.session.Refreshable;
+import fi.ilmoeuro.membertrack.util.Refreshable;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

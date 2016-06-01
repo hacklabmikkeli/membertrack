@@ -36,13 +36,8 @@ fieldset {
         width: @sidebar-width;
         color: @sidebar-fg;
         background-color: @sidebar-bg;
-        .background-image(
-            repeating-linear-gradient(
-                45deg,
-                rgba(0,0,0,0),
-                rgba(0,0,0,0) 10px,
-                rgba(0,0,0,0.3) 10px,
-                rgba(0,0,0,0.3) 20px));
+        .accent-bg();
+
         
         @media screen and (min-width: @full-width) {
             min-height: 100vh;

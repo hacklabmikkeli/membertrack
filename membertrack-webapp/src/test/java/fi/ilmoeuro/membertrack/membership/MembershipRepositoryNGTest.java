@@ -73,7 +73,7 @@ public class MembershipRepositoryNGTest extends TestBase {
         uw.execute();
 
         MembershipRepository repo = new DbMembershipRepository(jooq());
-        List<Membership> memberships = repo.listMembershipsPage(0);
+        List<Membership> memberships = repo.listMembershipsPage(1);
 
         assertThat(memberships, hasSize(1));
         Membership membership = memberships.get(0);
