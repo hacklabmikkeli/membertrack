@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.session.db;
 
 import fi.ilmoeuro.membertrack.config.ConfigProvider;
+import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.Serializable;
@@ -32,6 +33,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
 public final class DbSessionRunner implements SessionRunner<DSLContext> {
@@ -70,6 +72,13 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
                 return result;
             } else {
                 throw new RuntimeException("Atomic reference not set");
+            }
+        } catch (DataAccessException ex) {
+            DataIntegrityException err = DataIntegrityException.fromThrowable(ex);
+            if (err != null) {
+                throw err;
+            } else {
+                throw ex;
             }
         } catch (NamingException ex) {
             throw new RuntimeException(ex);

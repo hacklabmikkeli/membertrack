@@ -16,7 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
-import fi.ilmoeuro.membertrack.db.ErrorCode;
+import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.membership.MembershipBrowser.NonUniqueEmailException;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
@@ -88,10 +88,9 @@ implements
                 }
             });
             refreshOthers();
-        } catch (DataAccessException ex) {
-            @Nullable ErrorCode ec = ErrorCode.fromThrowable(ex);
-
-            if (ec == ErrorCode.DUPLICATE_KEY) {
+        } catch (DataIntegrityException ex) {
+            if (   ex.getIntegrityViolation() == DataIntegrityException.IntegrityViolation.DUPLICATE_KEY
+                && "person_u_email".equals(ex.getIntegrityConstraint())) {
                 throw new NonUniqueEmailException();
             }
         }

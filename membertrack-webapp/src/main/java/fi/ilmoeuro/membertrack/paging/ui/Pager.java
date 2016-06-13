@@ -43,7 +43,7 @@ public class Pager<T extends WebPage> extends Panel {
         int pageNum;
 
         public int getUiPageNum() {
-            return this.pageNum + 1;
+            return this.pageNum;
         }
     }
 
@@ -140,7 +140,7 @@ public class Pager<T extends WebPage> extends Panel {
 
     private Iterator<IModel<Page>> pageStream() {
         return IntStream
-            .range(0, model.getObject().getNumPages())
+            .range(1, model.getObject().getNumPages() + 1)
             .mapToObj(this::buildPageModel)
             .iterator();
     }

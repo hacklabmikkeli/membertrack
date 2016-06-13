@@ -51,7 +51,7 @@ implements
     MembershipRepository
 {
     private final DSLContext jooq;
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 5;
 
     @Override
     public int numMembershipsPages() {
