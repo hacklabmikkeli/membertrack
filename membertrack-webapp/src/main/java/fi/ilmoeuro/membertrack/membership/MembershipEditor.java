@@ -20,6 +20,7 @@ import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.membership.MembershipBrowser.NonUniqueEmailException;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
@@ -38,7 +39,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jooq.exception.DataAccessException;
 import fi.ilmoeuro.membertrack.service.Services;
 
 @Slf4j
@@ -74,6 +74,9 @@ implements
                     for (PhoneNumber pn : ms.getPhoneNumbers()) {
                         uow.addEntity(pn);
                     }
+                    for (SecondaryEmail se : ms.getSecondaryEmails()) {
+                        uow.addEntity(se);
+                    }
                     for (Subscription sub : ms.getSubscriptions()) {
                         for (SubscriptionPeriod period : sub.getPeriods()) {
                             uow.addEntity(period);
@@ -88,8 +91,7 @@ implements
             });
             refreshOthers();
         } catch (DataIntegrityException ex) {
-            if (   ex.getIntegrityViolation() == DataIntegrityException.IntegrityViolation.DUPLICATE_KEY
-                && "person_u_email".equals(ex.getIntegrityConstraint())) {
+            if ("person_u_email".equals(ex.getIntegrityConstraint())) {
                 throw new NonUniqueEmailException();
             }
         }
@@ -116,6 +118,13 @@ implements
         }
     }
 
+    public void addSecondaryEmail() {
+        Membership m = membership;
+        if (m != null) {
+            m.addSecondaryEmail();
+        }
+    }
+
     public boolean isCurrentDeleted() {
         Membership m = membership;
         if (m != null) {
@@ -135,7 +144,12 @@ implements
                 .map(serv -> new Subscription(person, serv, new ArrayList<>()))
                 .collect(Collectors.<@NonNull Subscription>toList());
 
-            membership = new Membership(person, new ArrayList<>(), subs);
+            membership =
+                new Membership(
+                    person,
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    subs);
         });
     }
 

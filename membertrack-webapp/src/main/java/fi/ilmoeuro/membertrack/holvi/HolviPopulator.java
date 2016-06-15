@@ -16,7 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.holvi;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.Persons;
@@ -37,7 +39,6 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.fluent.Request;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -61,7 +62,7 @@ implements
         }
     }
     
-    public static final @Value class ProductMapping {
+    public static final @Data class ProductMapping {
         String productCode;
         UUID serviceUUID;
         int length;
@@ -69,7 +70,7 @@ implements
         int payment;
     }
     
-    public static final @Value class Config {
+    public static final @Data class Config {
         boolean enabled;
         String authToken;
         String poolHandle;
@@ -77,6 +78,7 @@ implements
         List<ProductMapping> productMappings;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final @Data class Order {
         String email;
         String firstname;
@@ -86,13 +88,15 @@ implements
         List<Purchase> purchases;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final @Data class Purchase {
         String product;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static final @Data class OrdersResult {
         String next;
-        List<Order> orders;
+        List<Order> results;
     }
     
     private final Config config;
@@ -114,7 +118,7 @@ implements
             InputStream data = Request.Get(url)
                 .setHeader(
                     "Authorization",
-                        String.format("Token: %s", config.getAuthToken()))
+                        String.format("Token %s", config.getAuthToken()))
                 .execute()
                 .returnContent()
                 .asStream();
@@ -125,7 +129,7 @@ implements
     }
 
     private void handleOrders(OrdersResult orders) {
-        for (Order order : orders.getOrders()) {
+        for (Order order : orders.getResults()) {
             try {
                 createPerson(order);
             } catch (DataIntegrityException ex) {

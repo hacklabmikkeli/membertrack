@@ -31,11 +31,14 @@
         <slf4j.version>1.7.12</slf4j.version>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <jasypt.version>1.9.2</jasypt.version>
-        <jackson.version>2.3.2</jackson.version>
+        <jackson.version>2.7-1</jackson.version>
         <dagger.version>2.0</dagger.version>
         <wicket.version>7.1.0</wicket.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <javafaker.version>0.7</javafaker.version>
+        <jackson.version>2.6.3</jackson.version>
+        <httpcomponents.version>4.5.1</httpcomponents.version>
+        <jodah.failsafe.version>0.8.0</jodah.failsafe.version>
     </properties>
 
     <modules>

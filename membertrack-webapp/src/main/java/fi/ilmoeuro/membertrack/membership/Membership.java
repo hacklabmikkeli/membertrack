@@ -19,6 +19,7 @@ package fi.ilmoeuro.membertrack.membership;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,13 @@ implements
 
     Person person;
     List<PhoneNumber> phoneNumbers;
+    List<SecondaryEmail> secondaryEmails;
     List<Subscription> subscriptions;
 
     public static Membership empty() {
         return new Membership(
             new Person("", ""),
+            new ArrayList<>(),
             new ArrayList<>(),
             new ArrayList<>());
     }
@@ -45,6 +48,12 @@ implements
     public void addPhoneNumber() {
         phoneNumbers.add(
             new PhoneNumber(person, "")
+        );
+    }
+
+    public void addSecondaryEmail() {
+        secondaryEmails.add(
+            new SecondaryEmail(person, "")
         );
     }
 

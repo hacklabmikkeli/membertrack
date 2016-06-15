@@ -20,6 +20,7 @@ import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipEditor;
 import fi.ilmoeuro.membertrack.membership.MembershipBrowser;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
@@ -66,6 +67,9 @@ public class MembershipEditorPanel extends Panel {
 
     private final MtListView<PhoneNumber> numbersSection;
     private final MtButton addNumber;
+
+    private final MtListView<SecondaryEmail> secondaryEmailsSection;
+    private final MtButton addSecondaryEmail;
 
     private final MtListView<Subscription> subscriptionsSection;
 
@@ -129,6 +133,23 @@ public class MembershipEditorPanel extends Panel {
                 item.add(deleteNumber);
             });
         addNumber = new MtButton("addNumber", this::newPhoneNumber);
+
+        secondaryEmailsSection = new MtListView<>(
+            "secondaryEmails",
+            membershipModel,
+            (ListItem<SecondaryEmail> item) -> {
+                MtTextField<String> emailField
+                    = new MtTextField<>("email", item);
+                emailField.setRequired(true);
+                MtButton deleteSecondaryEmail = new MtButton("deleteSecondaryEmail",
+                    () -> deleteSecondaryEmail(item));
+                if (item.getModelObject().isDeleted()) {
+                    item.setVisible(false);
+                }
+                item.add(emailField);
+                item.add(deleteSecondaryEmail);
+            });
+        addSecondaryEmail = new MtButton("addSecondaryEmail", this::newSecondaryEmail);
 
         subscriptionsSection = new MtListView<>(
             "subscriptions",
@@ -203,9 +224,11 @@ public class MembershipEditorPanel extends Panel {
         editorForm.add(personFullNameField);
         editorForm.add(personFullNameLabel);
         editorForm.add(personEmailField);
-        editorForm.add(personEmailLabel)
-;        editorForm.add(numbersSection);
+        editorForm.add(personEmailLabel);
+        editorForm.add(numbersSection);
         editorForm.add(addNumber);
+        editorForm.add(secondaryEmailsSection);
+        editorForm.add(addSecondaryEmail);
         editorForm.add(subscriptionsSection);
         editorForm.add(saveButton);
         editorForm.setDefaultButton(saveButton);
@@ -268,6 +291,10 @@ public class MembershipEditorPanel extends Panel {
         model.getObject().addPhoneNumber();
     }
 
+    private void newSecondaryEmail() {
+        model.getObject().addSecondaryEmail();
+    }
+
     private void newSubscriptionPeriod(ListItem<Subscription> li) {
         li.getModelObject().addPeriod();
     }
@@ -277,6 +304,10 @@ public class MembershipEditorPanel extends Panel {
     }
 
     private void deletePhoneNumber(ListItem<PhoneNumber> li) {
+        li.getModelObject().delete();
+    }
+
+    private void deleteSecondaryEmail(ListItem<SecondaryEmail> li) {
         li.getModelObject().delete();
     }
 }

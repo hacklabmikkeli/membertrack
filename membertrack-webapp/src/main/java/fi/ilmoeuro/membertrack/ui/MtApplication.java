@@ -16,6 +16,8 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
 import fi.ilmoeuro.membertrack.config.Config;
@@ -23,14 +25,18 @@ import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
 import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
+import fi.ilmoeuro.membertrack.holvi.HolviPopulator;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
+import fi.ilmoeuro.membertrack.person.db.DbPersons;
 import fi.ilmoeuro.membertrack.plumbing.WicketDateConverter;
+import fi.ilmoeuro.membertrack.service.db.DbServices;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -55,13 +61,21 @@ public final class MtApplication extends AuthenticatedWebApplication {
     private final DataSourceInitializer dsInitializer;
     private final DatabaseInitializer<DSLContext> dbInitializer;
     private final DebugServer debugServer;
+    private final HolviPopulator holviPopulator;
+    private final ObjectMapper objectMapper;
 
     public MtApplication() throws FileNotFoundException {
         config = Config.load();
+
+        objectMapper
+            = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
         sessionRunner
             = new DbSessionRunner(config.getSessionRunner());
         uowFactory
             = new DbUnitOfWorkFactory();
+
         dsInitializer
             = new DataSourceInitializer(config.getDataSourceInitializer());
         dbInitializer
@@ -72,22 +86,34 @@ public final class MtApplication extends AuthenticatedWebApplication {
                     uowFactory));
         debugServer
             = new DebugServer(config.getDebugServer());
+        holviPopulator
+            = new HolviPopulator(
+                config.getHolviPopulator(),
+                sessionRunner,
+                uowFactory,
+                new DbPersons.Factory(),
+                new DbServices.Factory(),
+                objectMapper);
     }
 
     public MtApplication(
         Config config,
+        ObjectMapper objectMapper,
         SessionRunner<DSLContext> sessionRunner,
         UnitOfWorkFactory<DSLContext> uowFactory,
         DataSourceInitializer dsInitializer,
         DatabaseInitializer<DSLContext> dbInitializer,
-        DebugServer debugServer
+        DebugServer debugServer,
+        HolviPopulator holviPopulator
     ) {
         this.config = config;
+        this.objectMapper = objectMapper;
         this.sessionRunner = sessionRunner;
         this.uowFactory = uowFactory;
         this.dsInitializer = dsInitializer;
         this.dbInitializer = dbInitializer;
         this.debugServer = debugServer;
+        this.holviPopulator = holviPopulator;
     }
 
     @Override
@@ -98,6 +124,11 @@ public final class MtApplication extends AuthenticatedWebApplication {
             dbInitializer.init(token);
         });
         debugServer.start();
+        try {
+            holviPopulator.runPopulator();
+        } catch (IOException ex) {
+            log.error("Couldn't run Holvi populator", ex);
+        }
 
         WebjarsSettings webjarsSettings = new WebjarsSettings();
         WicketWebjars.install(this, webjarsSettings);

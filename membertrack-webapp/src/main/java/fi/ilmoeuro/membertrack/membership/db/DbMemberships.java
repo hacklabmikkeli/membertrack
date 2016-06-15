@@ -16,7 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.membership.db;
 
-import com.relatejava.relate.RelationMapper_2__1;
+import com.relatejava.relate.RelationMapper_3__1;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import org.jooq.DSLContext;
@@ -43,6 +43,8 @@ import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import lombok.RequiredArgsConstructor;
 import fi.ilmoeuro.membertrack.membership.Memberships;
+import fi.ilmoeuro.membertrack.person.SecondaryEmail;
+import fi.ilmoeuro.membertrack.schema.tables.records.SecondaryEmailRecord;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 
 @RequiredArgsConstructor
@@ -107,15 +109,23 @@ implements
         List<SelectField<?>> fields = new ArrayList<>();
         fields.addAll(Arrays.asList(PERSON.fields()));
         fields.addAll(Arrays.asList(PHONE_NUMBER.fields()));
+        fields.addAll(Arrays.asList(SECONDARY_EMAIL.fields()));
         fields.addAll(Arrays.asList(SERVICE.fields()));
         fields.addAll(Arrays.asList(SUBSCRIPTION_PERIOD.fields()));
-        RelationMapper_2__1<Person, Service, PhoneNumber, SubscriptionPeriod>
-            mapper = new RelationMapper_2__1<>();
+        RelationMapper_3__1<
+            Person,
+            Service,
+            PhoneNumber,
+            SecondaryEmail,
+            SubscriptionPeriod>
+            mapper = new RelationMapper_3__1<>();
         try (Cursor<? extends Record> records = jooq
             .selectDistinct(fields)
             .from(PERSON)
             .leftOuterJoin(PHONE_NUMBER)
-            .onKey()
+            .on(PHONE_NUMBER.PERSON_ID.eq(PERSON.ID))
+            .leftOuterJoin(SECONDARY_EMAIL)
+            .on(SECONDARY_EMAIL.PERSON_ID.eq(PERSON.ID))
             .crossJoin(SERVICE)
             .leftOuterJoin(SUBSCRIPTION_PERIOD)
             .on(SUBSCRIPTION_PERIOD.PERSON_ID.eq(PERSON.ID),
@@ -123,13 +133,16 @@ implements
             .where(conditions)
             .orderBy(
                 PERSON.FULL_NAME.asc(), 
+                PERSON.EMAIL.asc(), 
                 PHONE_NUMBER.PHONE_NUMBER_.asc(),
+                SECONDARY_EMAIL.EMAIL.asc(),
                 SERVICE.TITLE.asc(), 
                 SUBSCRIPTION_PERIOD.START_DATE.desc())
             .fetchLazy()) {
             for (Record r : records) {
                 PersonRecord pr = r.into(PERSON);
                 PhoneNumberRecord pnr = r.into(PHONE_NUMBER);
+                SecondaryEmailRecord ser = r.into(SECONDARY_EMAIL);
                 ServiceRecord sr = r.into(SERVICE);
                 SubscriptionPeriodRecord spr = r.into(SUBSCRIPTION_PERIOD);
                 if (pr.getId() != null) {
@@ -147,6 +160,10 @@ implements
                         PhoneNumber pn = pnr.into(PhoneNumber.class);
                         mapper.relate_2(p, pn);
                     }
+                    if (ser.getId() != null) {
+                        SecondaryEmail se = ser.into(SecondaryEmail.class);
+                        mapper.relate_3(p, se);
+                    }
                 }
             }
         }
@@ -156,6 +173,7 @@ implements
     private Membership buildMembership(
         Person person,
         Set<PhoneNumber> phoneNumbers,
+        Set<SecondaryEmail> secondaryEmails,
         Map<Service, Set<SubscriptionPeriod>> periods
     ) {
         List<Subscription> subscriptions = new ArrayList<>();
@@ -172,6 +190,7 @@ implements
         return new Membership(
             person,
             new ArrayList<>(phoneNumbers),
+            new ArrayList<>(secondaryEmails),
             subscriptions);
     }
 

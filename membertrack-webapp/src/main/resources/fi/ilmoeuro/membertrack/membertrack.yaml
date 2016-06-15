@@ -24,13 +24,8 @@ sessionRunner:
     sqlDialect: H2
 holviPopulator:
     enabled: true
-    authToken:
-    poolHandle:
+    authToken: 
+    poolHandle: 
     interval: 30
-    productMappings:
-      - productCode:
-        serviceUUID: bee4ce2c-7200-4125-874f-2e6c5cca6343
-        length: 30
-        timeUnit: DAY
-        payment: 10
+    productMappings: []
          

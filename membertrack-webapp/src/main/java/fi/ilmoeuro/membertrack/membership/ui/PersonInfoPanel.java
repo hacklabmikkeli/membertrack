@@ -18,6 +18,7 @@ package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtListView;
@@ -60,6 +61,12 @@ public class PersonInfoPanel extends Panel {
             model,
             (ListItem<PhoneNumber> item) -> {
                 item.add(new MtLabel("phoneNumber", item));
+            }));
+        add(new MtListView<>(
+            "secondaryEmails",
+            model,
+            (ListItem<SecondaryEmail> item) -> {
+                item.add(new MtLabel("email", item));
             }));
         add(new MtLink("edit", this::selectForEditing));
     }

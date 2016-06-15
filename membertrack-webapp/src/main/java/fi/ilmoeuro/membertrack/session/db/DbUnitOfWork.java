@@ -21,6 +21,7 @@ import fi.ilmoeuro.membertrack.person.Account;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
+import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public final class DbUnitOfWork implements UnitOfWork {
     public void addEntity(Persistable o) {
         if (o instanceof Person) {
             addEntity(PERSON, o);
+        } else if (o instanceof SecondaryEmail) {
+            addEntity(SECONDARY_EMAIL, o);
         } else if (o instanceof PhoneNumber) {
             addEntity(PHONE_NUMBER, o);
         } else if (o instanceof Account) {

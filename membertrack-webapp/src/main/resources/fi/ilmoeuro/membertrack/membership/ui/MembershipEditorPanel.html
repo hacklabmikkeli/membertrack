@@ -72,6 +72,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </fieldset>
                 <fieldset>
+                    <legend>Secondary e-mails:</legend>
+                    <div class="pure-control-group" wicket:id="secondaryEmails">
+                        <input
+                            wicket:id="email"
+                            style="display: inline; width: 20em;"
+                            />
+                        <button
+                            wicket:id="deleteSecondaryEmail"
+                            class="pure-button"
+                            style="display: inline; margin: 2px 3px 4px 3px;"
+                            type="submit"
+                            >Remove</button>
+                    </div>
+                    <button
+                        wicket:id="addSecondaryEmail"
+                        style="margin-top: 0.5em"
+                        class="pure-button"
+                        type="submit"
+                        >Add secondary email</button>
+                </fieldset>
+                <fieldset>
                     <legend>Phone numbers</legend>
                     <div class="pure-control-group" wicket:id="phoneNumbers">
                         <input

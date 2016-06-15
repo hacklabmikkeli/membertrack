@@ -11,6 +11,22 @@ CREATE TABLE "PUBLIC"."PERSON" (
         UNIQUE ("email")
 );
 
+CREATE TABLE "PUBLIC"."SECONDARY_EMAIL" (
+    "pk"                INTEGER             IDENTITY(1,1),
+    "id"                UUID                NOT NULL,
+    "person_id"         UUID                NOT NULL,
+    "email"             VARCHAR(4096)       NOT NULL,
+    CONSTRAINT "$secondary_email_pk$"
+        PRIMARY KEY ("pk"),
+    CONSTRAINT "$secondary_email_u_id$"
+        UNIQUE ("id"),
+    CONSTRAINT "$secondary_email_fk_person_id$"
+        FOREIGN KEY ("person_id") REFERENCES "PERSON" ("id")
+        ON DELETE CASCADE,
+    CONSTRAINT "$secondary_email_u_email$"
+        UNIQUE ("email")
+);
+
 CREATE TABLE "PUBLIC"."ACCOUNT" (
     "pk"                INTEGER             IDENTITY(1,1),
     "id"                UUID                NOT NULL,

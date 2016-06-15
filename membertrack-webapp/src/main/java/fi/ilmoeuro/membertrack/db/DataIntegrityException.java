@@ -16,6 +16,9 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
@@ -25,7 +28,6 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.h2.jdbc.JdbcSQLException;
 
 @Slf4j
 @AllArgsConstructor
@@ -47,7 +49,11 @@ public final @Value class DataIntegrityException extends RuntimeException {
             String.valueOf(org.h2.api.ErrorCode.REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1)
         );
 
-        final String h2Code;
+        private IntegrityViolation(String... errorCodes) {
+            this.errorCodes = Arrays.asList(errorCodes);
+        }
+
+        final List<String> errorCodes;
     }
 
     IntegrityViolation integrityViolation;
@@ -62,9 +68,9 @@ public final @Value class DataIntegrityException extends RuntimeException {
     public static @Nullable DataIntegrityException fromThrowable(Throwable throwable) {
         Throwable rootCause = ExceptionUtils.getRootCause(throwable);
 
-        if (rootCause instanceof JdbcSQLException) {
-            JdbcSQLException jsqle = (JdbcSQLException) rootCause;
-            Matcher matcher = CONSTRAINT_REGEX.matcher(jsqle.getMessage());
+        if (rootCause instanceof SQLException) {
+            SQLException sqle = (SQLException) rootCause;
+            Matcher matcher = CONSTRAINT_REGEX.matcher(sqle.getMessage());
             String constraint = "";
 
             if (matcher.find()) {
@@ -75,7 +81,7 @@ public final @Value class DataIntegrityException extends RuntimeException {
             }
 
             for (IntegrityViolation errorType : IntegrityViolation.values()) {
-                if (errorType.h2Code.equals(jsqle.getSQLState())) {
+                if (errorType.errorCodes.contains(sqle.getSQLState())) {
                     return new DataIntegrityException(errorType, constraint, throwable);
                 }
             }
