@@ -16,11 +16,17 @@
  */
 package fi.ilmoeuro.membertrack.membership;
 
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import java.io.Serializable;
 import java.util.List;
 
 public interface
-    MembershipRepository
+    Memberships
 {
+    public static interface Factory<SessionTokenType> extends Serializable {
+        public Memberships create(SessionToken<SessionTokenType> token);
+    }
+
     List<Membership> listMembershipsPage(int pageNum);
     int numMembershipsPages();
 }

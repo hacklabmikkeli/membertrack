@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,21 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.service.db;
+package fi.ilmoeuro.membertrack.person;
 
-import fi.ilmoeuro.membertrack.service.ServiceRepository;
-import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
 import fi.ilmoeuro.membertrack.session.SessionToken;
-import org.jooq.DSLContext;
+import java.io.Serializable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class DbServiceRepositoryFactory
-implements
-    ServiceRepositoryFactory<DSLContext>
-{
-    private static final long serialVersionUID = 0l;
-
-    @Override
-    public ServiceRepository create(SessionToken<DSLContext> token) {
-        return new DbServiceRepository(token.getValue());
+public interface Persons {
+    public static interface Factory<SessionTokenType> extends Serializable {
+        public Persons create(SessionToken<SessionTokenType> token);
     }
+
+    @Nullable Person findByEmail(String email);
 }

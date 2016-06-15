@@ -21,8 +21,6 @@ import fi.ilmoeuro.membertrack.membership.MembershipBrowser.NonUniqueEmailExcept
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.Service;
-import fi.ilmoeuro.membertrack.service.ServiceRepository;
-import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
@@ -41,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.exception.DataAccessException;
+import fi.ilmoeuro.membertrack.service.Services;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,7 +50,7 @@ implements
 {
     private static final long serialVersionUID = 0l;
     
-    private final ServiceRepositoryFactory<SessionTokenType> srf;
+    private final Services.Factory<SessionTokenType> srf;
     private final UnitOfWorkFactory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
     private final SerializableAction refreshOthers;
@@ -128,7 +127,7 @@ implements
 
     public void initNew() {
         sessionRunner.exec(token -> {
-            final ServiceRepository sr = srf.create(token);
+            final Services sr = srf.create(token);
             final Person person = new Person("", "");
             final List<Service> services = sr.listServices();
             final List<Subscription> subs = services

@@ -16,30 +16,22 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
-import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import java.sql.SQLException;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.h2.tools.Server;
 
 @Slf4j
-public class DebugServer {
+@RequiredArgsConstructor
+public final class DebugServer {
     public static final @Data class Config {
         private boolean enabled = true;
     }
 
     private final Config config;
     private @Nullable Server server;
-
-    public DebugServer(
-        ConfigProvider configProvider
-    ) {
-        config = configProvider.getConfig(
-            "debugServer",
-            Config.class);
-        server = null;
-    }
 
     public void start() {
         if (config.isEnabled()) {

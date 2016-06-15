@@ -20,8 +20,10 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface SessionRunner<SessionTokenType> extends Serializable {
-    <R> R eval(Function<SessionToken<SessionTokenType>,@NonNull R> func);
+    <R> @NonNull R eval(Function<SessionToken<SessionTokenType>,@NonNull R> func);
+    <R> @Nullable R nullableEval(Function<SessionToken<SessionTokenType>,@Nullable R> func);
     void exec(Consumer<SessionToken<SessionTokenType>> func);
 }

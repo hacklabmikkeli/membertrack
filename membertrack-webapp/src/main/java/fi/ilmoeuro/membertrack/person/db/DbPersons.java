@@ -14,35 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.service.db;
+package fi.ilmoeuro.membertrack.person.db;
 
+import fi.ilmoeuro.membertrack.person.Person;
 import org.jooq.DSLContext;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
-import fi.ilmoeuro.membertrack.service.Service;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.jooq.SelectField;
-import fi.ilmoeuro.membertrack.service.ServiceRepository;
 import lombok.RequiredArgsConstructor;
+import fi.ilmoeuro.membertrack.person.Persons;
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @RequiredArgsConstructor
 public final class
-    DbServiceRepository
+    DbPersons
 implements
-    ServiceRepository
+    Persons
 {
+    public static final class Factory implements Persons.Factory<DSLContext> {
+        private static final long serialVersionUID = 0L;
+
+        @Override
+        public Persons create(SessionToken<DSLContext> token) {
+            return new DbPersons(token.getValue());
+        }
+    }
+
     private final DSLContext jooq;
 
     @Override
-    public List<Service> listServices() {
-        List<SelectField<?>> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(SERVICE.fields()));
+    public @Nullable Person findByEmail(String email) {
         return jooq
-            .select(fields)
-            .from(SERVICE)
-            .orderBy(
-                SERVICE.TITLE.asc())
-            .fetchInto(Service.class);
+            .select(PERSON.fields())
+            .from(PERSON)
+            .where(PERSON.EMAIL.eq(email))
+            .fetchAnyInto(Person.class);
     }
 }

@@ -30,7 +30,7 @@ import org.h2.jdbc.JdbcSQLException;
 @Slf4j
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public @Value class DataIntegrityException extends RuntimeException {
+public final @Value class DataIntegrityException extends RuntimeException {
 
     @AllArgsConstructor
     public static enum IntegrityViolation {

@@ -39,24 +39,33 @@ import org.jooq.Condition;
 import org.jooq.Cursor;
 import org.jooq.SelectField;
 import org.jooq.impl.DSL;
-import fi.ilmoeuro.membertrack.membership.MembershipRepository;
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import lombok.RequiredArgsConstructor;
+import fi.ilmoeuro.membertrack.membership.Memberships;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 
 @RequiredArgsConstructor
 public final class
-    DbMembershipRepository
+    DbMemberships
 implements
-    MembershipRepository
+    Memberships
 {
+    public static final class Factory implements Memberships.Factory<DSLContext> {
+        private static final long serialVersionUID = 0L;
+
+        @Override
+        public Memberships create(SessionToken<DSLContext> token) {
+            return new DbMemberships(token.getValue());
+        }
+    }
+
     private final DSLContext jooq;
     private static final int PAGE_SIZE = 5;
 
     @Override
     public int numMembershipsPages() {
-        return (int) Math.ceil(
-            jooq.select(DSL.count())
+        return (int) Math.ceil(jooq.select(DSL.count())
             .from(PERSON)
             .fetchAnyInto(Integer.class)
             / (double) PAGE_SIZE);

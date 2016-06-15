@@ -16,14 +16,15 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
-import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public final class DataSourceInitializer {
     public static final @Data class Config {
         private String connectionString = "jdbc:h2:mem:membertrack;CREATE=TRUE";
@@ -35,14 +36,6 @@ public final class DataSourceInitializer {
     }
 
     private final Config config;
-
-    public DataSourceInitializer(
-        ConfigProvider configProvider
-    ) {
-        config = configProvider.getConfig(
-            "dataSourceInitializer",
-            Config.class);
-    }
 
     public void init() {
         if (!config.isEnabled()) {

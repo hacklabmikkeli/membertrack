@@ -16,11 +16,11 @@
  */
 package fi.ilmoeuro.membertrack.session.db;
 
-import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,13 +29,16 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
+@RequiredArgsConstructor
 public final class DbSessionRunner implements SessionRunner<DSLContext> {
     private final static long serialVersionUID = 0l;
     
@@ -47,17 +50,9 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
 
     private final Config config;
 
-    public DbSessionRunner(
-        ConfigProvider configProvider
-    ) {
-        config = configProvider.getConfig(
-            "sessionRunner",
-            Config.class);
-    }
-
     @Override
     @SuppressWarnings("method.invocation.invalid")
-    public <R> R eval(Function<SessionToken<DSLContext>,@NonNull R> func) {
+    public <R> @NonNull R eval(Function<SessionToken<DSLContext>,@NonNull R> func) {
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup(config.getDataSourceJndiName());
@@ -83,6 +78,16 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
         } catch (NamingException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public <R> @Nullable R nullableEval(Function<SessionToken<DSLContext>, @Nullable R> func) {
+        Optional<R> optionalValue = this.<Optional<R>>eval(token -> {
+            @Nullable R value = func.apply(token);
+            return Optional.ofNullable(value);
+        });
+        return optionalValue.orElse(null);
     }
 
     @Override

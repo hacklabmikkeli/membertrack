@@ -17,12 +17,12 @@
 package fi.ilmoeuro.membertrack.db;
 
 import fi.ilmoeuro.membertrack.ResourceRoot;
-import fi.ilmoeuro.membertrack.config.ConfigProvider;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -30,6 +30,7 @@ import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 
 @Slf4j
+@RequiredArgsConstructor
 public final class DatabaseInitializer<SessionTokenType> {
 
     public static final @Data class Config {
@@ -41,16 +42,6 @@ public final class DatabaseInitializer<SessionTokenType> {
 
     private final Config config;
     private final ExampleData<DSLContext> exampleData;
-
-    public DatabaseInitializer(
-        ConfigProvider configProvider, 
-        ExampleData<DSLContext> exampleData
-    ) {
-        this.config = configProvider.getConfig(
-            "databaseInitializer",
-            Config.class);
-        this.exampleData = exampleData;
-    }
 
     private void runSqlFiles(DSLContext jooq, List<String> fileNames) {
         try {

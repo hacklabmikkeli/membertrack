@@ -18,7 +18,7 @@ package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.TestBase;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWork;
-import fi.ilmoeuro.membertrack.membership.db.DbMembershipRepository;
+import fi.ilmoeuro.membertrack.membership.db.DbMemberships;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
@@ -72,7 +72,7 @@ public class MembershipRepositoryNGTest extends TestBase {
         uw.addEntity(pr2);
         uw.execute();
 
-        MembershipRepository repo = new DbMembershipRepository(jooq());
+        Memberships repo = new DbMemberships(jooq());
         List<Membership> memberships = repo.listMembershipsPage(1);
 
         assertThat(memberships, hasSize(1));

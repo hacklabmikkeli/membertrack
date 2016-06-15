@@ -18,8 +18,7 @@ package fi.ilmoeuro.membertrack.ui;
 
 import de.agilecoders.wicket.webjars.WicketWebjars;
 import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
-import fi.ilmoeuro.membertrack.config.ConfigProvider;
-import fi.ilmoeuro.membertrack.config.TypesafeConfigProvider;
+import fi.ilmoeuro.membertrack.config.Config;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
@@ -31,6 +30,7 @@ import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,6 @@ import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
-import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
 import org.jooq.DSLContext;
 
@@ -48,7 +47,7 @@ import org.jooq.DSLContext;
 public final class MtApplication extends AuthenticatedWebApplication {
 
     @Getter
-    private final ConfigProvider configProvider;
+    private final Config config;
     @Getter
     private final SessionRunner<DSLContext> sessionRunner;
 
@@ -57,31 +56,33 @@ public final class MtApplication extends AuthenticatedWebApplication {
     private final DatabaseInitializer<DSLContext> dbInitializer;
     private final DebugServer debugServer;
 
-    public MtApplication() {
-        configProvider
-            = new TypesafeConfigProvider();
+    public MtApplication() throws FileNotFoundException {
+        config = Config.load();
         sessionRunner
-            = new DbSessionRunner(configProvider);
+            = new DbSessionRunner(config.getSessionRunner());
         uowFactory
             = new DbUnitOfWorkFactory();
         dsInitializer
-            = new DataSourceInitializer(configProvider);
+            = new DataSourceInitializer(config.getDataSourceInitializer());
         dbInitializer
-            = new DatabaseInitializer<>(configProvider,
-                new DefaultExampleData<>(uowFactory));
+            = new DatabaseInitializer<>(
+                config.getDatabaseInitializer(),
+                new DefaultExampleData<>(
+                    config.getDefaultExampleData(),
+                    uowFactory));
         debugServer
-            = new DebugServer(configProvider);
+            = new DebugServer(config.getDebugServer());
     }
 
     public MtApplication(
-        ConfigProvider configProvider,
+        Config config,
         SessionRunner<DSLContext> sessionRunner,
         UnitOfWorkFactory<DSLContext> uowFactory,
         DataSourceInitializer dsInitializer,
         DatabaseInitializer<DSLContext> dbInitializer,
         DebugServer debugServer
     ) {
-        this.configProvider = configProvider;
+        this.config = config;
         this.sessionRunner = sessionRunner;
         this.uowFactory = uowFactory;
         this.dsInitializer = dsInitializer;

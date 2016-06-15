@@ -16,10 +16,16 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
-public interface ServiceRepository {
+public interface Services {
+    public static interface Factory<SessionTokenType> extends Serializable {
+        public Services create(SessionToken<SessionTokenType> token);
+    }
 
     public List<Service> listServices();
-    
+    public Service findById(UUID serviceUUID);
 }

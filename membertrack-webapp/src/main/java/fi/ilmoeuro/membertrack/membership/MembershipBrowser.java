@@ -44,7 +44,7 @@ implements
 
     private static final long serialVersionUID = 1l;
         
-    private final MembershipRepositoryFactory<SessionTokenType> mrf;
+    private final Memberships.Factory<SessionTokenType> mrf;
     private final SessionRunner<SessionTokenType> sessionRunner;
     private final SerializableConsumer<@Nullable Membership>
         setSelectedMembership;
@@ -52,7 +52,7 @@ implements
         getSelectedMembership;
 
     public MembershipBrowser(
-        MembershipRepositoryFactory<SessionTokenType> mrf,
+        Memberships.Factory<SessionTokenType> mrf,
         SessionRunner<SessionTokenType> sessionRunner,
         SerializableConsumer<@Nullable Membership> setSelectedMembership,
         SerializableProducer<@Nullable Membership> getSelectedMembership
@@ -89,7 +89,7 @@ implements
     @Override
     public void refresh() {
         sessionRunner.exec(token -> {
-            MembershipRepository mr = mrf.create(token);
+            Memberships mr = mrf.create(token);
             memberships = mr.listMembershipsPage(getCurrentPage());
             numPages = mr.numMembershipsPages();
         });
@@ -109,6 +109,7 @@ implements
     public @Nullable Membership getSelectedMembership() {
         return getSelectedMembership.produce();
     }
+
     public void setSelectedMembership(@Nullable Membership membership) {
         setSelectedMembership.consume(membership);
     }

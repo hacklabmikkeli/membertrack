@@ -23,6 +23,9 @@ import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
+import java.util.List;
+import java.util.UUID;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -31,16 +34,34 @@ public final class
 implements
     ExampleData<SessionTokenType>
 {
+    public static final @Data class ServiceEntry {
+        String title;
+        String description;
+        UUID uuid;
+    }
+    
+    public static final @Data class Config {
+        List<ServiceEntry> services;
+    }
+    
+    private final Config config;
     private final UnitOfWorkFactory<SessionTokenType> uwf;
     
     @Override
     public void populate(SessionToken<SessionTokenType> session) {
         UnitOfWork uw = uwf.create(session);
 
-        Service s1 = new Service("Subscription (tilankäyttö)", "Subscription fees");
-        Service s2 = new Service("Membership (jäsenyys)", "Membership fees");
-        uw.addEntity(s1);
-        uw.addEntity(s2);
+        for (ServiceEntry se : config.getServices()) {
+            @SuppressWarnings("deprecation")
+            Service service = new Service(
+                null,
+                se.getUuid(),
+                se.getTitle(),
+                se.getDescription()
+            );
+
+            uw.addEntity(service);
+        }
 
         Person admin = new Person("Mr. Admin", "admin@example.com");
         Account adminAccount = Account.create(admin, "admin");

@@ -17,7 +17,7 @@
 package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.paging.Pageable;
-import fi.ilmoeuro.membertrack.service.ServiceRepositoryFactory;
+import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.util.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
@@ -49,8 +49,8 @@ implements
     // OK to register callbacks not called until later
     @SuppressWarnings("initialization")
     public MembershipsPageModel(
-        MembershipRepositoryFactory<SessionTokenType> mrf,
-        ServiceRepositoryFactory<SessionTokenType> srf,
+        fi.ilmoeuro.membertrack.membership.Memberships.Factory<SessionTokenType> mrf,
+        Services.Factory<SessionTokenType> srf,
         UnitOfWorkFactory<SessionTokenType> uowFactory,
         SessionRunner<SessionTokenType> sessionRunner
     ) {
