@@ -26,6 +26,7 @@ import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import jodd.bean.BeanCopy;
@@ -37,6 +38,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 @Slf4j
 public @Data class Config implements Serializable {
+    private static final long serialVersionUID = 0l;
     private static final String CONF_FILE = "membertrack.yaml";
     private static final String CONF_PROPERTY = "membertrack.config";
     
@@ -47,22 +49,25 @@ public @Data class Config implements Serializable {
     HolviPopulator.Config holviPopulator;
     DbSessionRunner.Config sessionRunner;
 
-    public static Config load() throws FileNotFoundException {
+    public static Config load() throws FileNotFoundException, IOException {
         Yaml yaml = new Yaml(new Constructor(Config.class));
 
-        @Nullable InputStream stream = ResourceRoot.class.getResourceAsStream(CONF_FILE);
-        if (stream == null) {
-            throw new FileNotFoundException(CONF_FILE + " not found");
-        }
-        Config result = yaml.loadAs(stream, Config.class);
+        try (InputStream stream = ResourceRoot.class.getResourceAsStream(CONF_FILE)) {
+            if (stream == null) {
+                throw new FileNotFoundException(CONF_FILE + " not found");
+            }
+            Config result = yaml.loadAs(stream, Config.class);
 
-        @Nullable String configFileLocation = System.getProperty(CONF_PROPERTY);
-        if (configFileLocation != null) {
-            File configFile = new File(configFileLocation);
-            Config userConfig = yaml.loadAs(new FileInputStream(configFile), Config.class);
-            BeanCopy.beans(userConfig, result).ignoreNulls(true).copy();
-        }
+            @Nullable String configFileLocation = System.getProperty(CONF_PROPERTY);
+            if (configFileLocation != null) {
+                File configFile = new File(configFileLocation);
+                try (FileInputStream fis = new FileInputStream(configFile)) {
+                    Config userConfig = yaml.loadAs(fis, Config.class);
+                    BeanCopy.beans(userConfig, result).ignoreNulls(true).copy();
+                }
+            }
 
-        return result;
+            return result;
+        }
     }
 }

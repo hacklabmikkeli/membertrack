@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ import org.h2.tools.Server;
 @Slf4j
 @RequiredArgsConstructor
 public final class DebugServer {
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
+        private static final long serialVersionUID = 0l;
         private boolean enabled = true;
     }
 

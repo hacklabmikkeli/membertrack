@@ -70,13 +70,16 @@ public final @Value class DataIntegrityException extends RuntimeException {
 
         if (rootCause instanceof SQLException) {
             SQLException sqle = (SQLException) rootCause;
-            Matcher matcher = CONSTRAINT_REGEX.matcher(sqle.getMessage());
             String constraint = "";
+            String message = sqle.getMessage();
+            if (message != null) {
+                Matcher matcher = CONSTRAINT_REGEX.matcher(message);
 
-            if (matcher.find()) {
-                String group = matcher.group(1);
-                if (group != null) {
-                    constraint = group;
+                if (matcher.find()) {
+                    String group = matcher.group(1);
+                    if (group != null) {
+                        constraint = group;
+                    }
                 }
             }
 

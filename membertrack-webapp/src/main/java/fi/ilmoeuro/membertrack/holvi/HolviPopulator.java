@@ -50,6 +50,8 @@ public final class
 implements
     Serializable
 {
+    private static final long serialVersionUID = 0l;
+
     public static final class ServiceNotFoundException extends RuntimeException {
         public ServiceNotFoundException(UUID serviceUUID) {
             super(String.format("Service %s not found", serviceUUID));
@@ -62,7 +64,8 @@ implements
         }
     }
     
-    public static final @Data class ProductMapping {
+    public static final @Data class ProductMapping implements Serializable {
+        private static final long serialVersionUID = 0l;
         String productCode;
         UUID serviceUUID;
         int length;
@@ -70,7 +73,8 @@ implements
         int payment;
     }
     
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
+        private static final long serialVersionUID = 0l;
         boolean enabled;
         String authToken;
         String poolHandle;

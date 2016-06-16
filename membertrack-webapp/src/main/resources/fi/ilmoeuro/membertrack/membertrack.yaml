@@ -12,10 +12,11 @@ defaultExampleData:
         title: Subscriptions / Tilankäyttömaksut
         description: Subscriptions / Tilankäyttömaksut
 dataSourceInitializer:
-    username:
-    password:
-    rdbms:
-    jndiName:
+    connectionString: jdbc:h2:mem:membertrack;CREATE=TRUE
+    username: sa
+    password: sa
+    rdbms: H2
+    jndiName: jdbc/membertrack
     enabled: false
 debugServer:
     enabled: true
@@ -23,7 +24,7 @@ sessionRunner:
     dataSourceJndiName: jdbc/membertrack
     sqlDialect: H2
 holviPopulator:
-    enabled: true
+    enabled: false
     authToken: 
     poolHandle: 
     interval: 30

@@ -32,6 +32,7 @@ extends
 implements
     Persistable
 {
+    private static final long serialVersionUID = 0l;
     
     @SuppressWarnings("nullness") // Interface with autogen code
     @Deprecated

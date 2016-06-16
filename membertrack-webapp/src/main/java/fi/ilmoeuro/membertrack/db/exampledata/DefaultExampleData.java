@@ -23,6 +23,7 @@ import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
@@ -34,13 +35,15 @@ public final class
 implements
     ExampleData<SessionTokenType>
 {
-    public static final @Data class ServiceEntry {
+    public static final @Data class ServiceEntry implements Serializable {
+        private static final long serialVersionUID = 0l;
         String title;
         String description;
         UUID uuid;
     }
     
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
+        private static final long serialVersionUID = 0l;
         List<ServiceEntry> services;
     }
     

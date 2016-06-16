@@ -20,6 +20,7 @@ import fi.ilmoeuro.membertrack.ResourceRoot;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,8 @@ import org.jooq.exception.DataAccessException;
 @RequiredArgsConstructor
 public final class DatabaseInitializer<SessionTokenType> {
 
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
+        private static final long serialVersionUID = 0l;
         private String setupList = "";
         private String clearList = "";
         private boolean enabled = false;

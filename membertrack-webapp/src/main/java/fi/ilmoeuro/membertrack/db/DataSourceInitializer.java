@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.db;
 
+import java.io.Serializable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -26,7 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public final class DataSourceInitializer {
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
+        private static final long serialVersionUID = 0l;
         private String connectionString = "jdbc:h2:mem:membertrack;CREATE=TRUE";
         private String username = "sa";
         private String password = "sa";

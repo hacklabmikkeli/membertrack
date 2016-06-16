@@ -64,7 +64,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
     private final HolviPopulator holviPopulator;
     private final ObjectMapper objectMapper;
 
-    public MtApplication() throws FileNotFoundException {
+    public MtApplication() throws FileNotFoundException, IOException {
         config = Config.load();
 
         objectMapper
@@ -87,7 +87,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
         debugServer
             = new DebugServer(config.getDebugServer());
         holviPopulator
-            = new HolviPopulator(
+            = new HolviPopulator<>(
                 config.getHolviPopulator(),
                 sessionRunner,
                 uowFactory,
