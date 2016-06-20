@@ -16,7 +16,17 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum PeriodTimeUnit {
-    DAY,
-    YEAR;
+    DAY("days"),
+    YEAR("years");
+
+    private final String prettyName;
+
+    @Override
+    public String toString() {
+        return prettyName;
+    }
 }

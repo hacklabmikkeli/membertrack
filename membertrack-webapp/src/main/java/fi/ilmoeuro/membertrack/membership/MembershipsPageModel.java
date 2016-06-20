@@ -20,7 +20,6 @@ import fi.ilmoeuro.membertrack.paging.Pageable;
 import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.util.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.util.StateExternalizable;
 import java.io.Serializable;
 import java.util.function.BiConsumer;
@@ -51,7 +50,7 @@ implements
     public MembershipsPageModel(
         fi.ilmoeuro.membertrack.membership.Memberships.Factory<SessionTokenType> mrf,
         Services.Factory<SessionTokenType> srf,
-        UnitOfWorkFactory<SessionTokenType> uowFactory,
+        fi.ilmoeuro.membertrack.session.UnitOfWork.Factory<SessionTokenType> uowFactory,
         SessionRunner<SessionTokenType> sessionRunner
     ) {
         membershipEditor = new MembershipEditor<>(

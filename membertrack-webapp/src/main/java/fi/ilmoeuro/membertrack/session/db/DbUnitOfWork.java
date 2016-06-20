@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.session.db;
 
 import fi.ilmoeuro.membertrack.db.Persistable;
+import fi.ilmoeuro.membertrack.holvi.SubscriptionPeriodHolviHandle;
 import fi.ilmoeuro.membertrack.person.Account;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import fi.ilmoeuro.membertrack.person.Person;
@@ -24,6 +25,7 @@ import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
+import fi.ilmoeuro.membertrack.session.SessionToken;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,15 @@ import lombok.Value;
 
 @RequiredArgsConstructor
 public final class DbUnitOfWork implements UnitOfWork {
+
+    public static class Factory implements UnitOfWork.Factory<DSLContext> {
+        private static final long serialVersionUID = 0L;
+
+        @Override
+        public UnitOfWork create(SessionToken<DSLContext> token) {
+            return new DbUnitOfWork(token.getValue());
+        }
+    }
 
     private static @Value class PersistableRecord {
         UpdatableRecord updatableRecord;
@@ -58,6 +69,8 @@ public final class DbUnitOfWork implements UnitOfWork {
             addEntity(SERVICE, o);
         } else if (o instanceof SubscriptionPeriod) {
             addEntity(SUBSCRIPTION_PERIOD, o);
+        } else if (o instanceof SubscriptionPeriodHolviHandle) {
+            addEntity(SUBSCRIPTION_PERIOD_HOLVI_HANDLE, o);
         } else {
             throw new IllegalArgumentException(
                 String.format(

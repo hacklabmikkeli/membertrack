@@ -52,6 +52,14 @@ public class MtPage extends WebPage {
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
 
+        ResourceReference pureRef
+            = new PackageResourceReference(MtPage.class, "pure.css");
+        response.render(CssHeaderItem.forReference(pureRef));
+
+        PackageResourceReference pureThemeRef = 
+            new PackageResourceReference(MtPage.class, "pure-theme.css");
+        response.render(CssHeaderItem.forReference(pureThemeRef));
+
         PackageResourceReference cssRef = 
             new PackageResourceReference(MtPage.class, "MtPage.css");
         response.render(CssHeaderItem.forReference(cssRef));

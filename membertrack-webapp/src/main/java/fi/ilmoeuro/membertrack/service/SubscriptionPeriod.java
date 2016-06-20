@@ -21,7 +21,6 @@ import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodBase;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -122,17 +121,23 @@ public final class SubscriptionPeriod
         }
     }
 
+    /**
+     * @param overlapGroup The periods which shouldn't overlap with this one.
+     * MUST BE sorted DESCENDING by start date.
+     */
+    public void unOverlap(
+        List<SubscriptionPeriod> overlapGroup
+    ) {
+        for (SubscriptionPeriod sp : overlapGroup) {
+            if (sp.getStartDate().isBefore(this.getStartDate()) &&
+                sp.getEndDate().isAfter(this.getStartDate())) {
+                setStartDate(sp.getEndDate().plusDays(1));
+            }
+        }
+    }
+
     public List<PeriodTimeUnit> getPossibleLengthUnits() {
         return Arrays.asList(PeriodTimeUnit.values());
-    }
-
-    public String getStartDateIso() {
-        return getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
-    }
-
-    public void setStartDateIso(String startDateIso) {
-        setStartDate(DateTimeFormatter.ISO_LOCAL_DATE.parse(startDateIso,
-                                                            LocalDate::from));
     }
 
     public void delete() {

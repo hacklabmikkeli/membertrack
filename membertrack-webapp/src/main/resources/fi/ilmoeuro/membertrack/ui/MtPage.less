@@ -1,5 +1,3 @@
-@import "pure.less";
-@import "pure-theme.less";
 @import "lesshat.less";
 @import "membertrack-config.less";
 
@@ -7,6 +5,7 @@ html {
     overflow-y: scroll;
     background-color: @main-bg;
     color: @main-fg;
+    font-size: 10pt;
 }
 
 * {
@@ -53,17 +52,29 @@ fieldset {
     
     @media screen and (max-width: @fat-width) {
         .l-main-area .l-content {
-            width: @full-width - @sidebar-width;
+            max-width: @full-width - @sidebar-width;
             
             & > :first-child:not(:only-child) {
                 display: none;
             }
             
             & > :last-child {
-                width: @full-width - @sidebar-width;
+                max-width: @full-width - @sidebar-width;
             }
         }
     }   
+}
+
+
+table.quiet {
+    td, th {
+        border: none;
+        padding: 2px;
+    }
+    th {
+        text-align: left;
+        font-weight: 500;
+    }
 }
 
 a.button {

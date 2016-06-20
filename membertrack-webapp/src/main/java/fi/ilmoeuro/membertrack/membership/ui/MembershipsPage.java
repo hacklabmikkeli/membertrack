@@ -22,8 +22,6 @@ import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
 import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
-import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.ui.MtActionButton;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtModel;
@@ -52,8 +50,8 @@ public final class MembershipsPage extends MtPage {
             = new fi.ilmoeuro.membertrack.membership.db.DbMemberships.Factory();
         final Services.Factory<DSLContext> srf
             = new fi.ilmoeuro.membertrack.service.db.DbServices.Factory();
-        final UnitOfWorkFactory<DSLContext> uof
-            = new DbUnitOfWorkFactory();
+        final fi.ilmoeuro.membertrack.session.UnitOfWork.Factory<DSLContext> uof
+            = new fi.ilmoeuro.membertrack.session.db.DbUnitOfWork.Factory();
         final SessionRunner<DSLContext> sr
             = MtApplication.get().getSessionRunner();
         model = new MtModel<>(

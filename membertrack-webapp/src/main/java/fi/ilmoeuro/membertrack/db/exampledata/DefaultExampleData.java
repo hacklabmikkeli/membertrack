@@ -22,7 +22,6 @@ import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +47,7 @@ implements
     }
     
     private final Config config;
-    private final UnitOfWorkFactory<SessionTokenType> uwf;
+    private final UnitOfWork.Factory<SessionTokenType> uwf;
     
     @Override
     public void populate(SessionToken<SessionTokenType> session) {

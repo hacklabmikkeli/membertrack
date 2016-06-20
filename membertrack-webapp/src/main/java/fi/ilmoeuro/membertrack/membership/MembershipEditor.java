@@ -26,7 +26,6 @@ import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import fi.ilmoeuro.membertrack.util.SerializableAction;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ implements
     private static final long serialVersionUID = 0l;
     
     private final Services.Factory<SessionTokenType> srf;
-    private final UnitOfWorkFactory<SessionTokenType> uowFactory;
+    private final fi.ilmoeuro.membertrack.session.UnitOfWork.Factory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
     private final SerializableAction refreshOthers;
 

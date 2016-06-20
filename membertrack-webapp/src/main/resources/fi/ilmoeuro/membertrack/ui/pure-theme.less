@@ -3,7 +3,7 @@
 .pure-theme-membertrack {
 
     .pure-button {
-        .border-radius(6px);
+        .border-radius(4px);
         
         .background-image(
             linear-gradient(
@@ -18,31 +18,64 @@
                     #fff 0%,
                     #eee 100%));
         }
+
+        &.pure-button-small {
+            font-size: 0.6rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
     }
     
-    select {
-        vertical-align: top;
-        height: 28px;
-    }
-    
-    input[type='checkbox'] {
-        vertical-align: middle;
-        height: 16px;
-    }
+    .pure-form {
 
-    fieldset + fieldset {
-        margin-top: 2em;
-    }
+        input {
+            height: 2.3em;
+            margin: 0;
+        }
+        
+        select {
+            vertical-align: top;
+            height: 2.3em;
+            margin: 0;
+        }
+            
+        input[type='checkbox'] + .fake-checkbox {
+            display: inline-block;
+            vertical-align: bottom;
+            cursor: pointer;
+            width: 2.3em;
+            height: 2.3em;
+            border: 1px solid #ccc;
+            .box-shadow(inset 0 1px 3px #ddd);
+            .border-radius(4px);
+        }
+        
+        
+        input[type='checkbox'] + .fake-checkbox::before {
+            content: "\00A0";
+            font-size: 1.5em;
+        }
+        
+        input[type='checkbox']:checked + .fake-checkbox::before {
+            content: "\2713";
+            padding-top: 4px;
+            padding-left: 6px;
+            font-size: 1.5em;
+        }
 
-    .pure-control-group.for-buttons {
-        .display(flex);
-        .justify-content(flex-end);
-        margin-top: 1.5em;
-        margin-right: 2.5em;
+        fieldset + fieldset {
+            margin-top: 2em;
+        }
 
-        button, .button {
-            margin-left: 1em;
-        } 
+        .pure-control-group.for-buttons {
+            .display(flex);
+            .justify-content(flex-end);
+            margin-top: 1.5em;
+            margin-right: 2.5em;
+
+            button, .button {
+                margin-left: 1em;
+            } 
+        }
     }
-    
 }

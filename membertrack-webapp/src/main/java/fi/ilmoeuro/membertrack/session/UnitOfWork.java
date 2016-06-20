@@ -17,8 +17,13 @@
 package fi.ilmoeuro.membertrack.session;
 
 import fi.ilmoeuro.membertrack.db.Persistable;
+import java.io.Serializable;
 
 public interface UnitOfWork {
+    public static interface Factory<SessionTokenType> extends Serializable {
+        UnitOfWork create(SessionToken<SessionTokenType> token);
+    }
+
     void addEntity(Persistable o);
     void execute();
 }

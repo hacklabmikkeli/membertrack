@@ -18,7 +18,6 @@ package fi.ilmoeuro.membertrack.holvi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.Persons;
@@ -28,7 +27,6 @@ import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -65,12 +63,13 @@ implements
     }
     
     public static final @Data class ProductMapping implements Serializable {
-        private static final long serialVersionUID = 0l;
+        private static final long serialVersionUID = 1l;
+
         String productCode;
         UUID serviceUUID;
         int length;
         PeriodTimeUnit timeUnit;
-        int payment;
+        double payment;
     }
     
     public static final @Data class Config implements Serializable {
@@ -105,7 +104,7 @@ implements
     
     private final Config config;
     private final SessionRunner<SessionTokenType> sessionRunner;
-    private final UnitOfWorkFactory<SessionTokenType> uowFactory;
+    private final UnitOfWork.Factory<SessionTokenType> uowFactory;
     private final Persons.Factory<SessionTokenType> personsFactory;
     private final Services.Factory<SessionTokenType> servicesFactory;
     private final ObjectMapper objectMapper;
@@ -119,16 +118,18 @@ implements
             "https://holvi.com/api/checkout/v2/pool/%s/order/",
             config.getPoolHandle());
         while (url != null) {
-            InputStream data = Request.Get(url)
+            try (InputStream data = Request.Get(url)
                 .setHeader(
                     "Authorization",
                         String.format("Token %s", config.getAuthToken()))
                 .execute()
                 .returnContent()
-                .asStream();
-            OrdersResult orders = objectMapper.readValue(data, OrdersResult.class);
-            handleOrders(orders);
-            url = orders.getNext();
+                .asStream())
+            {
+                OrdersResult orders = objectMapper.readValue(data, OrdersResult.class);
+                handleOrders(orders);
+                url = orders.getNext();
+            }
         }
     }
 
@@ -181,6 +182,9 @@ implements
                 throw new ServiceNotFoundException(mapping.getServiceUUID());
             }
             
+            double payment = mapping.getPayment();
+            int euros = (int)(Math.floor(payment));
+            int cents = (int)((payment - euros) * 100);
             SubscriptionPeriod sp = new SubscriptionPeriod(
                     service,
                     person,
@@ -190,7 +194,7 @@ implements
                             .toLocalDate(),
                     mapping.getTimeUnit(),
                     mapping.getLength(),
-                    mapping.getPayment(),
+                    euros * 100 + cents,
                     false);
             SubscriptionPeriodHolviHandle hh = new SubscriptionPeriodHolviHandle(
                     sp,

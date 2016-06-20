@@ -32,9 +32,9 @@ import fi.ilmoeuro.membertrack.plumbing.WicketDateConverter;
 import fi.ilmoeuro.membertrack.service.db.DbServices;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
-import fi.ilmoeuro.membertrack.session.UnitOfWorkFactory;
+import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
-import fi.ilmoeuro.membertrack.session.db.DbUnitOfWorkFactory;
+import fi.ilmoeuro.membertrack.session.db.DbUnitOfWork;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -57,7 +57,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
     @Getter
     private final SessionRunner<DSLContext> sessionRunner;
 
-    private final UnitOfWorkFactory<DSLContext> uowFactory;
+    private final UnitOfWork.Factory<DSLContext> uowFactory;
     private final DataSourceInitializer dsInitializer;
     private final DatabaseInitializer<DSLContext> dbInitializer;
     private final DebugServer debugServer;
@@ -74,7 +74,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
         sessionRunner
             = new DbSessionRunner(config.getSessionRunner());
         uowFactory
-            = new DbUnitOfWorkFactory();
+            = new DbUnitOfWork.Factory();
 
         dsInitializer
             = new DataSourceInitializer(config.getDataSourceInitializer());
@@ -100,7 +100,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
         Config config,
         ObjectMapper objectMapper,
         SessionRunner<DSLContext> sessionRunner,
-        UnitOfWorkFactory<DSLContext> uowFactory,
+        UnitOfWork.Factory<DSLContext> uowFactory,
         DataSourceInitializer dsInitializer,
         DatabaseInitializer<DSLContext> dbInitializer,
         DebugServer debugServer,

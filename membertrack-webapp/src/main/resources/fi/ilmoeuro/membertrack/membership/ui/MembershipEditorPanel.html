@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="../../ui/pure.css" />
         <link rel="stylesheet" href="../../ui/pure-theme.css" />
         <link rel="stylesheet" href="../../ui/membertrack.css" />
+        <link rel="stylesheet" href="../../ui/MtPage.css" type="text/css">
+
     </head>
     <body>
     <wicket:panel>
@@ -73,17 +75,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </fieldset>
                 <fieldset>
                     <legend>Secondary e-mails:</legend>
-                    <div class="pure-control-group" wicket:id="secondaryEmails">
-                        <input
-                            wicket:id="email"
-                            style="display: inline; width: 20em;"
-                            />
-                        <button
-                            wicket:id="deleteSecondaryEmail"
-                            class="pure-button"
-                            style="display: inline; margin: 2px 3px 4px 3px;"
-                            type="submit"
-                            >Remove</button>
+                    <div class="pure-control-group">
+                        <table class="quiet">
+                            <tr wicket:id="secondaryEmails">
+                                <td style="width: 100%">
+                                    <input
+                                        type="text"
+                                        wicket:id="email"
+                                        style="width: 100%"
+                                        />
+                                </td>
+                                <td>
+                                    <button
+                                        wicket:id="deleteSecondaryEmail"
+                                        class="pure-button"
+                                        type="submit"
+                                        >Remove</button>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <button
                         wicket:id="addSecondaryEmail"
@@ -94,17 +104,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </fieldset>
                 <fieldset>
                     <legend>Phone numbers</legend>
-                    <div class="pure-control-group" wicket:id="phoneNumbers">
-                        <input
-                            wicket:id="phoneNumber"
-                            style="display: inline; width: 20em;"
-                            />
-                        <button
-                            wicket:id="deleteNumber"
-                            class="pure-button"
-                            style="display: inline; margin: 2px 3px 4px 3px;"
-                            type="submit"
-                            >Remove</button>
+                    <div class="pure-control-group">
+                        <table class="quiet">
+                            <tr wicket:id="phoneNumbers">
+                                <td style="width: 100%">
+                                    <input
+                                        type="text"
+                                        wicket:id="phoneNumber"
+                                        style="width: 100%"
+                                        />
+                                </td>
+                                <td>
+                                    <button
+                                        wicket:id="deleteNumber"
+                                        class="pure-button"
+                                        type="submit"
+                                        >Remove</button>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <button
                         wicket:id="addNumber"
@@ -114,61 +132,75 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         >Add number</button>
                 </fieldset>
                 <wicket:container wicket:id="subscriptions">
-                    <fieldset>
+                    <fieldset class="service">
                         <legend wicket:id="service.title">Service</legend>
-                        <div
-                            style="margin-left: 0.25em;"
-                            class="pure-control-group">
-                            <span
-                                style="display: inline-block; width: 8em;"
-                                >Start date</span>
-                            <span
-                                style="display: inline-block; width: 9em;"
-                                >Length</span>
-                            <span
-                                style="display: inline-block; width: 5em;"
-                                >Payment</span>
-                            <span
-                                style="display: inline-block; width: 5em;"
-                                >Approved?</span>
-                        </div>
-                        <div class="pure-control-group" wicket:id="periods">
-                            <input
-                                wicket:id="startDate"
-                                class="use-datepicker"
-                                style="display: inline; width: 8em;"
-                                />
-                            <input
-                                wicket:id="length"
-                                style="display: inline; width: 3em;"
-                                />
-                            <select
-                                wicket:id="lengthUnit"
-                                style="display: inline; width: 6em;">
-                            </select>
-                            <input
-                                wicket:id="paymentFormatted"
-                                style="display: inline; width: 5em;"
-                                />
-                            <input
-                                wicket:id="approved"
-                                style="display: inline; width: 2.5em;"
-                                class="pure-checkbox"
-                                type="checkbox"
-                                />
+                        <wicket:enclosure child="periods">
+                            <div class="pure-control-group">
+                                <table class="quiet">
+                                    <thead>
+                                        <tr>
+                                            <th>Start date</th>
+                                            <th colspan="2">Length</th>
+                                            <th>Payment</th>
+                                            <th colspan="2">Approved?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr wicket:id="periods">
+                                            <td style="width: 33%">
+                                                <input
+                                                    wicket:id="startDate"
+                                                    style="width: 100%"
+                                                    class="use-datepicker"
+                                                    />
+                                            </td>
+                                            <td style="width: 33%">
+                                                <input
+                                                    wicket:id="length"
+                                                    style="width: 100%"
+                                                    />
+                                            </td>
+                                            <td>
+                                                <select
+                                                    wicket:id="lengthUnit">
+                                                </select>
+                                            </td>
+                                            <td style="width: 33%">
+                                                <input
+                                                    style="width: 100%"
+                                                    wicket:id="paymentFormatted"
+                                                    />
+                                            </td>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        hidden="hidden"
+                                                        wicket:id="approved"
+                                                        type="checkbox"
+                                                        />
+                                                    <span
+                                                        class="fake-checkbox"
+                                                        ></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    wicket:id="deletePeriod"
+                                                    class="pure-button"
+                                                    type="submit"
+                                                    >Remove</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <button
-                                wicket:id="deletePeriod"
+                                wicket:id="addPeriod"
+                                style="margin-top: 0.5em"
                                 class="pure-button"
-                                style="display: inline; margin: 2px 3px 4px 3px;"
                                 type="submit"
-                                >Remove</button>
-                        </div>
-                        <button
-                            wicket:id="addPeriod"
-                            style="margin-top: 0.5em"
-                            class="pure-button"
-                            type="submit"
-                            >Add period</button>
+                                >Add period</button>
+                        </wicket:enclosure>
                     </fieldset>
                 </wicket:container>
                 <fieldset>

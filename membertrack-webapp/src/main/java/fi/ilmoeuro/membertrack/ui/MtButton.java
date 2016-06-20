@@ -21,13 +21,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.markup.html.form.Button;
 
 @Slf4j
-public class MtButton extends Button {
+public final class MtButton extends Button {
     private static final long serialVersionUID = 0l;
     private final SerializableAction action;
+    private final boolean defaultFormProcessing;
 
-    public MtButton(String id, SerializableAction action) {
+    public MtButton(
+        String id,
+        SerializableAction action,
+        boolean defaultFormProcessing
+    ) {
         super(id);
         this.action = action;
+        this.defaultFormProcessing = defaultFormProcessing;
+    }
+
+    public MtButton(String id, SerializableAction action) {
+        this(id, action, true);
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        setDefaultFormProcessing(defaultFormProcessing);
     }
 
     @Override

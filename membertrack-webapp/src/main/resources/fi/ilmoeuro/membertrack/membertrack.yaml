@@ -1,8 +1,8 @@
 databaseInitializer:
-  setupList: schema_list.txt
-  clearList: clear_list.txt
-  useExampleData: true
-  enabled: true
+    setupList: schema_list.txt
+    clearList: clear_list.txt
+    useExampleData: true
+    enabled: true
 defaultExampleData:
     services:
       - uuid: bee4ce2c-7200-4125-874f-2e6c5cca6343

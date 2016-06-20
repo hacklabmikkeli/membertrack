@@ -200,7 +200,7 @@
         <dependency>
             <groupId>org.jodd</groupId>
             <artifactId>jodd-bean</artifactId>
-            <version>3.7.1</version>
+            <version>${jodd.version}</version>
         </dependency>
     </dependencies>
     <build>

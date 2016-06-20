@@ -39,6 +39,7 @@
         <jackson.version>2.6.3</jackson.version>
         <httpcomponents.version>4.5.1</httpcomponents.version>
         <jodah.failsafe.version>0.8.0</jodah.failsafe.version>
+        <jodd.version>3.7.1</jodd.version>
     </properties>
 
     <modules>

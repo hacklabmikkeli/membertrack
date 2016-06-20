@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.ui;
 
 import java.io.Serializable;
+import java.util.List;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
@@ -62,5 +63,11 @@ public class MtListView<T> extends ListView<@NonNull T>{
     @Override
     protected void populateItem(ListItem<@NonNull T> item) {
         populate.populateItem(item);
+    }
+
+    @Override
+    protected void onConfigure() {
+        List<?> list = getList();
+        setVisible(!list.isEmpty());
     }
 }
