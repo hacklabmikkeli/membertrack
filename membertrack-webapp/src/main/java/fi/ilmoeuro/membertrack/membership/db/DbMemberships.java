@@ -105,6 +105,11 @@ implements
         return Collections.emptyList();
     }
 
+    @Override
+    public List<Membership> listAllMemberships() {
+        return listByConditions();
+    }
+
     private List<Membership> listByConditions(Condition... conditions) {
         List<SelectField<?>> fields = new ArrayList<>();
         fields.addAll(Arrays.asList(PERSON.fields()));

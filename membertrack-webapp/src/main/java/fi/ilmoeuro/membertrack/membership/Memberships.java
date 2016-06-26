@@ -27,6 +27,7 @@ public interface
         public Memberships create(SessionToken<SessionTokenType> token);
     }
 
+    List<Membership> listAllMemberships();
     List<Membership> listMembershipsPage(int pageNum);
     int numMembershipsPages();
 }

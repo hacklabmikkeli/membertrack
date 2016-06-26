@@ -25,8 +25,14 @@ fieldset {
         margin-top: 2em;
 
         .l-content {
+            .display(flex);
+            
             width: @fat-width - @sidebar-width;
             margin: 0px auto;
+            
+            & > :last-child {
+                .flex-grow(1);
+            }
         }
     }
 
@@ -42,14 +48,6 @@ fieldset {
         }
     }
 
-    @media screen and (max-width: @full-width) {
-        .flex-direction(column-reverse);
-
-        .l-main-area .l-content, .l-sidebar {
-            width: 100%;
-        }
-    }
-    
     @media screen and (max-width: @fat-width) {
         .l-main-area .l-content {
             max-width: @full-width - @sidebar-width;
@@ -59,10 +57,23 @@ fieldset {
             }
             
             & > :last-child {
-                max-width: @full-width - @sidebar-width;
+                width: @full-width - @sidebar-width;
             }
         }
-    }   
+    }
+    
+    @media screen and (max-width: @full-width) {
+        .flex-direction(column-reverse);
+
+        .l-main-area .l-content, .l-sidebar {
+            width: 100%;
+            
+            & > :last-child {
+                width: 100%;
+            }
+        }
+    }
+    
 }
 
 
