@@ -4,6 +4,9 @@ databaseInitializer:
     useExampleData: true
     enabled: true
 defaultExampleData:
+    adminFullName: Mr. Admin
+    adminEmail: admin@example.com
+    adminPassword: admin
     services:
       - uuid: bee4ce2c-7200-4125-874f-2e6c5cca6343
         title: Memberships / Jäsenmaksut

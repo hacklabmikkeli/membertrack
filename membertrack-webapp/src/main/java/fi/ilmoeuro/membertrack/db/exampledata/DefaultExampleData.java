@@ -44,6 +44,9 @@ implements
     public static final @Data class Config implements Serializable {
         private static final long serialVersionUID = 0l;
         List<ServiceEntry> services;
+        String adminFullName;
+        String adminEmail;
+        String adminPassword;
     }
     
     private final Config config;
@@ -65,8 +68,11 @@ implements
             uw.addEntity(service);
         }
 
-        Person admin = new Person("Mr. Admin", "admin@example.com");
-        Account adminAccount = Account.create(admin, "admin");
+        Person admin = new Person(
+            config.getAdminFullName(),
+            config.getAdminEmail()
+        );
+        Account adminAccount = Account.create(admin, config.getAdminPassword());
 
         uw.addEntity(admin);
         uw.addEntity(adminAccount);
