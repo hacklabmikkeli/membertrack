@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.math.NumberUtils;
 
 @Slf4j
-public class
+public final class
     MembershipsPageModel<SessionTokenType>
 implements
     Refreshable,

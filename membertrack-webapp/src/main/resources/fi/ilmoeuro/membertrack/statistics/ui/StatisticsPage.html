@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2015 Ilmo Euro <ilmo.euro@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../ui/pure.css" />
+        <link rel="stylesheet" href="../../ui/pure-theme.css" />
+        <link rel="stylesheet" href="../../ui/membertrack.css" />
+    </head>
+    <body>
+    <wicket:extend>
+        <div>
+            <table class="pure-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th wicket:id="dataSet.header">
+                            <span wicket:id="title"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr wicket:id="dataSet.dataRows">
+                        <td>
+                            <span wicket:id="year"></span>
+                        </td>
+                        <td>
+                            <span wicket:id="month"></span>
+                        </td>
+                        <td wicket:id="dataPoints">
+                            <span wicket:id="numSubscribers"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </wicket:extend>
+</body>
+</html>

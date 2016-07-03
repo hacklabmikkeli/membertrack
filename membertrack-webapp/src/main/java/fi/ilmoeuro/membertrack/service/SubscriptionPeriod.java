@@ -16,13 +16,11 @@
  */
 package fi.ilmoeuro.membertrack.service;
 
-import static java.time.temporal.ChronoUnit.DAYS;
 import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodBase;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -121,6 +119,13 @@ public final class SubscriptionPeriod
                 throw new IllegalArgumentException();
             }
         }
+    }
+
+    public boolean containsDate(LocalDate date) {
+        return 
+               date.isEqual(getStartDate())
+            || date.isEqual(getEndDate())
+            || (date.isAfter(getStartDate()) && date.isBefore(getEndDate()));
     }
 
     public List<PeriodTimeUnit> getPossibleLengthUnits() {

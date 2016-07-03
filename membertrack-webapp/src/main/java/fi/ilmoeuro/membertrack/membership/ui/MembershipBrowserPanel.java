@@ -30,7 +30,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.jooq.DSLContext;
 
-public class MembershipBrowserPanel extends Panel {
+public final class MembershipBrowserPanel extends Panel {
     private static final long serialVersionUID = 1l;
     private final MtListView<Membership> memberships;
     private final IModel<MembershipBrowser<DSLContext>> model;

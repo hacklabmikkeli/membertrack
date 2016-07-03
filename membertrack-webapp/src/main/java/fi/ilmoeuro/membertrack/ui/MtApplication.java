@@ -38,6 +38,7 @@ import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWork;
+import fi.ilmoeuro.membertrack.statistics.ui.StatisticsPage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -133,6 +134,9 @@ public final class MtApplication extends AuthenticatedWebApplication {
         WicketWebjars.install(this, webjarsSettings);
 
         getMarkupSettings().setStripWicketTags(true);
+
+        mountPage("/memberships", MembershipsPage.class);
+        mountPage("/statistics", StatisticsPage.class);
     }
 
     @Override

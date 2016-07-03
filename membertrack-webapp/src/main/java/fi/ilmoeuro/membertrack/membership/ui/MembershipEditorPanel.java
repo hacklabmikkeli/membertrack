@@ -46,7 +46,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 @Slf4j
-public class MembershipEditorPanel extends Panel {
+public final class MembershipEditorPanel extends Panel {
     private static final long serialVersionUID = 3l;
 
     private final IModel<MembershipEditor<?>> model;
