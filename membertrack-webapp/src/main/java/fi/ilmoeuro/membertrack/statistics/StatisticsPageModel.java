@@ -50,18 +50,21 @@ implements
 {
     private static final long serialVersionUID = 1l;
 
-    public static @Value class ServiceStatisticsDataPoint {
+    public static @Value class ServiceStatisticsDataPoint implements Serializable {
+        private static final long serialVersionUID = 0l;
         Service service;
         int numSubscribers;
     }
 
-    public static @Value class ServiceStatisticsDataRow {
+    public static @Value class ServiceStatisticsDataRow implements Serializable {
+        private static final long serialVersionUID = 0l;
         int year;
         int month;
         List<ServiceStatisticsDataPoint> dataPoints;
     }
 
-    public static @Value class ServiceStatisticsDataSet {
+    public static @Value class ServiceStatisticsDataSet implements Serializable {
+        private static final long serialVersionUID = 0l;
         List<Service> header;
         List<ServiceStatisticsDataRow> dataRows;
     }

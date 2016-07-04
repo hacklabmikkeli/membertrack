@@ -98,6 +98,7 @@ implements
 
     @Override
     public void loadState(Function<String, String> getValue) {
+        log.info("Page num: {}", getValue.apply("page"));
         setCurrentPage(NumberUtils.toInt(getValue.apply("page"), 1));
     }
 }

@@ -135,6 +135,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
 
         getMarkupSettings().setStripWicketTags(true);
 
+        mountPage("/login", MtSignInPage.class);
         mountPage("/memberships", MembershipsPage.class);
         mountPage("/statistics", StatisticsPage.class);
     }
@@ -144,6 +145,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
         super.onDestroy();
 
         debugServer.stop();
+        dsInitializer.stop();
     }
 
     @SuppressWarnings("unchecked")

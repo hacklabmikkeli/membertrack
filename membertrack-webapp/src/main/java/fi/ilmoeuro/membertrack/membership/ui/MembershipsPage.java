@@ -68,6 +68,12 @@ public final class MembershipsPage extends MtPage {
             new PropertyModel<>(model, "membershipEditor"));
     }
 
+    public MembershipsPage(PageParameters params) {
+        this();
+
+        model.getObject().loadState(k -> params.get(k).toString(""));
+    }
+
     @Override
     public PageParameters getPageParameters() {
         final PageParameters params = super.getPageParameters();

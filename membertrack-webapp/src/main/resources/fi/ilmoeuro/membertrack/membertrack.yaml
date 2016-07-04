@@ -20,7 +20,7 @@ dataSourceInitializer:
     password: sa
     rdbms: H2
     jndiName: jdbc/membertrack
-    enabled: false
+    enabled: true
 debugServer:
     enabled: true
 sessionRunner:

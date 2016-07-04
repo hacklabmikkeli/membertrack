@@ -17,6 +17,7 @@
         <schema.targetdir>${project.basedir}/target/schema/</schema.targetdir>
         <schema.targetfile>${project.basedir}/target/schema/schema.sql</schema.targetfile>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
+        <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
     <repositories>
         <repository>
