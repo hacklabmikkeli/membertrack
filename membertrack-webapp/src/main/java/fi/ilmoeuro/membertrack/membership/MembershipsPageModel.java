@@ -84,6 +84,7 @@ implements
     @Override
     public void setCurrentPage(int pageNum) {
         membershipBrowser.setCurrentPage(pageNum);
+        membershipEditor.close();
     }
 
     public void createNewMembership() {
