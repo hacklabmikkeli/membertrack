@@ -1,0 +1,41 @@
+#!/bin/sh
+#shellcheck disable=SC2154
+
+__file /usr/local/bin/caddy \
+    --owner root \
+    --group wheel \
+    --mode 755 \
+    --source "$__type/files/bin/caddy"
+require="__file/usr/local/bin/caddy" \
+__file /usr/local/etc/rc.d/caddy \
+    --owner root \
+    --group wheel \
+    --mode 755 \
+    --source "$__type/files/rc.d/caddy"
+require="__file/usr/local/etc/rc.d/caddy" \
+__key_value caddy_enable \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"YES\""
+require="__key_value/caddy_enable" \
+__key_value caddy_cert_email \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"ilmo.euro@gmail.com\""
+require="__key_value/caddy_cert_email" \
+__key_value caddy_run_user \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"www\""
+require="__key_value/caddy_run_user" \
+__config_file /usr/local/www/Caddyfile \
+    --owner www \
+    --group www \
+    --mode 644 \
+    --source "$__type/files/www/Caddyfile" \
+    --onchange "/usr/sbin/service caddy restart"
+require="__config_file/usr/local/www/Caddyfile" \
+__process /usr/local/bin/caddy \
+    --name "/usr/local/bin/caddy .*" \
+    --state present \
+    --start "/usr/sbin/service caddy start"

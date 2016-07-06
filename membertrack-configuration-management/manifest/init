@@ -1,0 +1,8 @@
+#!/bin/sh
+#shellcheck disable=SC2154
+__cdistmarker
+__membertrack_system
+__membertrack_tomcat
+__membertrack_caddy
+require="__membertrack_tomcat" \
+__membertrack_webapp

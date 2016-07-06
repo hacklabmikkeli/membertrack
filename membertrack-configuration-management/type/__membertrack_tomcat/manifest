@@ -1,0 +1,16 @@
+#!/bin/sh
+#shellcheck disable=SC2154
+
+# Tomcat config
+__package tomcat8 \
+    --state present
+require="__package/tomcat8" \
+__key_value tomcat8_enable \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"YES\""
+require="__package/tomcat8" \
+__process tomcat8 \
+    --name ".*org\.apache\.catalina\.startup\.Bootstrap" \
+    --state present \
+    --start "/usr/sbin/service tomcat8 start"

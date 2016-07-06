@@ -1,0 +1,3 @@
+www.membertrack.xyz, membertrack.xyz {
+    proxy / localhost:8080
+}

@@ -1,0 +1,34 @@
+#!/bin/sh
+#shellcheck disable=SC2154
+#shellcheck disable=SC2155
+#shellcheck disable=SC1090
+
+export MEMBERTRACK_DB_PATH=/var/db/membertrack/membertrack
+export MEMBERTRACK_YAML_PATH=/usr/local/etc/membertrack.yaml
+export MEMBERTRACK_DB_DIR=$(dirname "$MEMBERTRACK_DB_PATH")
+
+. "$__type/files/secret.sh"
+mkdir -p "$__object/files"
+"$__type/files/membertrack.yaml.sh" > "$__object/files/membertrack.yaml"
+
+__directory "$MEMBERTRACK_DB_DIR" \
+    --owner www \
+    --group www
+__config_file "$MEMBERTRACK_YAML_PATH" \
+    --owner www \
+    --group www \
+    --mode 600 \
+    --state present \
+    --source "$__object/files/membertrack.yaml" \
+    --onchange "/usr/sbin/service tomcat8 restart"
+require="__file/$MEMBERTRACK_YAML_PATH" \
+__key_value membertrack.config \
+    --file "/usr/local/apache-tomcat-8.0/conf/catalina.properties" \
+    --delimiter "=" \
+    --value "$MEMBERTRACK_YAML_PATH"
+require="__key_value/membertrack.config" \
+__rsync /usr/local/apache-tomcat-8.0/webapps/ \
+    --source "$__type/files/webapps" \
+    --group www \
+    --owner www
+#   --rsync-opts delete-before

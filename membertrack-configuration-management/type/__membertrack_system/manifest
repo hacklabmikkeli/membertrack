@@ -1,0 +1,23 @@
+#!/bin/sh
+#shellcheck disable=SC2154
+
+# System config
+__key_value pf_enable \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"YES\""
+__key_value sshd_enable \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"YES\""
+__key_value mac_portacl_load \
+    --file "/etc/rc.conf" \
+    --delimiter "=" \
+    --value "\"YES\""
+require="__key_value/mac_portacl_load" \
+__config_file /etc/sysctl.conf \
+    --owner root \
+    --group wheel \
+    --mode 644 \
+    --source "$__type/files/etc/sysctl.conf" \
+    --onchange "/usr/sbin/service sysctl restart"
