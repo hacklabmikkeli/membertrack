@@ -126,15 +126,14 @@ public final class MembershipEditorPanel extends Panel {
                 numberField.setRequired(true);
                 MtButton deleteNumber = new MtButton(
                     "deleteNumber",
-                    () -> deletePhoneNumber(item),
-                    false);
+                    () -> deletePhoneNumber(item));
                 if (item.getModelObject().isDeleted()) {
                     item.setVisible(false);
                 }
                 item.add(numberField);
                 item.add(deleteNumber);
             });
-        addNumber = new MtButton("addNumber", this::newPhoneNumber, false);
+        addNumber = new MtButton("addNumber", this::newPhoneNumber);
 
         secondaryEmailsSection = new MtListView<>(
             "secondaryEmails",
@@ -145,15 +144,14 @@ public final class MembershipEditorPanel extends Panel {
                 emailField.setRequired(true);
                 MtButton deleteSecondaryEmail = new MtButton(
                     "deleteSecondaryEmail",
-                    () -> deleteSecondaryEmail(item),
-                    false);
+                    () -> deleteSecondaryEmail(item));
                 if (item.getModelObject().isDeleted()) {
                     item.setVisible(false);
                 }
                 item.add(emailField);
                 item.add(deleteSecondaryEmail);
             });
-        addSecondaryEmail = new MtButton("addSecondaryEmail", this::newSecondaryEmail, false);
+        addSecondaryEmail = new MtButton("addSecondaryEmail", this::newSecondaryEmail);
 
         subscriptionsSection = new MtListView<>(
             "subscriptions",
@@ -191,8 +189,7 @@ public final class MembershipEditorPanel extends Panel {
                         MtButton deletePeriod =
                             new MtButton(
                                 "deletePeriod", 
-                                () -> deleteSubscriptionPeriod(prdItem),
-                                false);
+                                () -> deleteSubscriptionPeriod(prdItem));
 
                         startDateField.setRequired(true);
                         lengthField.setRequired(true);
@@ -208,15 +205,14 @@ public final class MembershipEditorPanel extends Panel {
                     });
                 MtButton addPeriod = new MtButton(
                     "addPeriod",
-                    () -> newSubscriptionPeriod(subItem),
-                    false);
+                    () -> newSubscriptionPeriod(subItem));
                 subItem.add(legend);
                 subItem.add(periodsSection);
                 subItem.add(addPeriod);
             });
 
         saveButton = new MtButton("saveButton", this::save);
-        deleteButton = new MtButton("deleteButton", this::delete, false);
+        deleteButton = new MtButton("deleteButton", this::delete);
     }
 
     @Override
@@ -250,15 +246,9 @@ public final class MembershipEditorPanel extends Panel {
     protected void onConfigure() {
         super.onConfigure();
 
-        setVisible(
-            model.getObject().getMembership() != null
-        );
-        editorForm.setVisible(
-            !model.getObject().isCurrentDeleted()
-        );
-        deleteForm.setVisible(
-            model.getObject().isCurrentDeleted()
-        );
+        setVisible(model.getObject().getMembership() != null);
+        editorForm.setVisible(!model.getObject().isCurrentDeleted());
+        deleteForm.setVisible(model.getObject().isCurrentDeleted());
     }
 
     @Override

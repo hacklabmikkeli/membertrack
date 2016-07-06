@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
-import fi.ilmoeuro.membertrack.config.Config;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
@@ -42,6 +41,7 @@ import fi.ilmoeuro.membertrack.statistics.ui.StatisticsPage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +49,7 @@ import org.apache.wicket.Application;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.markup.html.WebPage;
@@ -58,8 +59,12 @@ import org.jooq.DSLContext;
 @RequiredArgsConstructor
 public final class MtApplication extends AuthenticatedWebApplication {
 
+    public static @Data class Config {
+        boolean debug;
+    }
+
     @Getter
-    private final Config config;
+    private final fi.ilmoeuro.membertrack.config.Config config;
     @Getter
     private final SessionRunner<DSLContext> sessionRunner;
 
@@ -71,11 +76,12 @@ public final class MtApplication extends AuthenticatedWebApplication {
     private final HolviPopulator holviPopulator;
     private final ObjectMapper objectMapper;
     private final MembershipPeriodDeOverlapper<?> membershipPeriodDeOverlapper;
+    private final Config appConfig;
 
     public MtApplication() throws FileNotFoundException, IOException {
         super();
 
-        config = Config.load();
+        config = fi.ilmoeuro.membertrack.config.Config.load();
 
         objectMapper
             = new ObjectMapper();
@@ -112,6 +118,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
                 uowFactory,
                 membershipsFactory);
 
+        appConfig = config.getApplication();
     }
 
     @Override
@@ -179,5 +186,14 @@ public final class MtApplication extends AuthenticatedWebApplication {
     @Override
     protected Class<? extends WebPage> getSignInPageClass() {
         return MtSignInPage.class;
+    }
+
+    @Override
+    public RuntimeConfigurationType getConfigurationType() {
+        if (appConfig.isDebug()) {
+            return RuntimeConfigurationType.DEVELOPMENT;
+        } else {
+            return RuntimeConfigurationType.DEPLOYMENT;
+        }
     }
 }

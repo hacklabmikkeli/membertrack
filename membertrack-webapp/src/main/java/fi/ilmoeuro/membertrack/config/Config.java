@@ -23,6 +23,7 @@ import fi.ilmoeuro.membertrack.db.DebugServer;
 import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
 import fi.ilmoeuro.membertrack.holvi.HolviPopulator;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
+import fi.ilmoeuro.membertrack.ui.MtApplication;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -48,6 +49,7 @@ public @Data class Config implements Serializable {
     DefaultExampleData.Config defaultExampleData;
     HolviPopulator.Config holviPopulator;
     DbSessionRunner.Config sessionRunner;
+    MtApplication.Config application;
 
     public static Config load() throws FileNotFoundException, IOException {
         Yaml yaml = new Yaml(new Constructor(Config.class));

@@ -43,7 +43,7 @@ public final class DataSourceInitializer {
         private boolean keepalive = true;
     }
 
-    private @Nullable Connection conn = null;
+    private @Nullable Connection keepaliveConnection = null;
     private final Config config;
 
     public void init() {
@@ -59,7 +59,7 @@ public final class DataSourceInitializer {
                 ds.setPassword(config.getPassword());
                 
                 if (config.isKeepalive()) {
-                    conn = ds.getConnection();
+                    keepaliveConnection = ds.getConnection();
                 }
 
                 Context ctx = new InitialContext();
@@ -86,9 +86,9 @@ public final class DataSourceInitializer {
     }
 
     public void stop() {
-        if (conn != null) {
+        if (keepaliveConnection != null) {
             try {
-                conn.close();
+                keepaliveConnection.close();
             } catch (SQLException ex) {
                 log.info("Exception while closing keepalive connection: ", ex);
             }
