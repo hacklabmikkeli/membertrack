@@ -1,21 +1,8 @@
 application:
     debug: true
 databaseInitializer:
-    setupList: schema_list.txt
-    clearList: clear_list.txt
-    useExampleData: true
+    setupList: setup_list_dev.txt
     enabled: true
-defaultExampleData:
-    adminFullName: Mr. Admin
-    adminEmail: admin@example.com
-    adminPassword: admin
-    services:
-      - uuid: bee4ce2c-7200-4125-874f-2e6c5cca6343
-        title: Memberships / Jäsenmaksut
-        description: Memberships / Jäsenmaksut
-      - uuid: 798aacc6-aafa-4d76-b503-18b2653616ef
-        title: Subscriptions / Tilankäyttömaksut
-        description: Subscriptions / Tilankäyttömaksut
 dataSourceInitializer:
     connectionString: jdbc:h2:mem:membertrack;CREATE=TRUE
     username: sa

@@ -1,1 +1,0 @@
-clear/20151027_00_clear.sql

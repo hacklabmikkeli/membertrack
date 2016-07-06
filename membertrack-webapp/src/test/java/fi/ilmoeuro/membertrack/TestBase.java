@@ -31,7 +31,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class TestBase {
-    private static final String SCHEMA_LIST_FILE = "schema_list.txt";
+    private static final String SCHEMA_LIST_FILE = "setup_list_prod.txt";
     private static final String CONN_STRING = "jdbc:h2:mem:;CREATE=TRUE";
 
     private @Nullable Connection conn;

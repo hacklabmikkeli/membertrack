@@ -23,7 +23,6 @@ import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
-import fi.ilmoeuro.membertrack.db.exampledata.DefaultExampleData;
 import fi.ilmoeuro.membertrack.holvi.HolviPopulator;
 import fi.ilmoeuro.membertrack.membership.MembershipPeriodDeOverlapper;
 import fi.ilmoeuro.membertrack.membership.Memberships;
@@ -97,11 +96,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
         dsInitializer
             = new DataSourceInitializer(config.getDataSourceInitializer());
         dbInitializer
-            = new DatabaseInitializer<>(
-                config.getDatabaseInitializer(),
-                new DefaultExampleData<>(
-                    config.getDefaultExampleData(),
-                    uowFactory));
+            = new DatabaseInitializer<>(config.getDatabaseInitializer());
         debugServer
             = new DebugServer(config.getDebugServer());
         holviPopulator

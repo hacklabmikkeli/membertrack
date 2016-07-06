@@ -27,8 +27,7 @@ __key_value membertrack.config \
     --delimiter "=" \
     --value "$MEMBERTRACK_YAML_PATH"
 require="__key_value/membertrack.config" \
-__rsync /usr/local/apache-tomcat-8.0/webapps/ \
-    --source "$__type/files/webapps" \
+__file /usr/local/apache-tomcat-8.0/webapps/ROOT.war \
+    --source "$__type/files/ROOT.war" \
     --group www \
     --owner www
-#   --rsync-opts delete-before
