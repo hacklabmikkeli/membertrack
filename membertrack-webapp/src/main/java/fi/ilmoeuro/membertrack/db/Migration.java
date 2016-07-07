@@ -31,6 +31,7 @@ import org.jooq.exception.DataAccessException;
 
 @Slf4j
 public final class Migration extends MigrationBase {
+    private static final long serialVersionUID = 0l;
     
     @SuppressWarnings("nullness") // Interface with autogen code
     @Deprecated

@@ -23,6 +23,7 @@ import fi.ilmoeuro.membertrack.person.Persons;
 import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
+import java.io.Serializable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class HolviSynchronizer<SessionTokenType> {
 
-    public static final @Data class Config {
+    public static final @Data class Config implements Serializable {
         private static final long serialVersionUID = 0l;
         boolean enabled;
         int interval;

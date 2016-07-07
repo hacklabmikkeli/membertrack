@@ -39,6 +39,7 @@ import fi.ilmoeuro.membertrack.session.db.DbUnitOfWork;
 import fi.ilmoeuro.membertrack.statistics.ui.StatisticsPage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import lombok.Data;
 import lombok.Getter;
@@ -58,7 +59,8 @@ import org.jooq.DSLContext;
 @RequiredArgsConstructor
 public final class MtApplication extends AuthenticatedWebApplication {
 
-    public static @Data class Config {
+    public static @Data class Config implements Serializable {
+        private static final long serialVersionUID = 0l;
         boolean debug;
     }
 

@@ -37,6 +37,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jooq.lambda.tuple.Tuple3;
 
 @Slf4j
@@ -84,7 +85,7 @@ implements
     public void refresh() {
         Map<Tuple3<Integer, Integer, UUID>, Integer> dataPoints
             = new HashMap<>();
-        LocalDate startDate
+        final LocalDate startDate
             = LocalDate.now()
                        .minusMonths(11)
                        .withDayOfMonth(1);
