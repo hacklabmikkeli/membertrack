@@ -30,6 +30,7 @@ import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -135,8 +136,8 @@ implements
             } catch (DataIntegrityException ex) {
                 String constraint = ex.getIntegrityConstraint();
                 if (   "person_u_email".equals(constraint)
-                    || "secondary_email_c_not_any_primary_email".equals(constraint)) {
-                    // concurrent person creation
+                    || "person_c_no_duplicate_emails".equals(constraint)) {
+                    // person already exists
                 } else {
                     throw ex;
                 }
@@ -181,13 +182,14 @@ implements
             double payment = mapping.getPayment();
             int euros = (int)(Math.floor(payment));
             int cents = (int)((payment - euros) * 100);
+            LocalDate orderDate = order
+                    .getPaid_time()
+                    .withZoneSameInstant(ZoneId.systemDefault())
+                    .toLocalDate();
             SubscriptionPeriod sp = new SubscriptionPeriod(
                     service,
                     person,
-                    order
-                            .getPaid_time()
-                            .withZoneSameInstant(ZoneId.systemDefault())
-                            .toLocalDate(),
+                    orderDate,
                     mapping.getTimeUnit(),
                     mapping.getLength(),
                     euros * 100 + cents,
@@ -196,7 +198,8 @@ implements
                     sp,
                     config.getPoolHandle(),
                     order.getCode(),
-                    i);
+                    i,
+                    orderDate);
             
             UnitOfWork uow = uowFactory.create(token);
             uow.addEntity(sp);
@@ -213,19 +216,15 @@ implements
         if (person != null) {
             return person;
         } else {
+            // This may happen if someone deleted the person after
+            // createPerson(..). The situation is so rare that
+            // it's OK to fail here.
             throw new PersonNotFoundException(order.getEmail());
         }
     }
 
     private void createPerson(final Order order) {
         sessionRunner.exec(token -> {
-            Persons persons = personsFactory.create(token);
-            // Race condition is avoided with unique index
-            Person existingPerson = persons.findByEmail(order.getEmail());
-            if (existingPerson != null) {
-                return;
-            }
-            
             Person newPerson = new Person(
                     order.getFirstname() + " " + order.getLastname(),
                     order.getEmail());

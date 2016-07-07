@@ -125,6 +125,7 @@ CREATE TABLE "PUBLIC"."SUBSCRIPTION_PERIOD_HOLVI_HANDLE" (
     "pool_handle"       VARCHAR(255)        NOT NULL,
     "order_handle"      VARCHAR(255)        NOT NULL,
     "item_number"       INTEGER             NOT NULL,
+    "order_date"        DATE                NOT NULL,
     CONSTRAINT "$subscription_period_holvi_handle_pk$"
         PRIMARY KEY ("pk"),
     CONSTRAINT "$subscription_period_holvi_handle_u_id$"

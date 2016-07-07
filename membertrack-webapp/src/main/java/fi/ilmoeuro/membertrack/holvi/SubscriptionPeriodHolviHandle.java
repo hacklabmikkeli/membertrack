@@ -19,6 +19,7 @@ package fi.ilmoeuro.membertrack.holvi;
 import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodHolviHandleBase;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -43,9 +44,10 @@ implements
         UUID periodId,
         String poolHandle,
         String orderHandle,
-        int itemNumber
+        int itemNumber,
+        LocalDate orderDate
     ) {
-        super(pk, id, periodId, poolHandle, orderHandle, itemNumber);
+        super(pk, id, periodId, poolHandle, orderHandle, itemNumber, orderDate);
     }
 
     @SuppressWarnings("deprecation")
@@ -53,9 +55,17 @@ implements
         SubscriptionPeriod period,
         String poolHandle,
         String orderHandle,
-        int itemNumber
+        int itemNumber,
+        LocalDate orderDate
     ) {
-        this(null, UUID.randomUUID(), period.getId(), poolHandle, orderHandle, itemNumber);
+        this(
+            null,
+            UUID.randomUUID(),
+            period.getId(),
+            poolHandle,
+            orderHandle,
+            itemNumber,
+            orderDate);
     }
 
     public String getHolviURL() {
