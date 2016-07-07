@@ -27,6 +27,26 @@ CREATE TABLE "PUBLIC"."SECONDARY_EMAIL" (
         UNIQUE ("email")
 );
 
+ALTER TABLE "PUBLIC"."SECONDARY_EMAIL"
+    ADD CONSTRAINT "$secondary_email_c_no_duplicate_emails$"
+        CHECK NOT EXISTS
+            (SELECT
+                1
+             FROM
+                "PUBLIC"."PERSON"
+             WHERE
+                "PUBLIC"."PERSON"."email" = "PUBLIC"."SECONDARY_EMAIL"."email");
+
+ALTER TABLE "PUBLIC"."PERSON"
+    ADD CONSTRAINT "$person_c_no_duplicate_emails$"
+        CHECK NOT EXISTS
+            (SELECT
+                1
+             FROM
+                "PUBLIC"."SECONDARY_EMAIL"
+             WHERE
+                "PUBLIC"."SECONDARY_EMAIL"."email" = "PUBLIC"."PERSON"."email");
+
 CREATE TABLE "PUBLIC"."ACCOUNT" (
     "pk"                INTEGER             IDENTITY(1,1),
     "id"                UUID                NOT NULL,

@@ -23,16 +23,16 @@ import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
-import fi.ilmoeuro.membertrack.holvi.HolviPopulator;
-import fi.ilmoeuro.membertrack.membership.MembershipPeriodDeOverlapper;
+import fi.ilmoeuro.membertrack.holvi.HolviSynchronizer;
 import fi.ilmoeuro.membertrack.membership.Memberships;
 import fi.ilmoeuro.membertrack.membership.db.DbMemberships;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
+import fi.ilmoeuro.membertrack.person.Persons;
 import fi.ilmoeuro.membertrack.person.db.DbPersons;
 import fi.ilmoeuro.membertrack.plumbing.WicketDateConverter;
+import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.service.db.DbServices;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
-import fi.ilmoeuro.membertrack.session.SessionToken;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.session.db.DbUnitOfWork;
@@ -68,13 +68,14 @@ public final class MtApplication extends AuthenticatedWebApplication {
     private final SessionRunner<DSLContext> sessionRunner;
 
     private final UnitOfWork.Factory<DSLContext> uowFactory;
+    private final Persons.Factory<DSLContext> personsFactory;
+    private final Services.Factory<DSLContext> servicesFactory;
     private final Memberships.Factory<DSLContext> membershipsFactory;
     private final DataSourceInitializer dsInitializer;
-    private final DatabaseInitializer<DSLContext> dbInitializer;
+    private final DatabaseInitializer dbInitializer;
     private final DebugServer debugServer;
-    private final HolviPopulator holviPopulator;
+    private final HolviSynchronizer<DSLContext> holviSynchronizer;
     private final ObjectMapper objectMapper;
-    private final MembershipPeriodDeOverlapper<?> membershipPeriodDeOverlapper;
     private final Config appConfig;
 
     public MtApplication() throws FileNotFoundException, IOException {
@@ -90,27 +91,27 @@ public final class MtApplication extends AuthenticatedWebApplication {
             = new DbSessionRunner(config.getSessionRunner());
         uowFactory
             = new DbUnitOfWork.Factory();
+        personsFactory
+            = new DbPersons.Factory();
+        servicesFactory
+            = new DbServices.Factory();
         membershipsFactory
             = new DbMemberships.Factory();
 
         dsInitializer
             = new DataSourceInitializer(config.getDataSourceInitializer());
         dbInitializer
-            = new DatabaseInitializer<>(config.getDatabaseInitializer());
+            = new DatabaseInitializer(config.getDatabaseInitializer());
         debugServer
             = new DebugServer(config.getDebugServer());
-        holviPopulator
-            = new HolviPopulator<>(
-                config.getHolviPopulator(),
+        holviSynchronizer
+            = new HolviSynchronizer<>(
+                objectMapper,
+                config.getHolviSynchronizer(),
                 sessionRunner,
                 uowFactory,
-                new DbPersons.Factory(),
-                new DbServices.Factory(),
-                objectMapper);
-        membershipPeriodDeOverlapper
-            = new MembershipPeriodDeOverlapper<>(
-                sessionRunner,
-                uowFactory,
+                personsFactory,
+                servicesFactory,
                 membershipsFactory);
 
         appConfig = config.getApplication();
@@ -120,18 +121,6 @@ public final class MtApplication extends AuthenticatedWebApplication {
     public void init() {
         super.init();
 
-        dsInitializer.init();
-        sessionRunner.exec((SessionToken<DSLContext> token) -> {
-            dbInitializer.init(token);
-        });
-        debugServer.start();
-        try {
-            holviPopulator.runPopulator();
-            membershipPeriodDeOverlapper.runFullDeOverlap();
-        } catch (IOException ex) {
-            log.error("Couldn't run Holvi populator", ex);
-        }
-
         WebjarsSettings webjarsSettings = new WebjarsSettings();
         WicketWebjars.install(this, webjarsSettings);
 
@@ -140,14 +129,20 @@ public final class MtApplication extends AuthenticatedWebApplication {
         mountPage("/login", MtSignInPage.class);
         mountPage("/memberships", MembershipsPage.class);
         mountPage("/statistics", StatisticsPage.class);
+
+        dsInitializer.init();
+        sessionRunner.exec(dbInitializer::init);
+        debugServer.start();
+        holviSynchronizer.start();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
+        holviSynchronizer.stop();
         debugServer.stop();
         dsInitializer.stop();
+
+        super.onDestroy();
     }
 
     @SuppressWarnings("unchecked")

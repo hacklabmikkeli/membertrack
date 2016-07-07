@@ -46,7 +46,11 @@ implements
         return jooq
             .select(PERSON.fields())
             .from(PERSON)
-            .where(PERSON.EMAIL.eq(email))
+            .leftJoin(SECONDARY_EMAIL)
+            .onKey()
+            .where(PERSON.EMAIL.eq(email).or(SECONDARY_EMAIL.EMAIL.eq(email)))
+            // prefer primary emails, though constraint make collisions impossible
+            .orderBy(SECONDARY_EMAIL.EMAIL.asc().nullsFirst())
             .fetchAnyInto(Person.class);
     }
 }

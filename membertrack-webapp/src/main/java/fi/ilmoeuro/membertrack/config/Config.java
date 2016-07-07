@@ -20,7 +20,7 @@ import fi.ilmoeuro.membertrack.ResourceRoot;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
-import fi.ilmoeuro.membertrack.holvi.HolviPopulator;
+import fi.ilmoeuro.membertrack.holvi.HolviSynchronizer;
 import fi.ilmoeuro.membertrack.session.db.DbSessionRunner;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import java.io.File;
@@ -45,7 +45,7 @@ public @Data class Config implements Serializable {
     DataSourceInitializer.Config dataSourceInitializer;
     DatabaseInitializer.Config databaseInitializer;
     DebugServer.Config debugServer;
-    HolviPopulator.Config holviPopulator;
+    HolviSynchronizer.Config holviSynchronizer;
     DbSessionRunner.Config sessionRunner;
     MtApplication.Config application;
 

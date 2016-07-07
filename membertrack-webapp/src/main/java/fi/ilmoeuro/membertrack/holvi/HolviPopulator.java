@@ -74,7 +74,6 @@ implements
     
     public static final @Data class Config implements Serializable {
         private static final long serialVersionUID = 0l;
-        boolean enabled;
         String authToken;
         String poolHandle;
         int interval;
@@ -110,10 +109,6 @@ implements
     private final ObjectMapper objectMapper;
 
     public void runPopulator() throws IOException {
-        if (!config.isEnabled()) {
-            return;
-        }
-
         String url = String.format(
             "https://holvi.com/api/checkout/v2/pool/%s/order/",
             config.getPoolHandle());
@@ -138,8 +133,10 @@ implements
             try {
                 createPerson(order);
             } catch (DataIntegrityException ex) {
-                if ("person_u_email".equals(ex.getIntegrityConstraint())) {
-                    // person already exists
+                String constraint = ex.getIntegrityConstraint();
+                if (   "person_u_email".equals(constraint)
+                    || "secondary_email_c_not_any_primary_email".equals(constraint)) {
+                    // concurrent person creation
                 } else {
                     throw ex;
                 }
@@ -166,7 +163,6 @@ implements
                 i++;
             }
         }
-
     }
 
     private void createSubscriptionPeriod(
@@ -223,6 +219,13 @@ implements
 
     private void createPerson(final Order order) {
         sessionRunner.exec(token -> {
+            Persons persons = personsFactory.create(token);
+            // Race condition is avoided with unique index
+            Person existingPerson = persons.findByEmail(order.getEmail());
+            if (existingPerson != null) {
+                return;
+            }
+            
             Person newPerson = new Person(
                     order.getFirstname() + " " + order.getLastname(),
                     order.getEmail());

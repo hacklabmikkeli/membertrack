@@ -16,10 +16,13 @@ debugServer:
 sessionRunner:
     dataSourceJndiName: jdbc/membertrack
     sqlDialect: H2
-holviPopulator:
+holviSynchronizer:
     enabled: false
-    authToken: 
-    poolHandle: 
-    interval: 30
-    productMappings: []
+    interval: 5
+    intervalUnit: MINUTES
+    populator:
+        authToken: 
+        poolHandle: 
+        interval: 30
+        productMappings: []
          

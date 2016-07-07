@@ -32,7 +32,7 @@ import org.jooq.DSLContext;
 
 @Slf4j
 @RequiredArgsConstructor
-public final class DatabaseInitializer<SessionTokenType> {
+public final class DatabaseInitializer {
 
     public static final @Data class Config implements Serializable {
         private static final long serialVersionUID = 0l;
