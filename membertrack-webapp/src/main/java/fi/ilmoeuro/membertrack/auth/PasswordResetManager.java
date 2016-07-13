@@ -14,16 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.util;
+package fi.ilmoeuro.membertrack.auth;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-/**
- *
- * @author Ilmo Euro <ilmo.euro@gmail.com>
- */
-public interface StateExternalizable {
-    void saveState(BiConsumer<String, String> pairConsumer);
-    void loadState(Function<String, String> getValue);
+public interface PasswordResetManager {
+    void requestPasswordReset(String email);
+    PasswordResetOutcome resetPassword(String email, String password, String token);
 }

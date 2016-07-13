@@ -1,5 +1,5 @@
-/* 
- * Copyright (C) 2015 Ilmo Euro
+/*
+ * Copyright (C) 2016 Ilmo Euro <ilmo.euro@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.plumbing;
+package fi.ilmoeuro.membertrack.person;
 
-import fi.ilmoeuro.membertrack.service.PeriodTimeUnit;
-import org.jooq.impl.EnumConverter;
+import fi.ilmoeuro.membertrack.session.SessionToken;
+import java.io.Serializable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public final class
-    JooqPeriodTimeUnitConverter
-extends
-    EnumConverter<String, PeriodTimeUnit>
-{
-    private static final long serialVersionUID = 0l;
-
-    public JooqPeriodTimeUnitConverter() {
-        super(String.class, PeriodTimeUnit.class);
+public interface Accounts {
+    public static interface Factory<SessionTokenType> extends Serializable {
+        public Accounts create(SessionToken<SessionTokenType> token);
     }
+
+    @Nullable Account findByPerson(Person person);
 }

@@ -14,35 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.service;
+package fi.ilmoeuro.membertrack.ui;
 
-import fi.ilmoeuro.membertrack.person.Person;
-import fi.ilmoeuro.membertrack.util.ClockHolder;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
-import lombok.Value;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 
-public final @Value class
-    Subscription
-implements
-    Serializable 
-{
+public class MtPasswordField extends PasswordTextField {
     private static final long serialVersionUID = 0l;
 
-    Person person;
-    Service service;
-    List<SubscriptionPeriod> periods;
+    public MtPasswordField(String id) {
+        super(id);
+    }
 
-    public void addPeriod() {
-        periods.add(
-            new SubscriptionPeriod(
-                service,
-                person,
-                LocalDate.now(ClockHolder.get()),
-                PeriodTimeUnit.DAY,
-                0,
-                0,
-                false));
+    public MtPasswordField(String id, IModel<?> baseModel) {
+        super(id, new PropertyModel<String>(baseModel, id));
+    }
+
+    public MtPasswordField(String id, ListItem<?> item) {
+        super(id, new PropertyModel<String>(item.getModel(), id));
     }
 }

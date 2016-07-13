@@ -22,7 +22,7 @@ import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriods;
 import fi.ilmoeuro.membertrack.util.Refreshable;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
-import fi.ilmoeuro.membertrack.util.StateExternalizable;
+import fi.ilmoeuro.membertrack.util.ClockHolder;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,8 +37,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jooq.lambda.tuple.Tuple3;
+import fi.ilmoeuro.membertrack.util.PageParamsSaveLoad;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public final class
 implements
     Refreshable,
     Serializable,
-    StateExternalizable
+    PageParamsSaveLoad
 {
     private static final long serialVersionUID = 1l;
 
@@ -86,7 +87,7 @@ implements
         Map<Tuple3<Integer, Integer, UUID>, Integer> dataPoints
             = new HashMap<>();
         final LocalDate startDate
-            = LocalDate.now()
+            = LocalDate.now(ClockHolder.get())
                        .minusMonths(11)
                        .withDayOfMonth(1);
         List<Service> ss = sessionRunner.eval(token -> 
@@ -138,10 +139,10 @@ implements
     }
 
     @Override
-    public void saveState(BiConsumer<String, String> pairConsumer) {
+    public void saveState(BiConsumer<String, @Nullable String> pairConsumer) {
     }
 
     @Override
-    public void loadState(Function<String, String> getValue) {
+    public void loadState(Function<String, @Nullable String> getValue) {
     }
 }

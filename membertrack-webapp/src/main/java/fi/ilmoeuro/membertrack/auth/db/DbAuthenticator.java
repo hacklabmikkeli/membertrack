@@ -21,6 +21,7 @@ import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.person.Account;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.SessionToken;
+import fi.ilmoeuro.membertrack.util.Crypto;
 import java.util.Locale;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -42,22 +43,21 @@ public final class DbAuthenticator implements Authenticator {
     ) {
         return sessionRunner.<Boolean>eval((SessionToken<DSLContext> token) -> {
             DSLContext jooq = token.getValue();
+            String trimmedEmail = email.trim().toLowerCase(Locale.ROOT);
             @Nullable String salt = jooq
                 .select(ACCOUNT.SALT)
                 .from(PERSON)
-                .innerJoin(ACCOUNT)
-                    .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
-                .where(
-                    PERSON.EMAIL.eq(email.trim().toLowerCase(Locale.ROOT)))
+                .innerJoin(ACCOUNT).on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
+                .where(PERSON.EMAIL.eq(trimmedEmail))
                 .fetchAny(ACCOUNT.SALT);
             if (salt != null) {
-                String hashed = Account.hash(password, salt);
+                String hashed = Crypto.hash(password, salt);
                 @Nullable UUID personId =
                     jooq.select(PERSON.ID)
                         .from(PERSON)
-                        .innerJoin(ACCOUNT)
-                            .on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
-                        .where(ACCOUNT.HASH.eq(hashed))
+                        .innerJoin(ACCOUNT).on(ACCOUNT.PERSON_ID.eq(PERSON.ID))
+                        .where(ACCOUNT.HASH.eq(hashed)
+                            .and(PERSON.EMAIL.eq(trimmedEmail)))
                         .fetchAny(PERSON.ID);
                 if (personId != null) {
                     return true;

@@ -17,6 +17,7 @@
 package fi.ilmoeuro.membertrack.config;
 
 import fi.ilmoeuro.membertrack.ResourceRoot;
+import fi.ilmoeuro.membertrack.auth.db.DbPasswordResetManager;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
@@ -47,6 +48,7 @@ public @Data class Config implements Serializable {
     DebugServer.Config debugServer;
     HolviSynchronizer.Config holviSynchronizer;
     DbSessionRunner.Config sessionRunner;
+    DbPasswordResetManager.Config passwordResetManager;
     MtApplication.Config application;
 
     public static Config load() throws FileNotFoundException, IOException {

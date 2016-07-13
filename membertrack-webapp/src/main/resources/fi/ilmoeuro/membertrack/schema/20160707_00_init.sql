@@ -138,3 +138,20 @@ CREATE TABLE "PUBLIC"."SUBSCRIPTION_PERIOD_HOLVI_HANDLE" (
     CONSTRAINT "$subscription_period_holvi_handle_c_item_number_ge0"
         CHECK ("item_number" >= 0)
 );
+
+CREATE TABLE "PUBLIC"."PASSWORD_RESET_TOKEN" (
+    "pk"                INTEGER             IDENTITY(1,1),
+    "id"                UUID                NOT NULL,
+    "person_id"         UUID                NOT NULL,
+    "token"             VARCHAR(255)        NOT NULL,
+    "salt"              VARCHAR(255)        NOT NULL,
+    "issue_time"        TIMESTAMP           NOT NULL,
+    "valid_until"       TIMESTAMP           NOT NULL,
+    CONSTRAINT "$password_reset_token_pk$"
+        PRIMARY KEY ("pk"),
+    CONSTRAINT "$password_reset_token_u_id$"
+        UNIQUE ("id"),
+    CONSTRAINT "$password_reset_token_fk_person_id$"
+        FOREIGN KEY ("person_id") REFERENCES "PERSON" ("id")
+        ON DELETE CASCADE
+);

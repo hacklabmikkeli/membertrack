@@ -16,10 +16,12 @@
  */
 package fi.ilmoeuro.membertrack.ui;
 
+import fi.ilmoeuro.membertrack.auth.ui.MtSignInPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
+import fi.ilmoeuro.membertrack.auth.ui.PasswordResetPage;
 import fi.ilmoeuro.membertrack.db.DataSourceInitializer;
 import fi.ilmoeuro.membertrack.db.DatabaseInitializer;
 import fi.ilmoeuro.membertrack.db.DebugServer;
@@ -131,6 +133,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
         mountPage("/login", MtSignInPage.class);
         mountPage("/memberships", MembershipsPage.class);
         mountPage("/statistics", StatisticsPage.class);
+        mountPage("/passwordreset", PasswordResetPage.class);
 
         dsInitializer.init();
         sessionRunner.exec(dbInitializer::init);
@@ -140,8 +143,11 @@ public final class MtApplication extends AuthenticatedWebApplication {
 
     @Override
     protected void onDestroy() {
+        log.info("Stopping Holvi synchronizer");
         holviSynchronizer.stop();
+        log.info("Stopping DB debug server");
         debugServer.stop();
+        log.info("Stopping DataSource initializer");
         dsInitializer.stop();
 
         super.onDestroy();

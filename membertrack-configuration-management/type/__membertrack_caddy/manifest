@@ -1,6 +1,16 @@
 #!/bin/sh
 #shellcheck disable=SC2154
 
+__directory /var/run/caddy \
+    --owner www \
+    --group www \
+    --parents \
+    --mode 700
+__directory /var/log/caddy \
+    --owner www \
+    --group www \
+    --parents \
+    --mode 700
 __file /usr/local/bin/caddy \
     --owner root \
     --group wheel \

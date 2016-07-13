@@ -1,0 +1,39 @@
+@import "../../ui/lesshat.less";
+@import "../../ui/membertrack-config.less";
+
+.MembershipsPage.editor-pane {
+    .tab-bar {
+        .display(flex);
+        
+        & > * + * {
+          margin-left: 0.1em;
+        }
+        
+        & > a.tab {
+            border-top: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            .border-radius(5px 5px 0 0);
+        }
+        
+        & > a.tab[href] {    
+            background-color: #fff;
+            .background-image(
+                linear-gradient(
+                    to bottom,
+                    #ddd,
+                    #fff));
+        }
+        
+        & > a.tab:not([href]) {
+            &, &:hover, &:active {
+                background: @main-bg;
+                background-image: none;
+            }
+        }
+        
+        & > .separator {
+            .flex-grow(1);
+        }
+    }
+}           

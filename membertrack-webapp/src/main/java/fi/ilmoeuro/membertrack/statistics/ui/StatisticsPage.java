@@ -16,11 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.statistics.ui;
 
-import fi.ilmoeuro.membertrack.membership.ui.*;
-import fi.ilmoeuro.membertrack.membership.Memberships;
 import org.jooq.DSLContext;
-import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
-import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriods;
@@ -28,7 +24,6 @@ import fi.ilmoeuro.membertrack.service.db.DbServices;
 import fi.ilmoeuro.membertrack.service.db.DbSubscriptionPeriods;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.statistics.StatisticsPageModel;
-import fi.ilmoeuro.membertrack.ui.MtActionButton;
 import fi.ilmoeuro.membertrack.ui.MtApplication;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
 import fi.ilmoeuro.membertrack.ui.MtListView;
@@ -37,7 +32,6 @@ import fi.ilmoeuro.membertrack.ui.MtPage;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public final class StatisticsPage extends MtPage {
     private static final long serialVersionUID = 1l;
@@ -83,16 +77,8 @@ public final class StatisticsPage extends MtPage {
             row.add(month);
             row.add(dataPoints);
             });
-    }
 
-    @Override
-    public PageParameters getPageParameters() {
-        final PageParameters params = super.getPageParameters();
-        if (params != null) {
-            model.getObject().saveState(
-                (String k, String v) -> params.set(k, v));
-        }
-        return params;
+        setModel(model);
     }
 
     @Override

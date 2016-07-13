@@ -16,50 +16,37 @@
  */
 package fi.ilmoeuro.membertrack.person.db;
 
+import fi.ilmoeuro.membertrack.person.Account;
+import fi.ilmoeuro.membertrack.person.Accounts;
 import fi.ilmoeuro.membertrack.person.Person;
 import org.jooq.DSLContext;
 import static fi.ilmoeuro.membertrack.schema.Tables.*;
 import lombok.RequiredArgsConstructor;
-import fi.ilmoeuro.membertrack.person.Persons;
 import fi.ilmoeuro.membertrack.session.SessionToken;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 @RequiredArgsConstructor
 public final class
-    DbPersons
+    DbAccounts
 implements
-    Persons
+    Accounts
 {
-    public static final class Factory implements Persons.Factory<DSLContext> {
+    public static final class Factory implements Accounts.Factory<DSLContext> {
         private static final long serialVersionUID = 0L;
 
         @Override
-        public Persons create(SessionToken<DSLContext> token) {
-            return new DbPersons(token.getValue());
+        public Accounts create(SessionToken<DSLContext> token) {
+            return new DbAccounts(token.getValue());
         }
     }
 
     private final DSLContext jooq;
 
     @Override
-    public @Nullable Person findByEmail(String email) {
+    public Account findByPerson(Person person) {
         return jooq
-            .select(PERSON.fields())
-            .from(PERSON)
-            .leftJoin(SECONDARY_EMAIL)
-            .onKey()
-            .where(PERSON.EMAIL.eq(email).or(SECONDARY_EMAIL.EMAIL.eq(email)))
-            // prefer primary emails, though constraint make collisions impossible
-            .orderBy(SECONDARY_EMAIL.EMAIL.asc().nullsFirst())
-            .fetchAnyInto(Person.class);
-    }
-
-    @Override
-    public @Nullable Person findByPrimaryEmail(String email) {
-        return jooq
-            .select(PERSON.fields())
-            .from(PERSON)
-            .where(PERSON.EMAIL.eq(email))
-            .fetchAnyInto(Person.class);
+            .select(ACCOUNT.fields())
+            .from(ACCOUNT)
+            .where(ACCOUNT.PERSON_ID.eq(person.getId()))
+            .fetchAnyInto(Account.class);
     }
 }

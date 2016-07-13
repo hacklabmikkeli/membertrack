@@ -27,7 +27,6 @@ import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.ui.MtButton;
 import fi.ilmoeuro.membertrack.ui.MtForm;
 import fi.ilmoeuro.membertrack.ui.MtLabel;
-import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtListView;
 import fi.ilmoeuro.membertrack.ui.MtTextField;
 import java.time.LocalDate;
@@ -51,7 +50,6 @@ public final class MembershipEditorPanel extends Panel {
 
     private final IModel<MembershipEditor<?>> model;
 
-    private final MtLink closeLink;
     private final FeedbackPanel feedbackPanel;
 
     private final MtForm<Membership> deleteForm; 
@@ -89,7 +87,6 @@ public final class MembershipEditorPanel extends Panel {
             = new PropertyModel<>(model, "membership");
 
         feedbackPanel = new FeedbackPanel("feedbackPanel");
-        closeLink = new MtLink("closeLink", this::close);
 
         deleteForm = new MtForm<>(
             "deleteForm",
@@ -238,7 +235,6 @@ public final class MembershipEditorPanel extends Panel {
 
         add(deleteForm);
         add(editorForm);
-        add(closeLink);
         add(feedbackPanel);
     }
 
@@ -246,7 +242,6 @@ public final class MembershipEditorPanel extends Panel {
     protected void onConfigure() {
         super.onConfigure();
 
-        setVisible(model.getObject().getMembership() != null);
         editorForm.setVisible(!model.getObject().isCurrentDeleted());
         deleteForm.setVisible(model.getObject().isCurrentDeleted());
     }
@@ -269,10 +264,6 @@ public final class MembershipEditorPanel extends Panel {
         } catch (MembershipBrowser.NonUniqueEmailException ex) {
             error("Email is already in use");
         }
-    }
-
-    private void close() {
-        model.getObject().close();
     }
 
     private void delete() {

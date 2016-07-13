@@ -288,6 +288,11 @@
                                     <converter>fi.ilmoeuro.membertrack.plumbing.JooqDateConverter</converter>
                                 </customType>
                                 <customType>
+                                    <name>LocalDateTime</name>
+                                    <type>java.time.LocalDateTime</type>
+                                    <converter>fi.ilmoeuro.membertrack.plumbing.JooqDateTimeConverter</converter>
+                                </customType>
+                                <customType>
                                     <name>PeriodTimeUnit</name>
                                     <type>fi.ilmoeuro.membertrack.service.PeriodTimeUnit</type>
                                     <converter>fi.ilmoeuro.membertrack.plumbing.JooqPeriodTimeUnitConverter</converter>
@@ -296,13 +301,15 @@
                             <forcedTypes>
                                 <forcedType>
                                     <name>LocalDate</name>
-                                    <expression>.*</expression>
-                                    <types>.*DATE.*</types>
+                                    <types>DATE</types>
+                                </forcedType>
+                                <forcedType>
+                                    <name>LocalDateTime</name>
+                                    <types>TIMESTAMP</types>
                                 </forcedType>
                                 <forcedType>
                                     <name>PeriodTimeUnit</name>
-                                    <expression>.*\.length_unit</expression>
-                                    <types>.*VARCHAR.*</types>
+                                    <expression>PUBLIC\.SUBSCRIPTION_PERIOD\.length_unit</expression>
                                 </forcedType>
                             </forcedTypes>
                         </database>

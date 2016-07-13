@@ -18,30 +18,23 @@ package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.membership.MembershipBrowser.NonUniqueEmailException;
-import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.PhoneNumber;
 import fi.ilmoeuro.membertrack.person.SecondaryEmail;
-import fi.ilmoeuro.membertrack.service.Service;
 import fi.ilmoeuro.membertrack.service.Subscription;
 import fi.ilmoeuro.membertrack.service.SubscriptionPeriod;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
 import fi.ilmoeuro.membertrack.util.SerializableAction;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import fi.ilmoeuro.membertrack.service.Services;
 
 @Slf4j
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 public final class
     MembershipEditor<SessionTokenType>
 implements
@@ -53,6 +46,7 @@ implements
     private final fi.ilmoeuro.membertrack.session.UnitOfWork.Factory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
     private final SerializableAction refreshOthers;
+    private final SerializableAction close;
 
     @Getter
     @Setter
@@ -84,7 +78,7 @@ implements
                     uow.execute();
 
                     if (ms.isDeleted()) {
-                        close();
+                        close.execute();
                     }
                 }
             });
@@ -131,29 +125,6 @@ implements
         } else {
             return false;
         }
-    }
-
-    public void initNew() {
-        sessionRunner.exec(token -> {
-            final Services sr = srf.create(token);
-            final Person person = new Person("", "");
-            final List<Service> services = sr.listServices();
-            final List<Subscription> subs = services
-                .stream()
-                .map(serv -> new Subscription(person, serv, new ArrayList<>()))
-                .collect(Collectors.<@NonNull Subscription>toList());
-
-            membership =
-                new Membership(
-                    person,
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    subs);
-        });
-    }
-
-    public void close() {
-        membership = null;
     }
 
     private void refreshOthers() {

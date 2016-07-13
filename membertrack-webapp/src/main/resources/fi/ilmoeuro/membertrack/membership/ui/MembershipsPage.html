@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
     <wicket:extend>
-        <div>
+        <div class="MembershipsPage browser-pane">
             <form class="pure-form pure-form-stacked"
                   wicket:id="newMembershipButton">
                 <div class="pure-control-group">
@@ -38,7 +38,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div wicket:id="pager"></div>
             <div class="membership-browser" wicket:id="membershipBrowser"></div>
         </div>
-        <div class="membership-editor" wicket:id="membershipEditor">
+        <div wicket:id="editorPane" class="MembershipsPage editor-pane">
+            <div class="tab-bar">
+                <a  wicket:id="membershipTab" 
+                    class="tab button pure-button"
+                    >Membership</a>
+                <a  wicket:id="accountTab"
+                    href="#"
+                    class="tab button pure-button"
+                    >Account</a>
+                <div class="separator"></div>
+                <a  wicket:id="closeLink" 
+                    href="#"
+                    class="close button pure-button">X</a>
+            </div>
+            <div wicket:id="membershipEditor"></div>
+            <div wicket:id="accountEditor"></div>
         </div>
     </wicket:extend>
 </body>

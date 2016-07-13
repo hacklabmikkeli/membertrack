@@ -30,4 +30,5 @@ require="__key_value/membertrack.config" \
 __file /usr/local/apache-tomcat-8.0/webapps/ROOT.war \
     --source "$__type/files/ROOT.war" \
     --group www \
-    --owner www
+    --owner www \
+    --mode 700

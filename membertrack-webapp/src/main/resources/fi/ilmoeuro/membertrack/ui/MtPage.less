@@ -45,6 +45,19 @@ fieldset {
         
         @media screen and (min-width: @full-width) {
             min-height: 100vh;
+            .background-image(
+            repeating-linear-gradient(
+                45deg,
+                rgba(0,0,0,0),
+                rgba(0,0,0,0) 10px,
+                rgba(0,0,0,0.3) 10px,
+                rgba(0,0,0,0.3) 20px)
+            repeating-linear-gradient(
+                to right,
+                rgba(0,0,0,0),
+                rgba(0,0,0,0) 145px,
+                rgba(0,0,0,0.7))
+        );
         }
     }
 
@@ -166,16 +179,17 @@ a.button {
 }
 
 .main-nav {
-    li a {
+    a[href] {
         color: white;
     }
     
-    li.selected a {
+    a:not([href]) {
         color: black;
         background-color: white;
     }
     
-    li:not(.selected):hover a {
-        background-color: mix(@sidebar-bg, @main-bg, 10%);
+    a[href]:hover {
+        background-color: rgba(255,255,255,0.2);
+        color: white;
     }
 }

@@ -26,4 +26,5 @@ public interface Persons {
     }
 
     @Nullable Person findByEmail(String email);
+    @Nullable Person findByPrimaryEmail(String email);
 }

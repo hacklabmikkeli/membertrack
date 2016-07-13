@@ -2,11 +2,11 @@
 cat << EOF
 application:
     debug: false
-databaseInitializer:
-    setupList:
-    clearList:
-    useExampleData: false
+debugServer:
     enabled: false
+databaseInitializer:
+    setupList: setup_list_prod.txt
+    enabled: true
 dataSourceInitializer:
     connectionString: jdbc:h2:$MEMBERTRACK_DB_PATH;AUTO_SERVER=TRUE
     username: sa
@@ -16,7 +16,7 @@ dataSourceInitializer:
     enabled: true
 holviSynchronizer:
     interval: 6
-    intervalUnit: HOUR
+    intervalUnit: HOURS
     enabled: true
     populator:
         authToken: $HOLVI_AUTH_TOKEN

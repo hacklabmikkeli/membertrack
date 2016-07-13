@@ -47,8 +47,8 @@ then
 	exit 1
 fi
 
-pidfile="/var/run/caddy.pid"
-logfile="/var/log/caddy.log"
+pidfile="/var/run/caddy/caddy.pid"
+logfile="/var/log/caddy/caddy.log"
 
 command="${caddy_bin_path} -log ${logfile} -pidfile ${pidfile} -cpu ${caddy_cpu} -conf ${caddy_config_path} -agree -email ${caddy_cert_email}"
 
@@ -67,7 +67,7 @@ caddy_status() {
 
 caddy_stop() {
     echo "Stopping Caddy..."
-    kill -QUIT `cat $pidfile 2> /dev/null`
+    kill -s QUIT `cat $pidfile 2> /dev/null`
 }
 
 run_rc_command "$1"

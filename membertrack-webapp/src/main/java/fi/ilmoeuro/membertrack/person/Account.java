@@ -18,23 +18,12 @@ package fi.ilmoeuro.membertrack.person;
 
 import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.AccountBase;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.Random;
+import fi.ilmoeuro.membertrack.util.Crypto;
 import java.util.UUID;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Hex;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class Account extends AccountBase implements Persistable {
     private static final long serialVersionUID = 0l;
-    private static final Random random = new Random();
 
     @SuppressWarnings("nullness") // Interface with autogen code
     @Deprecated
@@ -61,30 +50,17 @@ public final class Account extends AccountBase implements Persistable {
         Person person,
         String password
     ) {
-        byte[] randomBytes = new byte[32];
-        random.nextBytes(randomBytes);
-        String salt = Hex.encodeHexString(randomBytes);
+        String salt = Crypto.randomSalt();
         return new Account(
             person,
-            hash(password, salt),
+            Crypto.hash(password, salt),
             salt
         );
     }
-
-    public static String hash(String candidate, String salt) {
-        try {
-            SecretKeyFactory skf = SecretKeyFactory.getInstance(
-                "PBKDF2WithHmacSHA1");
-            KeySpec ks = new PBEKeySpec(
-                candidate.toCharArray(),
-                salt.getBytes(StandardCharsets.US_ASCII),
-                1024,
-                128);
-            SecretKey sk = skf.generateSecret(ks);
-            Key k = new SecretKeySpec(sk.getEncoded(), "AES");
-            return Hex.encodeHexString(k.getEncoded());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            throw new RuntimeException("Error while hashing", ex);
-        }
+    
+    public void setPassword(String password) {
+        String salt = Crypto.randomSalt();
+        setHash(Crypto.hash(password, salt));
+        setSalt(salt);
     }
 }

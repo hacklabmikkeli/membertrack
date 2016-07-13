@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.session.db;
 
+import fi.ilmoeuro.membertrack.auth.db.PasswordResetToken;
 import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.holvi.SubscriptionPeriodHolviHandle;
 import fi.ilmoeuro.membertrack.person.Account;
@@ -71,6 +72,8 @@ public final class DbUnitOfWork implements UnitOfWork {
             addEntity(SUBSCRIPTION_PERIOD, o);
         } else if (o instanceof SubscriptionPeriodHolviHandle) {
             addEntity(SUBSCRIPTION_PERIOD_HOLVI_HANDLE, o);
+        } else if (o instanceof PasswordResetToken) {
+            addEntity(PASSWORD_RESET_TOKEN, o);
         } else {
             throw new IllegalArgumentException(
                 String.format(
