@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
     $(".use-datepicker").datepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'm. d. yy',
         showButtonPanel: true
     });
 });

@@ -28,11 +28,14 @@ import org.apache.wicket.util.convert.IConverter;
  */
 public class WicketDateConverter implements IConverter<LocalDate> {
     private static final long serialVersionUID = 0l;
+    private static final DateTimeFormatter FINNISH_FORMATTER
+        = DateTimeFormatter.ofPattern("d. M. uuuu");
+
 
     @Override
     public LocalDate convertToObject(String val, Locale loc) throws ConversionException {
         try {
-            return DateTimeFormatter.ISO_LOCAL_DATE.parse(val, LocalDate::from);
+            return FINNISH_FORMATTER.parse(val, LocalDate::from);
         } catch (RuntimeException e) {
             String message = String.format(
                 "Couldn't convert \"%s\" to date",
@@ -46,6 +49,6 @@ public class WicketDateConverter implements IConverter<LocalDate> {
 
     @Override
     public String convertToString(LocalDate date, Locale loc) {
-        return DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+        return FINNISH_FORMATTER.format(date);
     }
 }

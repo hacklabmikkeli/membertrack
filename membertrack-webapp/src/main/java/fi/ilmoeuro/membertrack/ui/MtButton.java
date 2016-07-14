@@ -48,7 +48,11 @@ public final class MtButton extends Button {
 
     @Override
     public void onSubmit() {
-        action.execute();
+        try {
+            action.execute();
+        } catch (Exception ex) {
+            error(ex.getMessage()); // only a fallback
+        }
     }
 
     @Override
