@@ -29,7 +29,7 @@ import org.apache.wicket.util.convert.IConverter;
 public class WicketDateConverter implements IConverter<LocalDate> {
     private static final long serialVersionUID = 0l;
     private static final DateTimeFormatter FINNISH_FORMATTER
-        = DateTimeFormatter.ofPattern("d. M. uuuu");
+        = DateTimeFormatter.ofPattern("d.M.uuuu");
 
 
     @Override
