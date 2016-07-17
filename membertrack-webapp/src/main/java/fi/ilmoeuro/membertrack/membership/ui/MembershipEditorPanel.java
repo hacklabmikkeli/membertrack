@@ -105,12 +105,10 @@ public final class MembershipEditorPanel extends Panel {
             = new MtForm<>("editorForm", membershipModel);
         personFullNameField
             = new MtTextField<>("person.fullName", membershipModel);
-        personFullNameField.setRequired(true);
         personFullNameLabel
             = new FormComponentLabel("person.fullName.label", personFullNameField);
         personEmailField
             = new MtTextField<>("person.email", membershipModel);
-        personEmailField.setRequired(true);
         personEmailLabel
             = new FormComponentLabel("person.email.label", personEmailField);
 
@@ -120,7 +118,6 @@ public final class MembershipEditorPanel extends Panel {
             (ListItem<PhoneNumber> item) -> {
                 MtTextField<String> numberField
                     = new MtTextField<>("phoneNumber", item);
-                numberField.setRequired(true);
                 MtButton deleteNumber = new MtButton(
                     "deleteNumber",
                     () -> deletePhoneNumber(item));
@@ -138,7 +135,6 @@ public final class MembershipEditorPanel extends Panel {
             (ListItem<SecondaryEmail> item) -> {
                 MtTextField<String> emailField
                     = new MtTextField<>("email", item);
-                emailField.setRequired(true);
                 MtButton deleteSecondaryEmail = new MtButton(
                     "deleteSecondaryEmail",
                     () -> deleteSecondaryEmail(item));
@@ -188,11 +184,6 @@ public final class MembershipEditorPanel extends Panel {
                                 "deletePeriod", 
                                 () -> deleteSubscriptionPeriod(prdItem));
 
-                        startDateField.setRequired(true);
-                        lengthField.setRequired(true);
-                        paymentField.setRequired(true);
-                        lengthUnitField.setRequired(true);
-                        approvedField.setRequired(true);
                         prdItem.add(startDateField);
                         prdItem.add(lengthField);
                         prdItem.add(paymentField);

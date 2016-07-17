@@ -193,3 +193,30 @@ a.button {
         color: white;
     }
 }
+
+.feedbackPanel {
+
+    list-style-type: none;
+    padding-left: 0;
+    
+    & > li {
+        padding: 0.5rem;
+    }
+    
+    & > .feedbackPanelERROR {
+        .border-radius(5px);
+        border: 1px solid red;
+        background-color: lighten(red, 45%);
+        .accent-bg-light();
+        
+        &::before {
+            background-image: url('openiconic/warning.svg');
+            background-size: cover;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            content: " ";
+            vertical-align: sub;
+        }
+    }
+}

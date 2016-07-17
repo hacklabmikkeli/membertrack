@@ -51,7 +51,12 @@ public final class MtButton extends Button {
         try {
             action.execute();
         } catch (Exception ex) {
-            error(ex.getMessage()); // only a fallback
+            String message = ex.getMessage();
+            if (message != null) {
+                error(message);
+            } else {
+                error(ex.getClass().getName());
+            }
         }
     }
 

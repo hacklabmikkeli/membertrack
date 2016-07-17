@@ -63,7 +63,7 @@ public final @Value class DataIntegrityException extends RuntimeException {
     Throwable cause;
 
     private static final Pattern CONSTRAINT_REGEX
-        = Pattern.compile("\\$([a-z_]+)\\$");
+        = Pattern.compile("\\$([^$]+)\\$");
 
     public static @Nullable DataIntegrityException fromThrowable(Throwable throwable) {
         Throwable rootCause = ExceptionUtils.getRootCause(throwable);

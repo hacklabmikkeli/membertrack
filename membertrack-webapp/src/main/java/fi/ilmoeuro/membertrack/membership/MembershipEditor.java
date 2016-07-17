@@ -86,6 +86,8 @@ implements
         } catch (DataIntegrityException ex) {
             if ("person_u_email".equals(ex.getIntegrityConstraint())) {
                 throw new NonUniqueEmailException();
+            } else {
+                throw ex;
             }
         }
     }
