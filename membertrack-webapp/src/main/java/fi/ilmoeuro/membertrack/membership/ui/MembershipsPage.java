@@ -156,16 +156,4 @@ public final class MembershipsPage extends MtPage {
         editorPane.add(accountEditor);
         add(editorPane);
     }
-
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-
-        PackageResourceReference cssRef = 
-            new PackageResourceReference(
-                MembershipsPage.class,
-                "MembershipsPage.css");
-        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
-        response.render(pageCss);
-    }
 }

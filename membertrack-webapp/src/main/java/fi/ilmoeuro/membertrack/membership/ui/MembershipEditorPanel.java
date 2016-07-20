@@ -237,18 +237,6 @@ public final class MembershipEditorPanel extends Panel {
         deleteForm.setVisible(model.getObject().isCurrentDeleted());
     }
 
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-
-        PackageResourceReference cssRef = 
-            new PackageResourceReference(
-                MembershipEditorPanel.class,
-                "MembershipEditorPanel.css");
-        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
-        response.render(pageCss);
-    }
-
     private void save() {
         try {
             model.getObject().saveCurrent();

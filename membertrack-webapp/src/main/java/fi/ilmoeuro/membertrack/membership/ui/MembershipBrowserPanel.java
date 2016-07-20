@@ -69,18 +69,6 @@ public final class MembershipBrowserPanel extends Panel {
         add(memberships);
     }
 
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-
-        PackageResourceReference cssRef = 
-            new PackageResourceReference(
-                MembershipBrowserPanel.class,
-                "MembershipBrowserPanel.css");
-        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
-        response.render(pageCss);
-    }
-
     private void selectMembership(Membership membership) {
         model.getObject().setSelectedMembership(membership);
     }

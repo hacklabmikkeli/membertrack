@@ -71,16 +71,6 @@ public final class PersonInfoPanel extends Panel {
         add(new MtLink("edit", this::selectForEditing));
     }
 
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-
-        PackageResourceReference cssRef = 
-            new PackageResourceReference(PersonInfoPanel.class, "PersonInfoPanel.css");
-        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
-        response.render(pageCss);
-    }
-
     private void selectForEditing() {
         onSelect.consume(model.getObject());
     }

@@ -14,20 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fi.ilmoeuro.membertrack.auth.ui;
+package fi.ilmoeuro.membertrack.plumbing;
 
-import org.apache.wicket.authroles.authentication.panel.SignInPanel;
-import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.markup.head.filter.JavaScriptFilteredIntoFooterHeaderResponse;
+import org.apache.wicket.markup.html.IHeaderResponseDecorator;
 
-public class MtSignInPage extends WebPage {
-    private static final long serialVersionUID = 0l;
-    
+public class JavaScriptInBodyDecorator implements IHeaderResponseDecorator {
+
     @Override
-    protected void onInitialize() {
-        super.onInitialize();
-        add(new SignInPanel("signInPanel"));
+    public IHeaderResponse decorate(IHeaderResponse response) {
+        return new JavaScriptFilteredIntoFooterHeaderResponse(response, "js");
     }
 }

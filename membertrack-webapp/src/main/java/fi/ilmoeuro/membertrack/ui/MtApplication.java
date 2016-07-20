@@ -31,6 +31,7 @@ import fi.ilmoeuro.membertrack.membership.db.DbMemberships;
 import fi.ilmoeuro.membertrack.membership.ui.MembershipsPage;
 import fi.ilmoeuro.membertrack.person.Persons;
 import fi.ilmoeuro.membertrack.person.db.DbPersons;
+import fi.ilmoeuro.membertrack.plumbing.JavaScriptInBodyDecorator;
 import fi.ilmoeuro.membertrack.plumbing.WicketDateConverter;
 import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.service.db.DbServices;
@@ -125,6 +126,7 @@ public final class MtApplication extends AuthenticatedWebApplication {
     public void init() {
         super.init();
 
+        setHeaderResponseDecorator(new JavaScriptInBodyDecorator());
         WebjarsSettings webjarsSettings = new WebjarsSettings();
         WicketWebjars.install(this, webjarsSettings);
 

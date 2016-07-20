@@ -18,10 +18,14 @@ package fi.ilmoeuro.membertrack.ui;
 
 import de.agilecoders.wicket.webjars.request.resource.WebjarsCssResourceReference;
 import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceReference;
+import fi.ilmoeuro.membertrack.ResourceRoot;
 import fi.ilmoeuro.membertrack.util.PageParamsSaveLoad;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -33,6 +37,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class MtPage extends WebPage {
     private static final long serialVersionUID = 0l;
     private @Nullable IModel<? extends PageParamsSaveLoad> model = null;
+    private final List<String> cssFiles = Arrays.asList(
+        "ui/css/pure-theme.css",
+        "ui/css/pure.css",
+        "ui/css/AccountEditorPanel.css",
+        "ui/css/MembershipBrowserPanel.css",
+        "ui/css/MembershipEditorPanel.css",
+        "ui/css/MembershipsPage.css",
+        "ui/css/MtPage.css",
+        "ui/css/Pager.css",
+        "ui/css/PersonInfoPanel.css");
 
     @Override
     protected void onConfigure() {
@@ -69,46 +83,52 @@ public class MtPage extends WebPage {
 
     @Override
     protected void onInitialize() {
+        add(new HeaderResponseContainer("js", "js"));
+
         super.onInitialize();
 
         add(new MtActionButton("logoutButton", () -> {
             MtSession.get().invalidate();
             setResponsePage(MtApplication.get().getHomePage());
         }));
+
     }
 
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
 
-        ResourceReference pureRef
-            = new PackageResourceReference(MtPage.class, "pure.css");
-        response.render(CssHeaderItem.forReference(pureRef));
+        ResourceReference jqueryUiCss =
+            new WebjarsCssResourceReference("jquery-ui/1.11.4/jquery-ui.min.css");
+        response.render(CssHeaderItem.forReference(jqueryUiCss));
 
-        PackageResourceReference pureThemeRef = 
-            new PackageResourceReference(MtPage.class, "pure-theme.css");
-        response.render(CssHeaderItem.forReference(pureThemeRef));
+        ResourceReference jqueryUiThemeCss =
+            new PackageResourceReference(ResourceRoot.class, "ui/css/jquery-ui-theme.css");
+        response.render(CssHeaderItem.forReference(jqueryUiThemeCss));
 
-        PackageResourceReference cssRef = 
-            new PackageResourceReference(MtPage.class, "MtPage.css");
-        response.render(CssHeaderItem.forReference(cssRef));
+        for (String file : cssFiles) {
+            ResourceReference cssRef
+                = new PackageResourceReference(ResourceRoot.class, file);
+            response.render(CssHeaderItem.forReference(cssRef));
+        }
 
         ResourceReference jquery =
             new WebjarsJavaScriptResourceReference("jquery/1.11.1/jquery.js");
         ResourceReference jqueryUi =
             new WebjarsJavaScriptResourceReference("jquery-ui/1.11.4/jquery-ui.js");
-        ResourceReference jqueryUiCss =
-            new WebjarsCssResourceReference("jquery-ui/1.11.4/jquery-ui.min.css");
-        ResourceReference jqueryUiThemeCss =
-            new PackageResourceReference(MtPage.class, "jquery-ui.theme.css");
-
-        response.render(CssHeaderItem.forReference(jqueryUiCss));
-        response.render(CssHeaderItem.forReference(jqueryUiThemeCss));
         response.render(JavaScriptHeaderItem.forReference(jquery));
         response.render(JavaScriptHeaderItem.forReference(jqueryUi));
 
-        PackageResourceReference jsRef =
+        PackageResourceReference instantClickJsRef =
+            new PackageResourceReference(ResourceRoot.class, "ui/instantclick.js");
+        response.render(JavaScriptHeaderItem.forReference(instantClickJsRef));
+        // IE doesn't support XHR.responseURL, so instantclick would mess up url bar
+        response.render(JavaScriptHeaderItem.forScript(
+            "if (!window.document.documentMode) InstantClick.init();",
+            "instantClickInit"));
+
+        PackageResourceReference mtPageJsRef =
             new PackageResourceReference(MtPage.class, "MtPage.js");
-        response.render(JavaScriptHeaderItem.forReference(jsRef));
+        response.render(JavaScriptHeaderItem.forReference(mtPageJsRef));
     }
 }

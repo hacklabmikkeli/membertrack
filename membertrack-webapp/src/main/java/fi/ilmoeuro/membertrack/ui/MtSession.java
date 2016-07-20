@@ -17,16 +17,21 @@
 package fi.ilmoeuro.membertrack.ui;
 import fi.ilmoeuro.membertrack.auth.Authenticator;
 import fi.ilmoeuro.membertrack.auth.db.DbAuthenticator;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Slf4j
 public final class MtSession extends AuthenticatedWebSession {
     private static final long serialVersionUID = 0l;
 
     private final Authenticator authenticator;
+
+    @Getter
+    private @Nullable String email;
 
     @SuppressWarnings("method.invocation.invalid")
     public MtSession(Request req) {
@@ -47,7 +52,17 @@ public final class MtSession extends AuthenticatedWebSession {
 
     @Override
     protected boolean authenticate(String email, String pw) {
-        return authenticator.authenticate(email, pw);
+        boolean result = authenticator.authenticate(email, pw);
+        if (result) {
+            this.email = email;
+        }
+        return result;
+    }
+
+    @Override
+    public void onInvalidate() {
+        this.email = null;
+        super.onInvalidate();
     }
 
     @Override

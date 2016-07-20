@@ -167,15 +167,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                                     />
                                             </td>
                                             <td>
-                                                <label>
+                                                <label class="fake-checkbox">
                                                     <input
-                                                        hidden="hidden"
                                                         wicket:id="approved"
                                                         type="checkbox"
                                                         />
-                                                    <span
-                                                        class="fake-checkbox"
-                                                        ></span>
+                                                    <span></span>
                                                 </label>
                                             </td>
                                             <td>
@@ -189,13 +186,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     </tbody>
                                 </table>
                             </div>
-                            <button
-                                wicket:id="addPeriod"
-                                style="margin-top: 0.5em"
-                                class="pure-button"
-                                type="submit"
-                                >Add period</button>
                         </wicket:enclosure>
+                        <button
+                            wicket:id="addPeriod"
+                            style="margin-top: 0.5em"
+                            class="pure-button"
+                            type="submit"
+                            >Add period</button>
                     </fieldset>
                 </wicket:container>
                 <fieldset>

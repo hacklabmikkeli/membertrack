@@ -26,8 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="membertrack.css" />
     </wicket:remove>
 </head>
-<body class="l-page">
-    <div class="l-sidebar">
+<body data-no-instant class="l-page">
+    <div data-instant class="l-sidebar">
         <div class="logout-badge">
             <div class="pic">
                 <img src="data:" width="40" height="40" alt="Avatar" />
@@ -50,10 +50,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </wicket:link>
         </nav>
     </div>
-    <div class="l-main-area">
+    <div data-instant class="l-main-area">
         <div class="l-content">
             <wicket:child />
         </div>
     </div>
+<wicket:container wicket:id="js"></wicket:container>
 </body>
 </html>

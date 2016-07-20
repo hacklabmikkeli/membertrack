@@ -97,18 +97,6 @@ public final class AccountEditorPanel extends Panel {
         newPasswordForm.setVisible(!editor.isAccountExists());
     }
 
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
-
-        PackageResourceReference cssRef = 
-            new PackageResourceReference(
-                AccountEditorPanel.class,
-                "AccountEditorPanel.css");
-        CssHeaderItem pageCss = CssHeaderItem.forReference(cssRef);
-        response.render(pageCss);
-    }
-
     private void createAccount() {
         try {
             model.getObject().createAccount();

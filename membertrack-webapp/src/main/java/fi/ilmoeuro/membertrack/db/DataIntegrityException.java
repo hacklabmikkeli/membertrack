@@ -30,7 +30,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Slf4j
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public final @Value class DataIntegrityException extends RuntimeException {
 

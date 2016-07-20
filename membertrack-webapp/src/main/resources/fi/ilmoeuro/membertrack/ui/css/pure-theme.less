@@ -1,0 +1,98 @@
+@import "lesshat.less";
+
+.pure-theme-membertrack {
+
+    .pure-button {
+        .border-radius(4px);
+        
+        .background-image(
+            linear-gradient(
+                to bottom,
+                #eee 0%,
+                #ddd 100%));
+
+        &:hover, &:focus {
+            .background-image(
+                linear-gradient(
+                    to bottom,
+                    #fff 0%,
+                    #eee 100%));
+        }
+
+        &.pure-button-small {
+            font-size: 0.6rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+    }
+    
+    .pure-form {
+        input {
+            height: 2.3em;
+            margin: 0;
+        }
+        
+        select {
+            vertical-align: top;
+            height: 2.3em;
+            margin: 0;
+        }
+
+        .fake-checkbox {
+            position: relative;
+            
+            & > input[type='checkbox'] {
+                display: inline-block;
+                position: absolute;
+                cursor: pointer;
+                opacity: 0;
+                top: 0;
+                left: 0;
+                width: 2.3em;
+                height: 2.3em;
+            }
+            
+            & > input[type='checkbox'] + * {
+                display: inline-block;
+                vertical-align: bottom;
+                cursor: pointer;
+                width: 2.3em;
+                height: 2.3em;
+                padding-top: 2px;
+                border: 1px solid #ccc;
+                .box-shadow(inset 0 1px 3px #ddd);
+                .border-radius(4px);
+            }
+        
+            & > input[type='checkbox'] + ::before {
+                content: "\00A0";
+                font-size: 1.5em;
+            }
+        
+            & > input[type='checkbox']:checked + ::before {
+                content: "\2713";
+                padding-left: 6px;
+                font-size: 1.5em;
+            }
+            
+            & > input[type='checkbox']:focus + * {
+                border-color: #129fea;
+            }
+        }
+
+        fieldset + fieldset {
+            margin-top: 2em;
+        }
+
+        .pure-control-group.for-buttons {
+            .display(flex);
+            .justify-content(flex-end);
+            margin-top: 1.5em;
+            margin-right: 2.5em;
+
+            button, .button {
+                margin-left: 1em;
+            } 
+        }
+    }
+}

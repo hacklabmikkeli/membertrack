@@ -1,6 +1,7 @@
+/* global InstantClick */
 "use strict";
 
-$(document).ready(function() {
+InstantClick.on('change', function() {
     $(".use-datepicker").datepicker({
         dateFormat: 'd.m.yy',
         showButtonPanel: true
