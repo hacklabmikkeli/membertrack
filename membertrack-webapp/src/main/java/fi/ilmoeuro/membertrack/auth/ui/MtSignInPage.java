@@ -16,11 +16,13 @@
  */
 package fi.ilmoeuro.membertrack.auth.ui;
 
+import fi.ilmoeuro.membertrack.ResourceRoot;
 import org.apache.wicket.authroles.authentication.panel.SignInPanel;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 public class MtSignInPage extends WebPage {
     private static final long serialVersionUID = 0l;
@@ -29,5 +31,16 @@ public class MtSignInPage extends WebPage {
     protected void onInitialize() {
         super.onInitialize();
         add(new SignInPanel("signInPanel"));
+    }
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+
+        ResourceReference signinCss =
+            new PackageResourceReference(
+                ResourceRoot.class,
+                "ui/css/MtSignInPage.css");
+        response.render(CssHeaderItem.forReference(signinCss));
     }
 }

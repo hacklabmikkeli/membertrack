@@ -1,6 +1,10 @@
 @import "lesshat.less";
 
 .pure-theme-membertrack {
+    
+    .pure-menu-horizontal {
+        white-space: normal;
+    }
 
     .pure-button {
         .border-radius(4px);
@@ -64,15 +68,11 @@
                 .border-radius(4px);
             }
         
-            & > input[type='checkbox'] + ::before {
-                content: "\00A0";
-                font-size: 1.5em;
-            }
-        
-            & > input[type='checkbox']:checked + ::before {
-                content: "\2713";
-                padding-left: 6px;
-                font-size: 1.5em;
+            & > input[type='checkbox']:checked + * {
+                background-image: url('openiconic/check.svg');
+                background-size: 50% 50%;
+                background-repeat: no-repeat;
+                background-position: center;
             }
             
             & > input[type='checkbox']:focus + * {
