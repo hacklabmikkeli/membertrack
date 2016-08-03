@@ -43,7 +43,7 @@ implements
     private static final long serialVersionUID = 0l;
     
     private final Services.Factory<SessionTokenType> srf;
-    private final fi.ilmoeuro.membertrack.session.UnitOfWork.Factory<SessionTokenType> uowFactory;
+    private final UnitOfWork.Factory<SessionTokenType> uowFactory;
     private final SessionRunner<SessionTokenType> sessionRunner;
     private final SerializableAction refreshOthers;
     private final SerializableAction close;

@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -46,7 +47,6 @@ public final class
     MembershipsPageModel<SessionTokenType>
 implements
     Refreshable,
-    Pageable,
     Serializable,
     PageParamsSaveLoad
 {
@@ -134,18 +134,15 @@ implements
         setMembership(null);
     }
 
-    @Override
-    public int getNumPages() {
+    private int getNumPages() {
         return membershipBrowser.getNumPages();
     }
 
-    @Override
-    public int getCurrentPage() {
+    private int getCurrentPage() {
         return membershipBrowser.getCurrentPage();
     }
 
-    @Override
-    public void setCurrentPage(int pageNum) {
+    private void setCurrentPage(int pageNum) {
         membershipBrowser.setCurrentPage(pageNum);
         setMembership(null);
     }
@@ -153,7 +150,7 @@ implements
     public void createNewMembership() {
         sessionRunner.exec(token -> {
             final Services sr = srf.create(token);
-            final Person person = new Person("", "");
+            final Person person = Person.empty();
             final List<Service> services = sr.listServices();
             final List<Subscription> subs = services
                 .stream()
@@ -187,6 +184,12 @@ implements
         } else {
             pairConsumer.accept("editor", null);
         }
+        String searchString = membershipBrowser.getSearchString();
+        if (StringUtils.isBlank(searchString)) {
+            pairConsumer.accept("search", null);
+        } else {
+            pairConsumer.accept("search", searchString);
+        }
     }
 
     @Override
@@ -195,6 +198,7 @@ implements
         refresh();
         String selected = getValue.apply("selected");
         String editor = getValue.apply("editor");
+        String search = getValue.apply("search");
         if (selected != null) {
             for (Membership ms : membershipBrowser.getMemberships()) {
                 if (ms.getPerson().getEmail().equals(selected)) {
@@ -209,6 +213,10 @@ implements
             } catch (IllegalArgumentException ex) {
                 log.error("Invalid Editor enum value: {}", editor);
             }
+        }
+        if (search != null) {
+            membershipBrowser.setSearchString(search);
+            membershipBrowser.refresh();
         }
     }
 }

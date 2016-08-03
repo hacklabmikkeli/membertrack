@@ -31,24 +31,34 @@ public final class Person extends PersonBase implements Persistable {
     public Person(
         @Nullable Integer pk,
         UUID id,
-        String fullName,
+        String firstName,
+        String lastName,
         String email
     ) {
-        super(pk, id, fullName, email);
+        super(pk, id, firstName, lastName, email);
     }
 
     @SuppressWarnings("deprecation")
     public Person(
-        String fullName,
+        String firstName,
+        String lastName,
         String email
     ) {
-        this(null, UUID.randomUUID(), fullName, email);
+        this(null, UUID.randomUUID(), firstName, lastName, email);
+    }
+
+    public static Person empty() {
+        return new Person("", "", "");
     }
 
     public String getGravatarUrl() {
         return String.format(
             "//gravatar.com/avatar/%s?d=mm",
             DigestUtils.md5Hex(getEmail().toLowerCase(Locale.ROOT).trim()));
+    }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
     }
 
     public void delete() {

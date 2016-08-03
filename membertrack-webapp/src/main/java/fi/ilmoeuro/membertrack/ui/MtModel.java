@@ -54,6 +54,4 @@ extends
         super.detach();
         dirty = true;
     }
-
-    
 }

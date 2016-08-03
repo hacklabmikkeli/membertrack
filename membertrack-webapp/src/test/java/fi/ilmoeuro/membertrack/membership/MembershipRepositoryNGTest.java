@@ -42,7 +42,7 @@ public class MembershipRepositoryNGTest extends TestBase {
 
     @Test
     public void testListMemberships() {
-        Person p = new Person("John Doe", "john.doe@example.com");
+        Person p = new Person("John", "Doe", "john.doe@example.com");
         PhoneNumber pn = new PhoneNumber(p, "+1234567890");
         Service s = new Service("Tilankäyttö", "Tilankäyttömaksut");
         SubscriptionPeriod pr1 = new SubscriptionPeriod(

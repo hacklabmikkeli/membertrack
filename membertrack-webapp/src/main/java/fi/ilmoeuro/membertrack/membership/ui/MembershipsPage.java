@@ -22,7 +22,6 @@ import fi.ilmoeuro.membertrack.config.Config;
 import fi.ilmoeuro.membertrack.membership.Memberships;
 import org.jooq.DSLContext;
 import fi.ilmoeuro.membertrack.membership.MembershipsPageModel;
-import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Services;
 import fi.ilmoeuro.membertrack.session.SessionRunner;
 import fi.ilmoeuro.membertrack.session.UnitOfWork;
@@ -33,13 +32,10 @@ import fi.ilmoeuro.membertrack.ui.MtLink;
 import fi.ilmoeuro.membertrack.ui.MtModel;
 import fi.ilmoeuro.membertrack.ui.MtPage;
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.PackageResourceReference;
 import static fi.ilmoeuro.membertrack.membership.MembershipsPageModel.Editor.*;
 import fi.ilmoeuro.membertrack.membership.db.DbMemberships;
 import fi.ilmoeuro.membertrack.person.Accounts;
@@ -52,7 +48,6 @@ public final class MembershipsPage extends MtPage {
     private static final long serialVersionUID = 1l;
     private final IModel<MembershipsPageModel<?>> model;
 
-    private final Component pager;
     private final Component membershipBrowser;
     private final Component newMembershipButton;
 
@@ -89,7 +84,6 @@ public final class MembershipsPage extends MtPage {
         model = new MtModel<>(
             new MembershipsPageModel<DSLContext>(prm, mrf, srf, af, uof, sr));
 
-        pager = new Pager<>("pager", model);
         newMembershipButton = new MtActionButton(
             "newMembershipButton",
             () -> model.getObject().createNewMembership());
@@ -145,7 +139,6 @@ public final class MembershipsPage extends MtPage {
     protected void onInitialize() {
         super.onInitialize();
 
-        add(pager);
         add(newMembershipButton);
         add(membershipBrowser);
 

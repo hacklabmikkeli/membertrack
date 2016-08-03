@@ -35,6 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
@@ -56,7 +57,9 @@ public final class DbSessionRunner implements SessionRunner<DSLContext> {
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup(config.getDataSourceJndiName());
-            DSLContext jooq = DSL.using(ds, SQLDialect.valueOf(config.getSqlDialect()));
+            DSLContext jooq = DSL.using(
+                ds,
+                SQLDialect.valueOf(config.getSqlDialect()));
             final @NonNull AtomicReference<@NonNull R>
                 resultRef = new AtomicReference<>();
             jooq.transaction((Configuration conf) -> {

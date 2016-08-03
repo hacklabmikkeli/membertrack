@@ -15,7 +15,7 @@ CREATE TABLE "PUBLIC"."SECONDARY_EMAIL" (
     "pk"                INTEGER             IDENTITY(1,1),
     "id"                UUID                NOT NULL,
     "person_id"         UUID                NOT NULL,
-    "email"             VARCHAR(4096)       NOT NULL,
+    "email"             VARCHAR(255)        NOT NULL,
     CONSTRAINT "$secondary_email_pk$"
         PRIMARY KEY ("pk"),
     CONSTRAINT "$secondary_email_u_id$"

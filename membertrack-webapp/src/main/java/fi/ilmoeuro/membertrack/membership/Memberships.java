@@ -29,5 +29,7 @@ public interface
 
     List<Membership> listAllMemberships();
     List<Membership> listMembershipsPage(int pageNum);
+    List<Membership> listMembershipsPage(int pageNum, String searchString);
     int numMembershipsPages();
+    int numMembershipsPages(String searchString);
 }

@@ -32,8 +32,6 @@ import fi.ilmoeuro.membertrack.ui.MtTextField;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
@@ -42,7 +40,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.resource.PackageResourceReference;
 
 @Slf4j
 public final class MembershipEditorPanel extends Panel {
@@ -58,8 +55,10 @@ public final class MembershipEditorPanel extends Panel {
     private final MtLabel personNameLabel;
 
     private final MtForm<Membership> editorForm; 
-    private final MtTextField<String> personFullNameField;
-    private final FormComponentLabel personFullNameLabel;
+    private final MtTextField<String> personFirstNameField;
+    private final FormComponentLabel personFirstNameLabel;
+    private final MtTextField<String> personLastNameField;
+    private final FormComponentLabel personLastNameLabel;
     private final MtTextField<String> personEmailField;
     private final FormComponentLabel personEmailLabel;
 
@@ -103,10 +102,14 @@ public final class MembershipEditorPanel extends Panel {
 
         editorForm
             = new MtForm<>("editorForm", membershipModel);
-        personFullNameField
-            = new MtTextField<>("person.fullName", membershipModel);
-        personFullNameLabel
-            = new FormComponentLabel("person.fullName.label", personFullNameField);
+        personFirstNameField
+            = new MtTextField<>("person.firstName", membershipModel);
+        personFirstNameLabel
+            = new FormComponentLabel("person.firstName.label", personFirstNameField);
+        personLastNameField
+            = new MtTextField<>("person.lastName", membershipModel);
+        personLastNameLabel
+            = new FormComponentLabel("person.lastName.label", personLastNameField);
         personEmailField
             = new MtTextField<>("person.email", membershipModel);
         personEmailLabel
@@ -211,8 +214,10 @@ public final class MembershipEditorPanel extends Panel {
         deleteForm.add(confirmButton);
         deleteForm.add(cancelButton);
 
-        editorForm.add(personFullNameField);
-        editorForm.add(personFullNameLabel);
+        editorForm.add(personFirstNameField);
+        editorForm.add(personFirstNameLabel);
+        editorForm.add(personLastNameField);
+        editorForm.add(personLastNameLabel);
         editorForm.add(personEmailField);
         editorForm.add(personEmailLabel);
         editorForm.add(numbersSection);

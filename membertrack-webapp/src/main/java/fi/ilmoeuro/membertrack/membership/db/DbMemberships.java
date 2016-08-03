@@ -46,6 +46,7 @@ import fi.ilmoeuro.membertrack.membership.Memberships;
 import fi.ilmoeuro.membertrack.person.SecondaryEmail;
 import fi.ilmoeuro.membertrack.schema.tables.records.SecondaryEmailRecord;
 import fi.ilmoeuro.membertrack.session.SessionToken;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 public final class
@@ -53,6 +54,7 @@ public final class
 implements
     Memberships
 {
+    private static final Locale FINNISH = Locale.forLanguageTag("fi");
     public static final class Factory implements Memberships.Factory<DSLContext> {
         private static final long serialVersionUID = 0L;
 
@@ -65,39 +67,79 @@ implements
     private final DSLContext jooq;
     private static final int PAGE_SIZE = 5;
 
+    private Condition searchCondition(@Nullable String searchString) {
+        if (searchString == null) {
+            return DSL.trueCondition();
+        } else {
+            searchString = searchString.replace("%", "\\%").replace("_", "\\_");
+            String lcase = searchString.toLowerCase(FINNISH);
+            String ucase = searchString.toUpperCase(FINNISH);
+            String capital = searchString.substring(0, 1).toUpperCase(FINNISH) +
+                             searchString.substring(1).toLowerCase(FINNISH);
+            return PERSON.FIRST_NAME.like(lcase + "%")
+                    .or(PERSON.LAST_NAME.like(lcase + "%"))
+                    .or(PERSON.EMAIL.like(lcase + "%"))
+                    .or(PERSON.FIRST_NAME.like(ucase + "%"))
+                    .or(PERSON.LAST_NAME.like(ucase + "%"))
+                    .or(PERSON.EMAIL.like(ucase + "%"))
+                    .or(PERSON.FIRST_NAME.like(capital + "%"))
+                    .or(PERSON.LAST_NAME.like(capital + "%"))
+                    .or(PERSON.EMAIL.like(capital + "%"));
+        }
+    }
+
     @Override
     public int numMembershipsPages() {
+        return numMembershipsPages(null);
+    }
+
+    @Override
+    public int numMembershipsPages(@Nullable String searchString) {
         return (int) Math.ceil(jooq.select(DSL.count())
             .from(PERSON)
+            .where(searchCondition(searchString))
             .fetchAnyInto(Integer.class)
             / (double) PAGE_SIZE);
     }
 
     @Override
     public List<Membership> listMembershipsPage(int pageNum) {
+        return listMembershipsPage(pageNum, null);
+    }
+
+    @Override
+    public List<Membership> listMembershipsPage(
+        int pageNum,
+        @Nullable String searchString
+    ) {
+
         @Nullable String start = jooq
-            .select(PERSON.FULL_NAME)
+            .select(PERSON.EMAIL)
             .from(PERSON)
-            .orderBy(PERSON.FULL_NAME)
+            .where(searchCondition(searchString))
+            .orderBy(PERSON.EMAIL)
             .limit((pageNum - 1)* PAGE_SIZE, 1)
-            .fetchAny(this::getFullName);
+            .fetchAny(this::getEmail);
 
         @Nullable String end = jooq
-            .select(PERSON.FULL_NAME)
+            .select(PERSON.EMAIL)
             .from(PERSON)
-            .orderBy(PERSON.FULL_NAME)
+            .where(searchCondition(searchString))
+            .orderBy(PERSON.EMAIL)
             .limit(pageNum * PAGE_SIZE, 1)
-            .fetchAny(this::getFullName);
+            .fetchAny(this::getEmail);
 
         if (start != null) {
             if (end != null) {
                 return listByConditions(
-                    PERSON.FULL_NAME.ge(start),
-                    PERSON.FULL_NAME.lt(end)
+                    PERSON.EMAIL.ge(start),
+                    PERSON.EMAIL.lt(end),
+                    searchCondition(searchString)
                 );
             } else {
                 return listByConditions(
-                    PERSON.FULL_NAME.ge(start)
+                    PERSON.EMAIL.ge(start),
+                    searchCondition(searchString)
                 );
             }
         }
@@ -137,7 +179,6 @@ implements
                 SUBSCRIPTION_PERIOD.SERVICE_ID.eq(SERVICE.ID))
             .where(conditions)
             .orderBy(
-                PERSON.FULL_NAME.asc(), 
                 PERSON.EMAIL.asc(), 
                 PHONE_NUMBER.PHONE_NUMBER_.asc(),
                 SECONDARY_EMAIL.EMAIL.asc(),
@@ -199,7 +240,7 @@ implements
             subscriptions);
     }
 
-    private String getFullName(Record r) {
-        return r.getValue(PERSON.FULL_NAME);
+    private String getEmail(Record r) {
+        return r.getValue(PERSON.EMAIL);
     }
 }

@@ -1,2 +1,3 @@
 schema/00000000_00_bootstrap.sql
 schema/20160707_00_init.sql
+schema/20160725_00_firstname_lastname.sql

@@ -23,6 +23,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </head>
     <body>
     <wicket:panel>
+        <div class="search-bar">
+            <form class="pure-form" wicket:id="searchForm">
+                <input type="text" wicket:id="searchString" />
+                <button class="pure-button" wicket:id="searchButton">
+                    <span class="search-icon"></span>Search
+                </button>
+            </form>
+        </div>
+        <div wicket:id="pager"></div>
         <ul class="subscriber-list">
             <li wicket:id="memberships">
                 <div wicket:id="personInfo">

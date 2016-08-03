@@ -18,20 +18,26 @@ package fi.ilmoeuro.membertrack.membership.ui;
 
 import fi.ilmoeuro.membertrack.membership.Membership;
 import fi.ilmoeuro.membertrack.membership.MembershipBrowser;
+import fi.ilmoeuro.membertrack.paging.ui.Pager;
 import fi.ilmoeuro.membertrack.service.Subscription;
+import fi.ilmoeuro.membertrack.ui.MtButton;
+import fi.ilmoeuro.membertrack.ui.MtForm;
 import fi.ilmoeuro.membertrack.ui.MtHighlighter;
 import fi.ilmoeuro.membertrack.ui.MtListView;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
+import fi.ilmoeuro.membertrack.ui.MtTextField;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.resource.PackageResourceReference;
 import org.jooq.DSLContext;
 
 public final class MembershipBrowserPanel extends Panel {
     private static final long serialVersionUID = 1l;
+    private final Component pager;
+    private final MtTextField<String> searchString;
+    private final MtButton searchButton;
+    private final MtForm searchForm;
     private final MtListView<Membership> memberships;
     private final IModel<MembershipBrowser<DSLContext>> model;
 
@@ -42,6 +48,12 @@ public final class MembershipBrowserPanel extends Panel {
     ) {
         super(id, new CompoundPropertyModel<>(model));
         this.model = model;
+
+        pager = new Pager<>("pager", model);
+
+        searchString = new MtTextField<>("searchString", model);
+        searchButton = new MtButton("searchButton", this::search);
+        searchForm = new MtForm("searchForm", model);
 
         memberships = new MtListView<>(
             "memberships",
@@ -66,7 +78,11 @@ public final class MembershipBrowserPanel extends Panel {
     protected void onInitialize() {
         super.onInitialize();
 
+        searchForm.add(searchString);
+        searchForm.add(searchButton);
+        add(searchForm);
         add(memberships);
+        add(pager);
     }
 
     private void selectMembership(Membership membership) {
@@ -75,5 +91,9 @@ public final class MembershipBrowserPanel extends Panel {
 
     private boolean isCurrentPerson(ListItem<Membership> item) {
         return model.getObject().checkIfMembershipSelected(item.getModelObject());
+    }
+
+    private void search() {
+        model.getObject().search();
     }
 }

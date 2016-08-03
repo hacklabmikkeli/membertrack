@@ -226,7 +226,8 @@ implements
     private void createPerson(final Order order) {
         sessionRunner.exec(token -> {
             Person newPerson = new Person(
-                    order.getFirstname() + " " + order.getLastname(),
+                    order.getFirstname(),
+                    order.getLastname(),
                     order.getEmail());
             
             UnitOfWork uow = uowFactory.create(token);

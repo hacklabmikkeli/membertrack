@@ -28,7 +28,9 @@ import lombok.Getter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Objects;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Slf4j
@@ -51,6 +53,19 @@ implements
     private final SerializableProducer<@Nullable Membership>
         getSelectedMembership;
 
+    @Getter
+    private transient List<Membership> memberships = Collections.emptyList();
+
+    @Getter(onMethod = @__({@Override}))
+    private transient int numPages = 0;
+
+    @Getter(onMethod = @__({@Override}))
+    private int currentPage = 1;
+
+    @Getter
+    @Setter
+    private String searchString = "";
+
     public MembershipBrowser(
         Memberships.Factory<SessionTokenType> mrf,
         SessionRunner<SessionTokenType> sessionRunner,
@@ -63,18 +78,10 @@ implements
         this.getSelectedMembership = getSelectedMembership;
     }
 
-    @Getter
-    private transient List<Membership> memberships = Collections.emptyList();
-
-    @Getter(onMethod = @__({@Override}))
-    private transient int numPages = 0;
-
-    @Getter(onMethod = @__({@Override}))
-    private int currentPage = 1;
-
     @Override
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
+        setSelectedMembership.consume(null);
         refresh();
     }
 
@@ -90,8 +97,15 @@ implements
     public void refresh() {
         sessionRunner.exec(token -> {
             Memberships mr = mrf.create(token);
-            memberships = mr.listMembershipsPage(getCurrentPage());
-            numPages = mr.numMembershipsPages();
+            if (StringUtils.isNotBlank(searchString)) {
+                memberships = mr.listMembershipsPage(
+                    getCurrentPage(),
+                    searchString);
+                numPages = mr.numMembershipsPages(searchString);
+            } else {
+                memberships = mr.listMembershipsPage(getCurrentPage());
+                numPages = mr.numMembershipsPages();
+            }
         });
     }
 
@@ -112,5 +126,11 @@ implements
 
     public void setSelectedMembership(@Nullable Membership membership) {
         setSelectedMembership.consume(membership);
+    }
+
+    public void search() {
+        setSelectedMembership(null);
+        setCurrentPage(1);
+        refresh();
     }
 }

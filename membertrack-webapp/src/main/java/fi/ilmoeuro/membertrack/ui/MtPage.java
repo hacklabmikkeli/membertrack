@@ -28,6 +28,7 @@ import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
@@ -130,5 +131,11 @@ public class MtPage extends WebPage {
         PackageResourceReference mtPageJsRef =
             new PackageResourceReference(MtPage.class, "MtPage.js");
         response.render(JavaScriptHeaderItem.forReference(mtPageJsRef));
+    }
+
+    @Override
+    protected void configureResponse(WebResponse response) {
+        super.configureResponse(response);
+        response.setContentType("text/html; charset=UTF-8");
     }
 }

@@ -1,4 +1,5 @@
 /* InstantClick 3.1.0 | (C) 2014 Alexandre Dieulot | http://instantclick.io/license */
+
 /* Modified by Ilmo Euro <ilmo.euro@gmail.com> 18.7.2016
  * - added support for XMLHttpRequest.responseURL
  */

@@ -39,7 +39,7 @@ implements
 
     public static Membership empty() {
         return new Membership(
-            new Person("", ""),
+            Person.empty(),
             new ArrayList<>(),
             new ArrayList<>(),
             new ArrayList<>());
