@@ -40,8 +40,7 @@ implements
                 service,
                 person,
                 LocalDate.now(ClockHolder.get()),
-                PeriodTimeUnit.DAY,
-                0,
+                LocalDate.now(ClockHolder.get()).plusDays(1),
                 0,
                 false));
     }

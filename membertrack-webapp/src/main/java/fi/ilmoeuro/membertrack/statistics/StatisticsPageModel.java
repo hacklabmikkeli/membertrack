@@ -72,7 +72,7 @@ implements
     }
 
     @Getter
-    private ServiceStatisticsDataSet dataSet
+    private ServiceStatisticsDataSet servicesDataSet
         = new ServiceStatisticsDataSet(
             Collections.emptyList(),
             Collections.emptyList()
@@ -135,7 +135,7 @@ implements
                 points));
         }
 
-        dataSet = new ServiceStatisticsDataSet(ss, rows);
+        servicesDataSet = new ServiceStatisticsDataSet(ss, rows);
     }
 
     @Override

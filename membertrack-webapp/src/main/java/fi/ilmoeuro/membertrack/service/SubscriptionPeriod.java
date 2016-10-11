@@ -20,7 +20,6 @@ import fi.ilmoeuro.membertrack.db.Persistable;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.schema.tables.pojos.SubscriptionPeriodBase;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -44,8 +43,7 @@ public final class SubscriptionPeriod
         UUID serviceId,
         UUID personId,
         LocalDate startDate,
-        PeriodTimeUnit lengthUnit,
-        long length,
+        LocalDate endDate,
         int payment,
         boolean approved
     ) {
@@ -55,8 +53,7 @@ public final class SubscriptionPeriod
             serviceId,
             personId,
             startDate,
-            lengthUnit,
-            length,
+            endDate,
             payment,
             approved
         );
@@ -67,8 +64,7 @@ public final class SubscriptionPeriod
         Service service,
         Person person,
         LocalDate startDate,
-        PeriodTimeUnit lengthUnit,
-        long length,
+        LocalDate endDate,
         int payment,
         boolean approved
     ) {
@@ -78,26 +74,10 @@ public final class SubscriptionPeriod
             service.getId(),
             person.getId(),
             startDate,
-            lengthUnit,
-            length,
+            endDate,
             payment,
             approved
         );
-    }
-
-    public LocalDate getEndDate() {
-        switch (getLengthUnit()) {
-            case DAY:
-                return getStartDate().plusDays(getLength());
-            case YEAR:
-                return LocalDate.of(
-                        getStartDate().getYear() + 1,
-                        Month.JANUARY,
-                        1)
-                    .minusDays(1);
-        }
-
-        throw new IllegalStateException("Invalid length unit");
     }
 
     public String getPaymentFormatted() {

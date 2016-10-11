@@ -31,7 +31,6 @@ public class WicketDateConverter implements IConverter<LocalDate> {
     private static final DateTimeFormatter FINNISH_FORMATTER
         = DateTimeFormatter.ofPattern("d.M.uuuu");
 
-
     @Override
     public LocalDate convertToObject(String val, Locale loc) throws ConversionException {
         try {

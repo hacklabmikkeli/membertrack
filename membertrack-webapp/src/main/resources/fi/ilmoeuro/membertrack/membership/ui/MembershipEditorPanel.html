@@ -142,7 +142,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     <thead>
                                         <tr>
                                             <th>Start date</th>
-                                            <th colspan="2">Length</th>
+                                            <th>End date</th>
                                             <th>Payment</th>
                                             <th colspan="2">Approved?</th>
                                         </tr>
@@ -158,14 +158,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                             </td>
                                             <td style="width: 33%">
                                                 <input
-                                                    wicket:id="length"
+                                                    wicket:id="endDate"
                                                     style="width: 100%"
+                                                    class="use-datepicker"
                                                     />
-                                            </td>
-                                            <td>
-                                                <select
-                                                    wicket:id="lengthUnit">
-                                                </select>
                                             </td>
                                             <td style="width: 33%">
                                                 <input

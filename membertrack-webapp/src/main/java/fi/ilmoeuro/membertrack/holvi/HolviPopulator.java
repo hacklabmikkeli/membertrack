@@ -18,6 +18,7 @@ package fi.ilmoeuro.membertrack.holvi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import fi.ilmoeuro.membertrack.db.DataIntegrityException;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.person.Persons;
@@ -31,13 +32,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.fluent.Request;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -84,7 +88,11 @@ implements
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final @Data class Order {
         String email;
+        @Getter(onMethod = @__({@SuppressFBWarnings}))
+        @Setter(onMethod = @__({@SuppressFBWarnings}))
         String firstname;
+        @Getter(onMethod = @__({@SuppressFBWarnings}))
+        @Setter(onMethod = @__({@SuppressFBWarnings}))
         String lastname;
         String code;
         ZonedDateTime paid_time;
@@ -166,6 +174,21 @@ implements
         }
     }
 
+    private static LocalDate calculateEndDate(
+        LocalDate startDate,
+        PeriodTimeUnit timeUnit,
+        long length
+    ) {
+        switch (timeUnit) {
+            case DAY:
+                return startDate.plusDays(length);
+            case YEAR:
+                return LocalDate.of(startDate.getYear(), Month.DECEMBER, 31);
+        }
+        
+        throw new IllegalStateException("Incomplete enum match");
+    }
+
     private void createSubscriptionPeriod(
         ProductMapping mapping,
         int i,
@@ -190,8 +213,9 @@ implements
                     service,
                     person,
                     orderDate,
-                    mapping.getTimeUnit(),
-                    mapping.getLength(),
+                    calculateEndDate(orderDate,
+                        mapping.getTimeUnit(),
+                        mapping.getLength()),
                     euros * 100 + cents,
                     false);
             SubscriptionPeriodHolviHandle hh = new SubscriptionPeriodHolviHandle(

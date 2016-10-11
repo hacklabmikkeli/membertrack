@@ -17,7 +17,6 @@
 package fi.ilmoeuro.membertrack.membership;
 
 import fi.ilmoeuro.membertrack.auth.PasswordResetManager;
-import fi.ilmoeuro.membertrack.paging.Pageable;
 import fi.ilmoeuro.membertrack.person.Accounts;
 import fi.ilmoeuro.membertrack.person.Person;
 import fi.ilmoeuro.membertrack.service.Service;
@@ -132,10 +131,6 @@ implements
 
     public void close() {
         setMembership(null);
-    }
-
-    private int getNumPages() {
-        return membershipBrowser.getNumPages();
     }
 
     private int getCurrentPage() {

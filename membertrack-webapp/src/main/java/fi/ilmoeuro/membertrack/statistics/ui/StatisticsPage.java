@@ -54,14 +54,14 @@ public final class StatisticsPage extends MtPage {
         model = new MtModel<>(
             new StatisticsPageModel<DSLContext>(sr, srf, sp));
         header = new MtListView<Service> (
-            "dataSet.header",
+            "servicesDataSet.header",
             model,
             (ListItem<Service> item) -> {
                 Component title = new MtLabel("title", item);
                 item.add(title);
             });
         dataRows = new MtListView<StatisticsPageModel.ServiceStatisticsDataRow> (
-            "dataSet.dataRows",
+            "servicesDataSet.dataRows",
             model,
             (ListItem<StatisticsPageModel.ServiceStatisticsDataRow> row) -> {
             Component year = new MtLabel("year", row);

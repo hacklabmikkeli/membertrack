@@ -2,3 +2,4 @@ schema/00000000_00_bootstrap.sql
 schema/20160707_00_init.sql
 data/20160707_01_exampledata.sql
 schema/20160725_00_firstname_lastname.sql
+schema/20161007_00_subscriptionperiod_enddate.sql

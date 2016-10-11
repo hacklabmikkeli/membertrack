@@ -163,19 +163,10 @@ public final class MembershipEditorPanel extends Panel {
                         }
                         MtTextField<LocalDate> startDateField =
                             new MtTextField<>("startDate", prdItem);
-                        MtTextField<Integer> lengthField =
-                            new MtTextField<>("length", prdItem);
+                        MtTextField<LocalDate> endDateField =
+                            new MtTextField<>("endDate", prdItem);
                         MtTextField<Double> paymentField =
                             new MtTextField<>("paymentFormatted", prdItem);
-                        DropDownChoice<PeriodTimeUnit> lengthUnitField =
-                            new DropDownChoice<PeriodTimeUnit>(
-                                "lengthUnit",
-                                new PropertyModel<PeriodTimeUnit>(
-                                    prdItem.getModel(),
-                                    "lengthUnit"),
-                                new PropertyModel<List<PeriodTimeUnit>>(
-                                    prdItem.getModel(),
-                                    "possibleLengthUnits"));
                         CheckBox approvedField = new CheckBox(
                                 "approved",
                                 new PropertyModel<>(
@@ -188,9 +179,8 @@ public final class MembershipEditorPanel extends Panel {
                                 () -> deleteSubscriptionPeriod(prdItem));
 
                         prdItem.add(startDateField);
-                        prdItem.add(lengthField);
+                        prdItem.add(endDateField);
                         prdItem.add(paymentField);
-                        prdItem.add(lengthUnitField);
                         prdItem.add(approvedField);
                         prdItem.add(deletePeriod);
                     });

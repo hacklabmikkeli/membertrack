@@ -86,6 +86,7 @@ public final class MembershipPeriodDeOverlapper<SessionTokenType> {
             if (period != null && lastPeriod != null) {
                 if (lastPeriod.getEndDate().isAfter(period.getStartDate())) {
                     period.setStartDate(period.getStartDate().plusDays(numDaysToPush));
+                    period.setEndDate(period.getEndDate().plusDays(numDaysToPush));
                 } else {
                     return;
                 }
