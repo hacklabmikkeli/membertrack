@@ -16,6 +16,7 @@
  */
 package fi.ilmoeuro.membertrack.elock;
 
+import java.nio.file.Paths;
 import java.time.Duration;
 
 public class ElockSystem implements AutoCloseable {
@@ -24,7 +25,7 @@ public class ElockSystem implements AutoCloseable {
     private final JsscModemAdapter modemAdapter;
     private final PhoneCallSensorImpl phoneCallSensor;
     private final TemporalFilter<String> temporalFilter;
-    private final DatabaseMemberLookup memberLookup;
+    private final FileBasedMemberLookup memberLookup;
     private final DoorOpenMechanism doorOpenMechanism;
 
     public ElockSystem(
@@ -38,10 +39,8 @@ public class ElockSystem implements AutoCloseable {
             modemAdapter,
             temporalFilter
         );
-        memberLookup = new DatabaseMemberLookup(
-            params.getH2URL(),
-            params.getH2UserName(),
-            params.getH2Password()
+        memberLookup = new FileBasedMemberLookup(
+            Paths.get(params.getWhitelistFile()).toFile()
         );
         doorOpenMechanism = new DoorOpenMechanism(
             params.getOpenTime(),
@@ -62,7 +61,6 @@ public class ElockSystem implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        memberLookup.close();
         phoneCallSensor.close();
         modemAdapter.close();
         lockActuator.close();

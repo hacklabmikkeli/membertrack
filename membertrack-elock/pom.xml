@@ -71,11 +71,6 @@
             <version>${jooq.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
-        <dependency>
             <groupId>args4j</groupId>
             <artifactId>args4j</artifactId>
             <version>${args4j.version}</version>
@@ -84,6 +79,11 @@
             <groupId>commons-daemon</groupId>
             <artifactId>commons-daemon</artifactId>
             <version>${commons.daemon.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

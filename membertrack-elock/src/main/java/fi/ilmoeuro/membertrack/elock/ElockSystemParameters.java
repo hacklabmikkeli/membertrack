@@ -52,20 +52,10 @@ public final class ElockSystemParameters {
             metaVar = "<ms>")
     private long ringDelay = 10_000;
 
-    @Option(name = "--h2-url",
-            usage = "H2 database URL",
-            metaVar = "<url>")
-    private String h2URL = "jdbc:h2:mem:";
-    
-    @Option(name = "--h2-username",
-            usage = "H2 database username",
-            metaVar = "<username>")
-    private String h2UserName = "sa";
-    
-    @Option(name = "--h2-password",
-            usage = "H2 database password",
-            metaVar = "<password>")
-    private String h2Password = "sa";
+    @Option(name = "--whitelist-file",
+            usage = "Whitelist file",
+            metaVar = "<file>")
+    private String whitelistFile = "/var/lib/membertrack_elock/whitelist";
 
     public void validate() throws InvalidArgumentsException {
         if (pinNumber < 0 || pinNumber > 29) {
